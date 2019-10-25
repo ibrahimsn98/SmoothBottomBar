@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SmoothBottomBar</string>
+
+    <string name="menu_dashboard">Dashboard</string>
+    <string name="menu_leaderboard">Leaderboard</string>
+    <string name="menu_store">Store</string>
+    <string name="menu_profile">Profile</string>
+</resources>

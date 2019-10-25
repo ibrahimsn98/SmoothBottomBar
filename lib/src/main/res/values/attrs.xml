@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="SmoothBottomBar">
+        <attr name="menu" format="reference" />
+        <attr name="backgroundColor" format="color" />
+        <attr name="indicatorColor" format="color" />
+        <attr name="sideMargins" format="dimension" />
+        <attr name="itemPadding" format="dimension" />
+        <attr name="textColor" format="color" />
+        <attr name="itemFontFamily" format="reference" />
+        <attr name="textSize" format="dimension" />
+        <attr name="iconSize" format="dimension" />
+        <attr name="iconTint" format="color"/>
+        <attr name="iconTintActive" format="color"/>
+        <attr name="activeItem" format="integer" />
+    </declare-styleable>
+
+</resources>
