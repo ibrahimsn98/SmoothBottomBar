@@ -7,6 +7,9 @@ A lightweight Android material bottom navigation bar library
 ##  GIF
 <img src="https://cdn.dribbble.com/users/1015191/screenshots/6251784/snapp---animation.gif"/>
 
+## Design Credits
+All design and inspiration credits belongs to [https://dribbble.com/shots/6251784-Navigation-Menu-Animation](Alejandro Ausejo)
+
 ## Usage
 -    Create menu.xml under your res/menu/ folder
 ```xml
