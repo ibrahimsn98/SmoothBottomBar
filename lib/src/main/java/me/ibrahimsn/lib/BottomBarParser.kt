@@ -37,6 +37,6 @@ class BottomBarParser(private val context: Context, res: Int) {
                 "icon" -> itemDrawable = ContextCompat.getDrawable(context, parser.getAttributeResourceValue(i, 0))!!
             }
         }
-        return BottomBarItem(itemText!!, itemDrawable!!)
+        return BottomBarItem(itemText!!, itemDrawable!!, alpha=0)
     }
 }

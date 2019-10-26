@@ -9,7 +9,6 @@ import android.annotation.SuppressLint
 import android.animation.ArgbEvaluator
 import android.graphics.*
 import android.view.animation.DecelerateInterpolator
-import androidx.core.animation.doOnEnd
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import kotlin.math.abs
@@ -35,11 +34,8 @@ class SmoothBottomBar : View {
     // Dynamic variables
     private var itemWidth = 0f
     private var activeItem = 0
-    private var lastActiveItem = 0
     private var currentIconTint = itemIconTintActive
     private var indicatorLocation = barSideMargins
-    private var iconMover = 0f
-    private var textAlpha = 255
 
     private var items = listOf<BottomBarItem>()
     private var callback: BottomBarCallback? = null
@@ -94,10 +90,18 @@ class SmoothBottomBar : View {
         itemWidth = (width - barSideMargins * 2) / items.size
 
         for (item in items) {
-
             // Prevent text overflow by shortening the item title
-            while (paintText.measureText(item.title) > itemWidth - itemIconSize - itemIconMargin - (itemPadding*2))
+            var shorted = false
+            while (paintText.measureText(item.title) > itemWidth - itemIconSize - itemIconMargin - (itemPadding*2)) {
                 item.title = item.title.dropLast(1)
+                shorted = true
+            }
+
+            // Add ellipsis character to item text if it is shorted
+            if (shorted) {
+                item.title = item.title.dropLast(1)
+                item.title += context.getString(R.string.ellipsis)
+            }
 
             item.rect = RectF(lastX, 0f, itemWidth + lastX, height.toFloat())
             lastX += itemWidth
@@ -116,33 +120,12 @@ class SmoothBottomBar : View {
             val textLength = paintText.measureText(item.title)
 
             item.icon.mutate()
+            item.icon.setBounds(item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength/2) * (1-(255 - item.alpha) / 255f)).toInt(),
+                height / 2 - itemIconSize.toInt() / 2,
+                item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength/2) * (1-(255 - item.alpha) / 255f)).toInt(),
+                height / 2 + itemIconSize.toInt() / 2)
 
-            when (i) {
-                activeItem -> {
-                    item.icon.setBounds(item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength/2) * (1-iconMover)).toInt(),
-                        height / 2 - itemIconSize.toInt() / 2,
-                        item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength/2) * (1-iconMover)).toInt(),
-                        height / 2 + itemIconSize.toInt() / 2)
-
-                    this.paintText.alpha = textAlpha
-                }
-                lastActiveItem -> {
-                    item.icon.setBounds(item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength/2) * iconMover).toInt(),
-                        height / 2 - itemIconSize.toInt() / 2,
-                        item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength/2) * iconMover).toInt(),
-                        height / 2 + itemIconSize.toInt() / 2)
-
-                    this.paintText.alpha = 255 - textAlpha
-                }
-                else -> {
-                    item.icon.setBounds(item.rect.centerX().toInt() - itemIconSize.toInt() / 2,
-                        height / 2 - itemIconSize.toInt() / 2,
-                        item.rect.centerX().toInt() + itemIconSize.toInt() / 2,
-                        height / 2 + itemIconSize.toInt() / 2)
-
-                    this.paintText.alpha = 0
-                }
-            }
+            this.paintText.alpha = item.alpha
 
             DrawableCompat.setTint(item.icon , if (i == activeItem) currentIconTint else itemIconTint)
             item.icon.draw(canvas)
@@ -178,23 +161,21 @@ class SmoothBottomBar : View {
         activeItem = pos
 
         animateIndicator(pos)
-        animateAlpha(pos)
+
+        for ((i, item) in items.withIndex())
+            animateAlpha(item, pos, if (i == pos) 255 else 0)
+
         animateIconTint()
     }
 
-    private fun animateAlpha(pos: Int) {
-        val animator = ValueAnimator.ofInt(0, 255)
+    private fun animateAlpha(item: BottomBarItem, pos: Int, to: Int) {
+        val animator = ValueAnimator.ofInt(item.alpha, to)
         animator.duration = 300
 
         animator.addUpdateListener {
             val value = it.animatedValue as Int
-            textAlpha = value
-            iconMover = (255 - value) / 255f
+            item.alpha = value
             invalidate()
-        }
-
-        animator.doOnEnd {
-            lastActiveItem = pos
         }
 
         animator.start()
