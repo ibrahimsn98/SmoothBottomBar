@@ -39,8 +39,8 @@ class SmoothBottomBar : View {
 
     private var items = listOf<BottomBarItem>()
 
-    var onItemSelectedListener: (Int) -> Unit = {}
-    var onItemReselectedListener: (Int) -> Unit = {}
+    var onItemSelected: (Int) -> Unit = {}
+    var onItemReselected: (Int) -> Unit = {}
 
     private val paintIndicator = Paint().apply {
         isAntiAlias = true
@@ -152,9 +152,9 @@ class SmoothBottomBar : View {
                 if (item.rect.contains(event.x, event.y))
                     if (itemId != this.activeItem) {
                         setActiveItem(itemId)
-                        onItemSelectedListener(itemId)
+                        onItemSelected(itemId)
                     } else
-                        onItemReselectedListener(itemId)
+                        onItemReselected(itemId)
 
         return true
     }
