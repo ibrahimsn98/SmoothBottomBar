@@ -55,6 +55,11 @@ class SmoothBottomBar : View {
         isFakeBoldText = true
     }
 
+    /**
+     * Animation duration in milliseconds.
+     */
+    var animationDuration:Long = 300
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.SmoothBottomBar, 0, 0)
@@ -170,7 +175,7 @@ class SmoothBottomBar : View {
 
     private fun animateAlpha(item: BottomBarItem, pos: Int, to: Int) {
         val animator = ValueAnimator.ofInt(item.alpha, to)
-        animator.duration = 300
+        animator.duration = animationDuration
 
         animator.addUpdateListener {
             val value = it.animatedValue as Int
@@ -183,7 +188,7 @@ class SmoothBottomBar : View {
 
     private fun animateIndicator(pos: Int) {
         val animator = ValueAnimator.ofFloat(indicatorLocation, items[pos].rect.left)
-        animator.duration = 300
+        animator.duration = animationDuration
         animator.interpolator = DecelerateInterpolator()
 
         animator.addUpdateListener { animation ->
@@ -195,7 +200,7 @@ class SmoothBottomBar : View {
 
     private fun animateIconTint() {
         val animator = ValueAnimator.ofObject(ArgbEvaluator(), itemIconTint, itemIconTintActive)
-        animator.duration = 300
+        animator.duration = animationDuration
         animator.addUpdateListener {
             currentIconTint = it.animatedValue as Int
         }
