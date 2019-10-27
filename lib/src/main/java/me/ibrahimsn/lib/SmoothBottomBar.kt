@@ -38,7 +38,9 @@ class SmoothBottomBar : View {
     private var indicatorLocation = barSideMargins
 
     private var items = listOf<BottomBarItem>()
-    private var callback: BottomBarCallback? = null
+
+    var onItemSelectedListener: (Int) -> Unit = {}
+    var onItemReselectedListener: (Int) -> Unit = {}
 
     private val paintIndicator = Paint().apply {
         isAntiAlias = true
@@ -146,13 +148,13 @@ class SmoothBottomBar : View {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_UP && abs(event.downTime - event.eventTime) < 500)
-            for ((i, item) in items.withIndex())
+            for ((itemId, item) in items.withIndex())
                 if (item.rect.contains(event.x, event.y))
-                    if (i != this.activeItem) {
-                        setActiveItem(i)
-                        callback?.onItemSelect(i)
+                    if (itemId != this.activeItem) {
+                        setActiveItem(itemId)
+                        onItemSelectedListener(itemId)
                     } else
-                        callback?.onItemReselect(i)
+                        onItemReselectedListener(itemId)
 
         return true
     }
@@ -205,14 +207,5 @@ class SmoothBottomBar : View {
 
     private fun d2p(dp: Float): Float {
         return resources.displayMetrics.densityDpi.toFloat() / 160.toFloat() * dp
-    }
-
-    fun setBottomBarCallback(callback: BottomBarCallback) {
-        this.callback = callback
-    }
-
-    interface BottomBarCallback  {
-        fun onItemSelect(pos: Int)
-        fun onItemReselect(pos: Int)
     }
 }
