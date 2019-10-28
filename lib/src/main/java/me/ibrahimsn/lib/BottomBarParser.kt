@@ -9,22 +9,17 @@ import org.xmlpull.v1.XmlPullParserException
 class BottomBarParser(private val context: Context, res: Int) {
 
     private val parser: XmlResourceParser = context.resources.getXml(res)
-    private val items: ArrayList<BottomBarItem> = arrayListOf()
 
-    fun parse(): ArrayList<BottomBarItem> {
-        try {
-            var eventType: Int?
-            do {
-                eventType = parser.next()
-                if (eventType == XmlResourceParser.START_TAG && "item" == parser.name) {
-                    items.add(getTabConfig(parser))
-                }
-            } while (eventType != XmlResourceParser.END_DOCUMENT)
-        } catch (e: XmlPullParserException) {
-            e.printStackTrace()
-            throw Exception()
-        }
-        return items
+    fun parse(): List<BottomBarItem> {
+        val items: MutableList<BottomBarItem> = mutableListOf()
+        var eventType: Int?
+        do {
+            eventType = parser.next()
+            if (eventType == XmlResourceParser.START_TAG && "item" == parser.name) {
+                items.add(getTabConfig(parser))
+            }
+        } while (eventType != XmlResourceParser.END_DOCUMENT)
+        return items.toList()
     }
 
     private fun getTabConfig(parser: XmlResourceParser): BottomBarItem {
@@ -37,6 +32,6 @@ class BottomBarParser(private val context: Context, res: Int) {
                 "icon" -> itemDrawable = ContextCompat.getDrawable(context, parser.getAttributeResourceValue(i, 0))!!
             }
         }
-        return BottomBarItem(itemText!!, itemDrawable!!, alpha=0)
+        return BottomBarItem(itemText!!, itemDrawable!!, alpha = 0)
     }
 }
