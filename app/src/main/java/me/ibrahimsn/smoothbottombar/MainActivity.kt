@@ -8,7 +8,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bottomBar.onItemSelected = { status.text = "Item $it selected" }
-        bottomBar.onItemReselected = { status.text = "Item $it re-selected" }
+
+        bottomBar.onItemSelected = {
+            status.text = "Item $it selected"
+        }
+
+        bottomBar.onItemReselected = {
+            status.text = "Item $it re-selected"
+        }
     }
 }

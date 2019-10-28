@@ -50,15 +50,13 @@ All design and inspiration credits belongs to [Alejandro Ausejo](https://dribbbl
 ```
 - Use SmoothBottomBar callbacks in your activity
 ```kotlin
-bottomBar.setBottomBarCallback(object: SmoothBottomBar.BottomBarCallback {
-    override fun onItemSelect(pos: Int) {
+bottomBar.onItemSelected = {
+    status.text = "Item $it selected"
+}
 
-    }
-
-    override fun onItemReselect(pos: Int) {
-
-    }
-})
+bottomBar.onItemReselected = {
+    status.text = "Item $it re-selected"
+}
 ```
 
 ## Customization
@@ -89,7 +87,7 @@ bottomBar.setBottomBarCallback(object: SmoothBottomBar.BottomBarCallback {
 	}
 	
 	dependencies {
-	        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.1'
+	        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.2'
 	}
 ```
 ## License

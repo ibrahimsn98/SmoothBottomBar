@@ -15,7 +15,9 @@ import kotlin.math.abs
 
 class SmoothBottomBar : View {
 
-    // Default attribute values
+    /**
+     * Default attribute values
+     */
     private var barBackgroundColor = Color.parseColor("#FFFFFF")
     private var barIndicatorColor = Color.parseColor("#2DFFFFFF")
     private var barSideMargins = d2p(10f)
@@ -31,7 +33,9 @@ class SmoothBottomBar : View {
     private var itemTextSize = d2p(11.0f)
     private var itemFontFamily = 0
 
-    // Dynamic variables
+    /**
+     * Dynamic variables
+     */
     private var itemWidth = 0f
     private var activeItem = 0
     private var currentIconTint = itemIconTintActive
@@ -60,7 +64,7 @@ class SmoothBottomBar : View {
     /**
      * Animation duration in milliseconds.
      */
-    var animationDuration:Long = 300
+    private var animationDuration = 300L
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -149,7 +153,9 @@ class SmoothBottomBar : View {
             20f, 20f, paintIndicator)
     }
 
-    // Handle item clicks
+    /**
+     * Handle item clicks
+     */
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_UP && abs(event.downTime - event.eventTime) < 500)
@@ -170,12 +176,12 @@ class SmoothBottomBar : View {
         animateIndicator(pos)
 
         for ((i, item) in items.withIndex())
-            animateAlpha(item, pos, if (i == pos) 255 else 0)
+            animateAlpha(item, if (i == pos) 255 else 0)
 
         animateIconTint()
     }
 
-    private fun animateAlpha(item: BottomBarItem, pos: Int, to: Int) {
+    private fun animateAlpha(item: BottomBarItem, to: Int) {
         val animator = ValueAnimator.ofInt(item.alpha, to)
         animator.duration = animationDuration
 
