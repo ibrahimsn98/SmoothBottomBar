@@ -28,8 +28,14 @@ class BottomBarParser(private val context: Context, res: Int) {
         var itemDrawable: Drawable? = null
         for (i in 0 until attributeCount) {
             when (parser.getAttributeName(i)) {
-                "title" -> itemText = context.getString(parser.getAttributeResourceValue(i, 0))
-                "icon" -> itemDrawable = ContextCompat.getDrawable(context, parser.getAttributeResourceValue(i, 0))!!
+                "icon" -> itemDrawable = ContextCompat.getDrawable(context, parser.getAttributeResourceValue(i, 0))
+                "title" -> {
+                    itemText = try {
+                        context.getString(parser.getAttributeResourceValue(i, 0))
+                    } catch (e: Exception) {
+                        parser.getAttributeValue(i)
+                    }
+                }
             }
         }
         return BottomBarItem(itemText!!, itemDrawable!!, alpha = 0)

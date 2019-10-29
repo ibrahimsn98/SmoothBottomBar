@@ -1,18 +1,21 @@
 
 # SmoothBottomBar
-A lightweight Android material bottom navigation bar library
 
+A lightweight Android material bottom navigation bar library
 [![](https://jitpack.io/v/ibrahimsn98/SmoothBottomBar.svg)](https://jitpack.io/#ibrahimsn98/SmoothBottomBar)
 [![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)
 
 ##  GIF
+
 <img src="https://cdn.dribbble.com/users/1015191/screenshots/6251784/snapp---animation.gif"/>
 
 ## Design Credits
+
 All design and inspiration credits belongs to [Alejandro Ausejo](https://dribbble.com/shots/6251784-Navigation-Menu-Animation).
 
 ## Usage
--    Create menu.xml under your res/menu/ folder
+
+-   Create menu.xml under your res/menu/ folder
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
@@ -39,7 +42,8 @@ All design and inspiration credits belongs to [Alejandro Ausejo](https://dribbbl
 
 </menu>
 ```
-- Add view into your layout file
+
+-   Add view into your layout file
 ```xml
 <me.ibrahimsn.lib.SmoothBottomBar
     android:id="@+id/bottomBar"
@@ -48,7 +52,8 @@ All design and inspiration credits belongs to [Alejandro Ausejo](https://dribbbl
     app:backgroundColor="@color/colorPrimary"
     app:menu="@menu/menu_bottom"/>
 ```
-- Use SmoothBottomBar callbacks in your activity
+
+-   Use SmoothBottomBar callbacks in your activity
 ```kotlin
 bottomBar.onItemSelected = {
     status.text = "Item $it selected"
@@ -60,6 +65,7 @@ bottomBar.onItemReselected = {
 ```
 
 ## Customization
+
 ```xml
 <me.ibrahimsn.lib.SmoothBottomBar
         android:id="@+id/bottomBar"
@@ -77,7 +83,9 @@ bottomBar.onItemReselected = {
         app:activeItem=""
         app:menu=""/>
 ```
+
 ## Setup
+
 ```gradle
 	allprojects {
 		repositories {
@@ -87,10 +95,12 @@ bottomBar.onItemReselected = {
 	}
 	
 	dependencies {
-	        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.2'
+	        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.3'
 	}
 ```
+
 ## License
+
 ```
 MIT License
 
