@@ -1,16 +1,20 @@
 package me.ibrahimsn.lib
 
-import android.content.Context
-import android.util.AttributeSet
-import android.view.View
-import android.animation.ValueAnimator
-import android.view.MotionEvent
-import android.annotation.SuppressLint
 import android.animation.ArgbEvaluator
-import android.graphics.*
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
+import android.util.AttributeSet
+import android.view.MotionEvent
+import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import me.ibrahimsn.lib.Constants.WHITE_COLOR_HEX
 import kotlin.math.abs
 
 class SmoothBottomBar : View {
@@ -18,7 +22,7 @@ class SmoothBottomBar : View {
     /**
      * Default attribute values
      */
-    private var barBackgroundColor = Color.parseColor("#FFFFFF")
+    private var barBackgroundColor = Color.parseColor(WHITE_COLOR_HEX)
     private var barIndicatorColor = Color.parseColor("#2DFFFFFF")
     private var barSideMargins = d2p(10f)
 
@@ -27,9 +31,9 @@ class SmoothBottomBar : View {
     private var itemIconSize = d2p(18f)
     private var itemIconMargin = d2p(4f)
     private var itemIconTint = Color.parseColor("#C8FFFFFF")
-    private var itemIconTintActive = Color.parseColor("#FFFFFF")
+    private var itemIconTintActive = Color.parseColor(WHITE_COLOR_HEX)
 
-    private var itemTextColor = Color.parseColor("#FFFFFF")
+    private var itemTextColor = Color.parseColor(WHITE_COLOR_HEX)
     private var itemTextSize = d2p(11.0f)
     private var itemFontFamily = 0
 
@@ -61,9 +65,7 @@ class SmoothBottomBar : View {
         isFakeBoldText = true
     }
 
-    /**
-     * Animation duration in milliseconds.
-     */
+    // Animation duration in milliseconds.
     private var animationDuration = 300L
 
     constructor(context: Context) : super(context)

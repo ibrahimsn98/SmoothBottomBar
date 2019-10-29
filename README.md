@@ -1,4 +1,3 @@
-
 # SmoothBottomBar
 
 A lightweight Android material bottom navigation bar library
@@ -6,7 +5,7 @@ A lightweight Android material bottom navigation bar library
 [![](https://jitpack.io/v/ibrahimsn98/SmoothBottomBar.svg)](https://jitpack.io/#ibrahimsn98/SmoothBottomBar)
 [![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)
 
-##  GIF
+## GIF
 
 <img src="https://cdn.dribbble.com/users/1015191/screenshots/6251784/snapp---animation.gif"/>
 
