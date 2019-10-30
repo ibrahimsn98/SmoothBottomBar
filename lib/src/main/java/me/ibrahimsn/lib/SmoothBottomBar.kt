@@ -27,6 +27,7 @@ class SmoothBottomBar : View {
     private var barSideMargins = d2p(10f)
 
     private var itemPadding = d2p(10f)
+    private var itemAnimDuration = 300L
 
     private var itemIconSize = d2p(18f)
     private var itemIconMargin = d2p(4f)
@@ -65,9 +66,6 @@ class SmoothBottomBar : View {
         isFakeBoldText = true
     }
 
-    // Animation duration in milliseconds.
-    private var animationDuration = 300L
-
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.SmoothBottomBar, 0, 0)
@@ -82,6 +80,7 @@ class SmoothBottomBar : View {
         itemIconTintActive = typedArray.getColor(R.styleable.SmoothBottomBar_iconTintActive, this.itemIconTintActive)
         activeItem = typedArray.getInt(R.styleable.SmoothBottomBar_activeItem, this.activeItem)
         itemFontFamily = typedArray.getResourceId(R.styleable.SmoothBottomBar_itemFontFamily, this.itemFontFamily)
+        itemAnimDuration = typedArray.getInt(R.styleable.SmoothBottomBar_duration, this.itemAnimDuration.toInt()).toLong()
         items = BottomBarParser(context, typedArray.getResourceId(R.styleable.SmoothBottomBar_menu, 0)).parse()
         typedArray.recycle()
 
@@ -185,7 +184,7 @@ class SmoothBottomBar : View {
 
     private fun animateAlpha(item: BottomBarItem, to: Int) {
         val animator = ValueAnimator.ofInt(item.alpha, to)
-        animator.duration = animationDuration
+        animator.duration = itemAnimDuration
 
         animator.addUpdateListener {
             val value = it.animatedValue as Int
@@ -198,7 +197,7 @@ class SmoothBottomBar : View {
 
     private fun animateIndicator(pos: Int) {
         val animator = ValueAnimator.ofFloat(indicatorLocation, items[pos].rect.left)
-        animator.duration = animationDuration
+        animator.duration = itemAnimDuration
         animator.interpolator = DecelerateInterpolator()
 
         animator.addUpdateListener { animation ->
@@ -210,7 +209,7 @@ class SmoothBottomBar : View {
 
     private fun animateIconTint() {
         val animator = ValueAnimator.ofObject(ArgbEvaluator(), itemIconTint, itemIconTintActive)
-        animator.duration = animationDuration
+        animator.duration = itemAnimDuration
         animator.addUpdateListener {
             currentIconTint = it.animatedValue as Int
         }

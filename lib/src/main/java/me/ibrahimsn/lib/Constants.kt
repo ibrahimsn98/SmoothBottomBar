@@ -1,7 +1,7 @@
 package me.ibrahimsn.lib
 
 /**
- * This is a static class for holding constants
+ * This is a static class to hold constants
  */
 object Constants {
     const val ITEM_TAG = "item"
