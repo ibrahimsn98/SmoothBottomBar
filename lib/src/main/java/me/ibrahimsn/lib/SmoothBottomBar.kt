@@ -51,6 +51,8 @@ class SmoothBottomBar : View {
     var onItemSelected: (Int) -> Unit = {}
     var onItemReselected: (Int) -> Unit = {}
 
+    val rect = RectF()
+
     private val paintIndicator = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
@@ -147,11 +149,11 @@ class SmoothBottomBar : View {
         }
 
         // Draw indicator
-        canvas.drawRoundRect(indicatorLocation,
-            items[activeItem].rect.centerY() - itemIconSize/2 - itemPadding,
-            indicatorLocation + itemWidth,
-            items[activeItem].rect.centerY() + itemIconSize/2 + itemPadding,
-            20f, 20f, paintIndicator)
+        rect.left = indicatorLocation
+        rect.top = items[activeItem].rect.centerY() - itemIconSize/2 - itemPadding
+        rect.right = indicatorLocation + itemWidth
+        rect.bottom = items[activeItem].rect.centerY() + itemIconSize/2 + itemPadding
+        canvas.drawRoundRect(rect, 20f, 20f, paintIndicator)
     }
 
     /**
