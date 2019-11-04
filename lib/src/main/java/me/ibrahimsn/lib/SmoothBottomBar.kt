@@ -53,7 +53,7 @@ class SmoothBottomBar : View {
     var onItemSelected: (Int) -> Unit = {}
     var onItemReselected: (Int) -> Unit = {}
 
-    val rect = RectF()
+    private val rect = RectF()
 
     private val paintIndicator = Paint().apply {
         isAntiAlias = true
