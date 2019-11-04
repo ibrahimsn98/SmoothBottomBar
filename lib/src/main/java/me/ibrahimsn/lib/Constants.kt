@@ -8,5 +8,8 @@ object Constants {
     const val ICON_ATTRIBUTE = "icon"
     const val TITLE_ATTRIBUTE = "title"
     const val WHITE_COLOR_HEX = "#FFFFFF"
+
+    const val DEFAULT_INDICATOR_COLOR = "#2DFFFFFF"
+    const val DEFAULT_TINT = "#C8FFFFFF"
 }
 

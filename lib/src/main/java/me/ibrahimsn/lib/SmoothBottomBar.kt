@@ -14,6 +14,8 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import me.ibrahimsn.lib.Constants.DEFAULT_INDICATOR_COLOR
+import me.ibrahimsn.lib.Constants.DEFAULT_TINT
 import me.ibrahimsn.lib.Constants.WHITE_COLOR_HEX
 import kotlin.math.abs
 
@@ -23,7 +25,7 @@ class SmoothBottomBar : View {
      * Default attribute values
      */
     private var barBackgroundColor = Color.parseColor(WHITE_COLOR_HEX)
-    private var barIndicatorColor = Color.parseColor("#2DFFFFFF")
+    private var barIndicatorColor = Color.parseColor(DEFAULT_INDICATOR_COLOR)
     private var barSideMargins = d2p(10f)
 
     private var itemPadding = d2p(10f)
@@ -31,7 +33,7 @@ class SmoothBottomBar : View {
 
     private var itemIconSize = d2p(18f)
     private var itemIconMargin = d2p(4f)
-    private var itemIconTint = Color.parseColor("#C8FFFFFF")
+    private var itemIconTint = Color.parseColor(DEFAULT_TINT)
     private var itemIconTintActive = Color.parseColor(WHITE_COLOR_HEX)
 
     private var itemTextColor = Color.parseColor(WHITE_COLOR_HEX)

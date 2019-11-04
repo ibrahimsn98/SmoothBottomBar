@@ -3,7 +3,7 @@
 A lightweight Android material bottom navigation bar library
 
 [![](https://jitpack.io/v/ibrahimsn98/SmoothBottomBar.svg)](https://jitpack.io/#ibrahimsn98/SmoothBottomBar)
-[![API](https://img.shields.io/badge/API-22%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=22)
+[![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=16)
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-SmoothBottomBar-green.svg?style=flat )]( https://android-arsenal.com/details/1/7932 )
 
 ## GIF
@@ -97,7 +97,7 @@ bottomBar.onItemReselected = {
 	}
 	
 	dependencies {
-	        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.4'
+	        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.5'
 	}
 ```
 
