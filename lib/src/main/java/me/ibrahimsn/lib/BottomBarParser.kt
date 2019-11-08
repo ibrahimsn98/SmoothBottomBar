@@ -1,14 +1,16 @@
 package me.ibrahimsn.lib
 
 import android.content.Context
+import android.content.res.Resources
 import android.content.res.XmlResourceParser
 import android.graphics.drawable.Drawable
+import androidx.annotation.XmlRes
 import androidx.core.content.ContextCompat
 import me.ibrahimsn.lib.Constants.ICON_ATTRIBUTE
 import me.ibrahimsn.lib.Constants.ITEM_TAG
 import me.ibrahimsn.lib.Constants.TITLE_ATTRIBUTE
 
-class BottomBarParser(private val context: Context, res: Int) {
+class BottomBarParser(private val context: Context, @XmlRes res: Int) {
 
     private val parser: XmlResourceParser = context.resources.getXml(res)
 
@@ -18,13 +20,12 @@ class BottomBarParser(private val context: Context, res: Int) {
 
         do {
             eventType = parser.next()
-
-            if (eventType == XmlResourceParser.START_TAG && parser.name == ITEM_TAG)
+            if (eventType == XmlResourceParser.START_TAG && parser.name == ITEM_TAG) {
                 items.add(getTabConfig(parser))
-
+            }
         } while (eventType != XmlResourceParser.END_DOCUMENT)
 
-        return items.toList()
+        return items
     }
 
     private fun getTabConfig(parser: XmlResourceParser): BottomBarItem {
@@ -32,19 +33,25 @@ class BottomBarParser(private val context: Context, res: Int) {
         var itemText: String? = null
         var itemDrawable: Drawable? = null
 
-        for (i in 0 until attributeCount)
-            when (parser.getAttributeName(i)) {
-                ICON_ATTRIBUTE -> itemDrawable =
-                    ContextCompat.getDrawable(context, parser.getAttributeResourceValue(i, 0))
+        for (index in 0 until attributeCount) {
+            when (parser.getAttributeName(index)) {
+                ICON_ATTRIBUTE -> {
+                    itemDrawable = try {
+                        ContextCompat.getDrawable(context, parser.getAttributeResourceValue(index, 0))
+                    } catch (notFoundException: Resources.NotFoundException) {
+                        null
+                    }
+                }
                 TITLE_ATTRIBUTE -> {
                     itemText = try {
-                        context.getString(parser.getAttributeResourceValue(i, 0))
-                    } catch (e: Exception) {
-                        parser.getAttributeValue(i)
+                        context.getString(parser.getAttributeResourceValue(index, 0))
+                    } catch (notFoundException: Resources.NotFoundException) {
+                        parser.getAttributeValue(index)
                     }
                 }
             }
+        }
 
-        return BottomBarItem(itemText ?: "", itemDrawable!!, alpha = 0)
+        return BottomBarItem(itemText ?: "", itemDrawable, alpha = 0)
     }
 }
