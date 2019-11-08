@@ -12,10 +12,20 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import androidx.annotation.FontRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import me.ibrahimsn.lib.Constants.DEFAULT_ANIM_DURATION
+import me.ibrahimsn.lib.Constants.DEFAULT_CORNER_RADIUS
+import me.ibrahimsn.lib.Constants.DEFAULT_ICON_MARGIN
+import me.ibrahimsn.lib.Constants.DEFAULT_ICON_SIZE
 import me.ibrahimsn.lib.Constants.DEFAULT_INDICATOR_COLOR
+import me.ibrahimsn.lib.Constants.DEFAULT_ITEM_PADDING
+import me.ibrahimsn.lib.Constants.DEFAULT_SIDE_MARGIN
+import me.ibrahimsn.lib.Constants.DEFAULT_TEXT_SIZE
 import me.ibrahimsn.lib.Constants.DEFAULT_TINT
+import me.ibrahimsn.lib.Constants.OPAQUE
+import me.ibrahimsn.lib.Constants.TRANSPARENT
 import me.ibrahimsn.lib.Constants.WHITE_COLOR_HEX
 import kotlin.math.abs
 
@@ -26,25 +36,27 @@ class SmoothBottomBar : View {
      */
     private var barBackgroundColor = Color.parseColor(WHITE_COLOR_HEX)
     private var barIndicatorColor = Color.parseColor(DEFAULT_INDICATOR_COLOR)
-    private var barSideMargins = d2p(10f)
+    private var barSideMargins = d2p(DEFAULT_SIDE_MARGIN)
 
-    private var itemPadding = d2p(10f)
-    private var itemAnimDuration = 300L
+    private var itemPadding = d2p(DEFAULT_ITEM_PADDING)
+    private var itemAnimDuration = DEFAULT_ANIM_DURATION
 
-    private var itemIconSize = d2p(18f)
-    private var itemIconMargin = d2p(4f)
+    private var itemIconSize = d2p(DEFAULT_ICON_SIZE)
+    private var itemIconMargin = d2p(DEFAULT_ICON_MARGIN)
     private var itemIconTint = Color.parseColor(DEFAULT_TINT)
     private var itemIconTintActive = Color.parseColor(WHITE_COLOR_HEX)
 
     private var itemTextColor = Color.parseColor(WHITE_COLOR_HEX)
-    private var itemTextSize = d2p(11.0f)
-    private var itemFontFamily = 0
+    private var itemTextSize = d2p(DEFAULT_TEXT_SIZE)
+
+    @FontRes
+    private var itemFontFamily: Int = 0
 
     /**
      * Dynamic variables
      */
-    private var itemWidth = 0f
-    private var activeItem = 0
+    private var itemWidth: Float = 0F
+    private var activeItemIndex: Int = 0
     private var currentIconTint = itemIconTintActive
     private var indicatorLocation = barSideMargins
 
@@ -61,7 +73,7 @@ class SmoothBottomBar : View {
         color = barIndicatorColor
     }
 
-    private val paintText= Paint().apply {
+    private val paintText = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
         color = itemTextColor
@@ -70,8 +82,13 @@ class SmoothBottomBar : View {
         isFakeBoldText = true
     }
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.SmoothBottomBar, 0, 0)
         barBackgroundColor = typedArray.getColor(R.styleable.SmoothBottomBar_backgroundColor, this.barBackgroundColor)
         barIndicatorColor = typedArray.getColor(R.styleable.SmoothBottomBar_indicatorColor, this.barIndicatorColor)
@@ -82,7 +99,7 @@ class SmoothBottomBar : View {
         itemIconSize = typedArray.getDimension(R.styleable.SmoothBottomBar_iconSize, this.itemIconSize)
         itemIconTint = typedArray.getColor(R.styleable.SmoothBottomBar_iconTint, this.itemIconTint)
         itemIconTintActive = typedArray.getColor(R.styleable.SmoothBottomBar_iconTintActive, this.itemIconTintActive)
-        activeItem = typedArray.getInt(R.styleable.SmoothBottomBar_activeItem, this.activeItem)
+        activeItemIndex = typedArray.getInt(R.styleable.SmoothBottomBar_activeItem, this.activeItemIndex)
         itemFontFamily = typedArray.getResourceId(R.styleable.SmoothBottomBar_itemFontFamily, this.itemFontFamily)
         itemAnimDuration = typedArray.getInt(R.styleable.SmoothBottomBar_duration, this.itemAnimDuration.toInt()).toLong()
         items = BottomBarParser(context, typedArray.getResourceId(R.styleable.SmoothBottomBar_menu, 0)).parse()
@@ -95,20 +112,22 @@ class SmoothBottomBar : View {
         paintText.color = itemTextColor
         paintText.textSize = itemTextSize
 
-        if (itemFontFamily != 0)
+        if (itemFontFamily != 0) {
             paintText.typeface = ResourcesCompat.getFont(context, itemFontFamily)
+        }
     }
+
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
 
         var lastX = barSideMargins
-        itemWidth = (width - barSideMargins * 2) / items.size
+        itemWidth = (width - (barSideMargins * 2)) / items.size
 
         for (item in items) {
             // Prevent text overflow by shortening the item title
             var shorted = false
-            while (paintText.measureText(item.title) > itemWidth - itemIconSize - itemIconMargin - (itemPadding*2)) {
+            while (paintText.measureText(item.title) > itemWidth - itemIconSize - itemIconMargin - (itemPadding * 2)) {
                 item.title = item.title.dropLast(1)
                 shorted = true
             }
@@ -124,7 +143,7 @@ class SmoothBottomBar : View {
         }
 
         // Set initial active item
-        setActiveItem(activeItem)
+        setActiveItem(activeItemIndex)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -132,30 +151,30 @@ class SmoothBottomBar : View {
 
         val textHeight = (paintText.descent() + paintText.ascent()) / 2
 
-        for ((i, item) in items.withIndex()) {
+        for ((index, item) in items.withIndex()) {
             val textLength = paintText.measureText(item.title)
 
-            item.icon.mutate()
-            item.icon.setBounds(item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength/2) * (1-(255 - item.alpha) / 255f)).toInt(),
-                height / 2 - itemIconSize.toInt() / 2,
-                item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength/2) * (1-(255 - item.alpha) / 255f)).toInt(),
-                height / 2 + itemIconSize.toInt() / 2)
+            if (item.icon != null) {
+                item.icon.mutate()
+                item.icon.setBounds(item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE)).toInt(),
+                    height / 2 - itemIconSize.toInt() / 2,
+                    item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE)).toInt(),
+                    height / 2 + itemIconSize.toInt() / 2
+                )
 
+                DrawableCompat.setTint(item.icon, if(index == activeItemIndex) currentIconTint else itemIconTint)
+                item.icon.draw(canvas)
+            }
             this.paintText.alpha = item.alpha
-
-            DrawableCompat.setTint(item.icon , if (i == activeItem) currentIconTint else itemIconTint)
-            item.icon.draw(canvas)
-
-            canvas.drawText(item.title, item.rect.centerX() + itemIconSize/2 + itemIconMargin,
-                item.rect.centerY() - textHeight, paintText)
+            canvas.drawText(item.title, item.rect.centerX() + itemIconSize / 2 + itemIconMargin, item.rect.centerY() - textHeight, paintText)
         }
 
         // Draw indicator
         rect.left = indicatorLocation
-        rect.top = items[activeItem].rect.centerY() - itemIconSize/2 - itemPadding
+        rect.top = items[activeItemIndex].rect.centerY() - itemIconSize / 2 - itemPadding
         rect.right = indicatorLocation + itemWidth
-        rect.bottom = items[activeItem].rect.centerY() + itemIconSize/2 + itemPadding
-        canvas.drawRoundRect(rect, 20f, 20f, paintIndicator)
+        rect.bottom = items[activeItemIndex].rect.centerY() + itemIconSize / 2 + itemPadding
+        canvas.drawRoundRect(rect, DEFAULT_CORNER_RADIUS, DEFAULT_CORNER_RADIUS, paintIndicator)
     }
 
     /**
@@ -163,26 +182,32 @@ class SmoothBottomBar : View {
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_UP && abs(event.downTime - event.eventTime) < 500)
-            for ((itemId, item) in items.withIndex())
-                if (item.rect.contains(event.x, event.y))
-                    if (itemId != this.activeItem) {
+        if (event.action == MotionEvent.ACTION_UP && abs(event.downTime - event.eventTime) < 500) {
+            for ((itemId, item) in items.withIndex()) {
+                if (item.rect.contains(event.x, event.y)) {
+                    if (itemId != this.activeItemIndex) {
                         setActiveItem(itemId)
                         onItemSelected(itemId)
-                    } else
+                    } else {
                         onItemReselected(itemId)
+                    }
+                }
+            }
+        }
 
         return true
     }
 
     fun setActiveItem(pos: Int) {
-        activeItem = pos
-
+        activeItemIndex = pos
         animateIndicator(pos)
-
-        for ((i, item) in items.withIndex())
-            animateAlpha(item, if (i == pos) 255 else 0)
-
+        for ((index, item) in items.withIndex()) {
+            if (index == pos) {
+                animateAlpha(item, OPAQUE)
+            } else {
+                animateAlpha(item, TRANSPARENT)
+            }
+        }
         animateIconTint()
     }
 
