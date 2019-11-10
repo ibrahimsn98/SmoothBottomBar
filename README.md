@@ -12,7 +12,7 @@ A lightweight Android material bottom navigation bar library
 
 ## Design Credits
 
-All design and inspiration credits belongs to [Alejandro Ausejo](https://dribbble.com/shots/6251784-Navigation-Menu-Animation).
+All design and inspiration credits belong to [Alejandro Ausejo](https://dribbble.com/shots/6251784-Navigation-Menu-Animation).
 
 ## Usage
 
