@@ -97,7 +97,7 @@ bottomBar.onItemReselected = {
 	}
 	
 	dependencies {
-	        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.5'
+	        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.6'
 	}
 ```
 
