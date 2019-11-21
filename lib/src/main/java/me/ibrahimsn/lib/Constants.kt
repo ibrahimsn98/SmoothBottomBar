@@ -14,7 +14,7 @@ object Constants {
 
     const val DEFAULT_SIDE_MARGIN = 10f
     const val DEFAULT_ITEM_PADDING = 10f
-    const val DEFAULT_ANIM_DURATION = 300L
+    const val DEFAULT_ANIM_DURATION = 200L
     const val DEFAULT_ICON_SIZE = 18F
     const val DEFAULT_ICON_MARGIN = 4F
     const val DEFAULT_TEXT_SIZE = 11F

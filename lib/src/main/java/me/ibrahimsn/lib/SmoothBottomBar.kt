@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -157,17 +158,16 @@ class SmoothBottomBar : View {
         for ((index, item) in items.withIndex()) {
             val textLength = paintText.measureText(item.title)
 
-            if (item.icon != null) {
-                item.icon.mutate()
-                item.icon.setBounds(item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE)).toInt(),
-                    height / 2 - itemIconSize.toInt() / 2,
-                    item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE)).toInt(),
-                    height / 2 + itemIconSize.toInt() / 2
-                )
+            item.icon.mutate()
+            item.icon.setBounds(item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
+                height / 2 - itemIconSize.toInt() / 2,
+                item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
+                height / 2 + itemIconSize.toInt() / 2
+            )
 
-                DrawableCompat.setTint(item.icon, if(index == activeItemIndex) currentIconTint else itemIconTint)
-                item.icon.draw(canvas)
-            }
+            DrawableCompat.setTint(item.icon, if(index == activeItemIndex) currentIconTint else itemIconTint)
+            item.icon.draw(canvas)
+
             this.paintText.alpha = item.alpha
             canvas.drawText(item.title, item.rect.centerX() + itemIconSize / 2 + itemIconMargin, item.rect.centerY() - textHeight, paintText)
         }
@@ -205,14 +205,15 @@ class SmoothBottomBar : View {
 
     fun setActiveItem(pos: Int) {
         activeItemIndex = pos
-        animateIndicator(pos)
+
         for ((index, item) in items.withIndex()) {
-            if (index == pos) {
+            if (index == pos)
                 animateAlpha(item, OPAQUE)
-            } else {
+             else
                 animateAlpha(item, TRANSPARENT)
-            }
         }
+
+        animateIndicator(pos)
         animateIconTint()
     }
 

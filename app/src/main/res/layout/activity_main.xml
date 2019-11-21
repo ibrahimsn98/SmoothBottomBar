@@ -29,7 +29,6 @@
         app:itemPadding="10dp"
         app:iconTint="#C8FFFFFF"
         app:iconTintActive="#FFFFFF"
-        app:duration="200"
         app:menu="@menu/menu_bottom"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
