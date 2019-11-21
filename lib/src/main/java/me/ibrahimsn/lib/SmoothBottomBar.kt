@@ -62,6 +62,9 @@ class SmoothBottomBar : View {
 
     private var items = listOf<BottomBarItem>()
 
+    private var onItemSelectedListener: OnItemSelectedListener? = null
+    private var onItemReselectedListener: OnItemReselectedListener? = null
+
     var onItemSelected: (Int) -> Unit = {}
     var onItemReselected: (Int) -> Unit = {}
 
@@ -188,8 +191,10 @@ class SmoothBottomBar : View {
                     if (itemId != this.activeItemIndex) {
                         setActiveItem(itemId)
                         onItemSelected(itemId)
+                        onItemSelectedListener?.onItemSelect(itemId)
                     } else {
                         onItemReselected(itemId)
+                        onItemReselectedListener?.onItemReselect(itemId)
                     }
                 }
             }
@@ -248,5 +253,13 @@ class SmoothBottomBar : View {
 
     private fun d2p(dp: Float): Float {
         return resources.displayMetrics.densityDpi.toFloat() / 160.toFloat() * dp
+    }
+
+    fun setOnItemSelectedListener(listener: OnItemSelectedListener) {
+        this.onItemSelectedListener = listener
+    }
+
+    fun setOnItemReselectedListener(listener: OnItemReselectedListener) {
+        this.onItemReselectedListener = listener
     }
 }
