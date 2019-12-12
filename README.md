@@ -65,6 +65,21 @@ bottomBar.onItemReselected = {
 }
 ```
 
+OR
+```kotlin
+bottomBar.setOnItemSelectedListener(object: OnItemSelectedListener {
+    override fun onItemSelect(pos: Int) {
+        status.text = "Item $pos selected"
+    }
+})
+
+bottomBar.setOnItemReselectedListener(object: OnItemReselectedListener {
+    override fun onItemReselect(pos: Int) {
+        status.text = "Item $pos re-selected"
+    }
+})
+```
+
 ## Customization
 
 ```xml
