@@ -66,6 +66,7 @@ bottomBar.onItemReselected = {
 ```
 
 OR
+
 ```kotlin
 bottomBar.setOnItemSelectedListener(object: OnItemSelectedListener {
     override fun onItemSelect(pos: Int) {
@@ -87,33 +88,34 @@ bottomBar.setOnItemReselectedListener(object: OnItemReselectedListener {
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        app:menu=""
         app:backgroundColor=""
-        app:textColor=""
-        app:textSize=""
-        app:iconSize=""
         app:indicatorColor=""
         app:sideMargins=""
         app:itemPadding=""
+        app:textColor=""
+        app:itemFontFamily=""
+        app:textSize=""
+        app:iconSize=""
         app:iconTint=""
         app:iconTintActive=""
         app:activeItem=""
-        app:duration=""
-        app:menu=""/>
+        app:duration="" />
 ```
 
 ## Setup
 
 ```gradle
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
 	}
-	
-	dependencies {
-	        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.6'
-	}
+}
+
+dependencies {
+        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.6'
+}
 ```
 
 ## License
