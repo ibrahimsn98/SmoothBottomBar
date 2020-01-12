@@ -91,6 +91,7 @@ bottomBar.setOnItemReselectedListener(object: OnItemReselectedListener {
         app:menu=""
         app:backgroundColor=""
         app:indicatorColor=""
+        app:indicatorRadius=""
         app:sideMargins=""
         app:itemPadding=""
         app:textColor=""
@@ -114,7 +115,7 @@ allprojects {
 }
 
 dependencies {
-        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.6'
+        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7'
 }
 ```
 

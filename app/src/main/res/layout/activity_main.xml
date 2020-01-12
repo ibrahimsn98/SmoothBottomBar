@@ -25,6 +25,7 @@
         app:textSize="14sp"
         app:iconSize="24dp"
         app:indicatorColor="#2DFFFFFF"
+        app:indicatorRadius="10dp"
         app:sideMargins="10dp"
         app:itemPadding="10dp"
         app:iconTint="#C8FFFFFF"
