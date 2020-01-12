@@ -5,6 +5,7 @@
         <attr name="menu" format="reference" />
         <attr name="backgroundColor" format="color" />
         <attr name="indicatorColor" format="color" />
+        <attr name="indicatorRadius" format="dimension" />
         <attr name="sideMargins" format="dimension" />
         <attr name="itemPadding" format="dimension" />
         <attr name="textColor" format="color" />

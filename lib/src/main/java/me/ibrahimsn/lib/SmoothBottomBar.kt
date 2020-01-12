@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -37,6 +36,7 @@ class SmoothBottomBar : View {
      */
     private var barBackgroundColor = Color.parseColor(WHITE_COLOR_HEX)
     private var barIndicatorColor = Color.parseColor(DEFAULT_INDICATOR_COLOR)
+    private var barIndicatorRadius = d2p(DEFAULT_CORNER_RADIUS)
     private var barSideMargins = d2p(DEFAULT_SIDE_MARGIN)
 
     private var itemPadding = d2p(DEFAULT_ITEM_PADDING)
@@ -88,14 +88,11 @@ class SmoothBottomBar : View {
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.SmoothBottomBar, 0, 0)
         barBackgroundColor = typedArray.getColor(R.styleable.SmoothBottomBar_backgroundColor, this.barBackgroundColor)
         barIndicatorColor = typedArray.getColor(R.styleable.SmoothBottomBar_indicatorColor, this.barIndicatorColor)
+        barIndicatorRadius = typedArray.getDimension(R.styleable.SmoothBottomBar_indicatorRadius, this.barIndicatorRadius)
         barSideMargins = typedArray.getDimension(R.styleable.SmoothBottomBar_sideMargins, this.barSideMargins)
         itemPadding = typedArray.getDimension(R.styleable.SmoothBottomBar_itemPadding, this.itemPadding)
         itemTextColor = typedArray.getColor(R.styleable.SmoothBottomBar_textColor, this.itemTextColor)
@@ -153,6 +150,13 @@ class SmoothBottomBar : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        // Draw indicator
+        rect.left = indicatorLocation
+        rect.top = items[activeItemIndex].rect.centerY() - itemIconSize / 2 - itemPadding
+        rect.right = indicatorLocation + itemWidth
+        rect.bottom = items[activeItemIndex].rect.centerY() + itemIconSize / 2 + itemPadding
+        canvas.drawRoundRect(rect, barIndicatorRadius, barIndicatorRadius, paintIndicator)
+
         val textHeight = (paintText.descent() + paintText.ascent()) / 2
 
         for ((index, item) in items.withIndex()) {
@@ -171,13 +175,6 @@ class SmoothBottomBar : View {
             this.paintText.alpha = item.alpha
             canvas.drawText(item.title, item.rect.centerX() + itemIconSize / 2 + itemIconMargin, item.rect.centerY() - textHeight, paintText)
         }
-
-        // Draw indicator
-        rect.left = indicatorLocation
-        rect.top = items[activeItemIndex].rect.centerY() - itemIconSize / 2 - itemPadding
-        rect.right = indicatorLocation + itemWidth
-        rect.bottom = items[activeItemIndex].rect.centerY() + itemIconSize / 2 + itemPadding
-        canvas.drawRoundRect(rect, DEFAULT_CORNER_RADIUS, DEFAULT_CORNER_RADIUS, paintIndicator)
     }
 
     /**
@@ -215,6 +212,10 @@ class SmoothBottomBar : View {
 
         animateIndicator(pos)
         animateIconTint()
+    }
+
+    fun getActiveItem(): Int {
+        return activeItemIndex
     }
 
     private fun animateAlpha(item: BottomBarItem, to: Int) {
