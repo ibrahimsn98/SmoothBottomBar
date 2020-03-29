@@ -19,8 +19,12 @@ object Constants {
     const val DEFAULT_ICON_MARGIN = 4F
     const val DEFAULT_TEXT_SIZE = 11F
     const val DEFAULT_CORNER_RADIUS = 20F
+    const val DEFAULT_BAR_CORNER_RADIUS = 0F
 
     const val OPAQUE = 255
     const val TRANSPARENT = 0
+
+    const val COS_45 = 0.525321988
+    const val SHADOW_MULTIPLIER = 1.5f
 }
 

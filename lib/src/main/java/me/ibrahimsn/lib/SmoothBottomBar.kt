@@ -4,10 +4,12 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -16,6 +18,7 @@ import androidx.annotation.FontRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import me.ibrahimsn.lib.Constants.DEFAULT_ANIM_DURATION
+import me.ibrahimsn.lib.Constants.DEFAULT_BAR_CORNER_RADIUS
 import me.ibrahimsn.lib.Constants.DEFAULT_CORNER_RADIUS
 import me.ibrahimsn.lib.Constants.DEFAULT_ICON_MARGIN
 import me.ibrahimsn.lib.Constants.DEFAULT_ICON_SIZE
@@ -38,6 +41,7 @@ class SmoothBottomBar : View {
     private var barIndicatorColor = Color.parseColor(DEFAULT_INDICATOR_COLOR)
     private var barIndicatorRadius = d2p(DEFAULT_CORNER_RADIUS)
     private var barSideMargins = d2p(DEFAULT_SIDE_MARGIN)
+    private var barCornerRadius = d2p(DEFAULT_BAR_CORNER_RADIUS)
 
     private var itemPadding = d2p(DEFAULT_ITEM_PADDING)
     private var itemAnimDuration = DEFAULT_ANIM_DURATION
@@ -94,6 +98,7 @@ class SmoothBottomBar : View {
         barIndicatorColor = typedArray.getColor(R.styleable.SmoothBottomBar_indicatorColor, this.barIndicatorColor)
         barIndicatorRadius = typedArray.getDimension(R.styleable.SmoothBottomBar_indicatorRadius, this.barIndicatorRadius)
         barSideMargins = typedArray.getDimension(R.styleable.SmoothBottomBar_sideMargins, this.barSideMargins)
+        barCornerRadius = typedArray.getDimension(R.styleable.SmoothBottomBar_cornerRadius, this.barCornerRadius)
         itemPadding = typedArray.getDimension(R.styleable.SmoothBottomBar_itemPadding, this.itemPadding)
         itemTextColor = typedArray.getColor(R.styleable.SmoothBottomBar_textColor, this.itemTextColor)
         itemTextSize = typedArray.getDimension(R.styleable.SmoothBottomBar_textSize, this.itemTextSize)
@@ -106,7 +111,9 @@ class SmoothBottomBar : View {
         items = BottomBarParser(context, typedArray.getResourceId(R.styleable.SmoothBottomBar_menu, 0)).parse()
         typedArray.recycle()
 
-        setBackgroundColor(barBackgroundColor)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            background = RoundRectDrawable(ColorStateList.valueOf(barBackgroundColor), barCornerRadius, topLeft = true, topRight = true)
+        } else setBackgroundColor(barBackgroundColor)
 
         // Update default attribute values
         paintIndicator.color = barIndicatorColor
