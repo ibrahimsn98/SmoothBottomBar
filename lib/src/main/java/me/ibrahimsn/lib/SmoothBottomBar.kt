@@ -260,6 +260,48 @@ class SmoothBottomBar : View {
         }
     }
 
+    // Add item badge
+    fun setBadge(pos: Int, badge: Badge) {
+        if (pos >= 0 && pos < items.size && badge.badgeSize > 0f) {
+            items[pos].badge = badge
+
+            val animator = ValueAnimator.ofFloat(0f, badge.badgeSize)
+            animator.duration = 100
+
+            animator.addUpdateListener { animation ->
+                items[pos].badge?.badgeSize = animation.animatedValue as Float
+                invalidate()
+            }
+
+            animator.start()
+        }
+    }
+
+    fun getBadge(pos: Int) : Badge? {
+        return if (pos >= 0 && pos < items.size) items[pos].badge else null
+    }
+
+    // Remove item badge
+    fun removeBadge(pos: Int) {
+        if (pos >= 0 && pos < items.size && items[pos].badge != null && items[pos].badge?.badgeSize!! > 0f) {
+            val animator = ValueAnimator.ofFloat(items[pos].badge?.badgeSize!!, 0f)
+            animator.duration = 100
+            animator.addUpdateListener {
+                animation -> items[pos].badge?.badgeSize = animation.animatedValue as Float
+                invalidate()
+            }
+
+            animator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    super.onAnimationEnd(animation)
+                    items[pos].badge = null
+                }
+            })
+
+            animator.start()
+        }
+    }
+
     /**
      * Handle item clicks
      */
