@@ -81,6 +81,20 @@ bottomBar.setOnItemReselectedListener(object: OnItemReselectedListener {
 })
 ```
 
+-   Add badge to a specific item
+```kotlin
+bottomBar.setBadge(1, Badge(
+    badgeSize = 20F,
+    badgeBoxCornerRadius = 8F,
+    badgeColor = ContextCompat.getColor(this , R.color.colorBadge),
+    badgeText = "99+",
+    badgeTextColor = Color.BLACK,
+    badgeType = BadgeType.BOX // or BadgeType.CIRCLE
+))
+
+bottomBar.removeBadge(1)
+```
+
 ## Customization
 
 ```xml

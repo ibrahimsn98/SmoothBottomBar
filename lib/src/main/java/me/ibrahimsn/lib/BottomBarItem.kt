@@ -7,5 +7,6 @@ data class BottomBarItem(
     var title: String,
     val icon: Drawable,
     var rect: RectF = RectF(),
-    var alpha: Int
+    var alpha: Int,
+    var badge: Badge?
 )
