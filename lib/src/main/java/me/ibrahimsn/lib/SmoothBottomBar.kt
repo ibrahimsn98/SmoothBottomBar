@@ -1,24 +1,19 @@
 package me.ibrahimsn.lib
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.FontRes
-import androidx.core.animation.addListener
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import me.ibrahimsn.lib.Constants.DEFAULT_ANIM_DURATION
@@ -35,7 +30,6 @@ import me.ibrahimsn.lib.Constants.OPAQUE
 import me.ibrahimsn.lib.Constants.TRANSPARENT
 import me.ibrahimsn.lib.Constants.WHITE_COLOR_HEX
 import kotlin.math.abs
-import kotlin.math.min
 
 class SmoothBottomBar : View {
 
@@ -80,6 +74,12 @@ class SmoothBottomBar : View {
 
     private val rect = RectF()
 
+    private val paintBackground = Paint().apply {
+        isAntiAlias = true
+        style = Paint.Style.FILL
+        color = barIndicatorColor
+    }
+
     private val paintIndicator = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
@@ -90,20 +90,6 @@ class SmoothBottomBar : View {
         isAntiAlias = true
         style = Paint.Style.FILL
         color = itemTextColor
-        textSize = itemTextSize
-        textAlign = Paint.Align.CENTER
-        isFakeBoldText = true
-    }
-
-    private val paintBadge = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.FILL
-        strokeWidth = 4f
-    }
-
-    private val paintBadgeText = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.FILL
         textSize = itemTextSize
         textAlign = Paint.Align.CENTER
         isFakeBoldText = true
@@ -130,11 +116,8 @@ class SmoothBottomBar : View {
         items = BottomBarParser(context, typedArray.getResourceId(R.styleable.SmoothBottomBar_menu, 0)).parse()
         typedArray.recycle()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            background = RoundRectDrawable(ColorStateList.valueOf(barBackgroundColor), barCornerRadius, topLeft = true, topRight = true)
-        } else setBackgroundColor(barBackgroundColor)
-
         // Update default attribute values
+        paintBackground.color = barBackgroundColor
         paintIndicator.color = barIndicatorColor
         paintText.color = itemTextColor
         paintText.textSize = itemTextSize
@@ -143,7 +126,6 @@ class SmoothBottomBar : View {
             paintText.typeface = ResourcesCompat.getFont(context, itemFontFamily)
         }
     }
-
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -176,12 +158,37 @@ class SmoothBottomBar : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        // Draw background
+        if (barCornerRadius > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            canvas.drawRoundRect(
+                0f, 0f,
+                width.toFloat(),
+                height.toFloat(),
+                barCornerRadius,
+                barCornerRadius,
+                paintBackground
+            )
+        } else {
+            canvas.drawRect(
+                0f, 0f,
+                width.toFloat(),
+                height.toFloat(),
+                paintBackground
+            )
+        }
+
         // Draw indicator
         rect.left = indicatorLocation
         rect.top = items[activeItemIndex].rect.centerY() - itemIconSize / 2 - itemPadding
         rect.right = indicatorLocation + itemWidth
         rect.bottom = items[activeItemIndex].rect.centerY() + itemIconSize / 2 + itemPadding
-        canvas.drawRoundRect(rect, barIndicatorRadius, barIndicatorRadius, paintIndicator)
+
+        canvas.drawRoundRect(
+            rect,
+            barIndicatorRadius,
+            barIndicatorRadius,
+            paintIndicator
+        )
 
         val textHeight = (paintText.descent() + paintText.ascent()) / 2
 
@@ -189,116 +196,26 @@ class SmoothBottomBar : View {
             val textLength = paintText.measureText(item.title)
 
             item.icon.mutate()
-            item.icon.setBounds(item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
+            item.icon.setBounds(
+                item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
                 height / 2 - itemIconSize.toInt() / 2,
                 item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
                 height / 2 + itemIconSize.toInt() / 2
             )
 
-            DrawableCompat.setTint(item.icon, if(index == activeItemIndex) currentIconTint else itemIconTint)
+            DrawableCompat.setTint(
+                item.icon,
+                if(index == activeItemIndex) currentIconTint else itemIconTint
+            )
+
             item.icon.draw(canvas)
-
             this.paintText.alpha = item.alpha
-            canvas.drawText(item.title, item.rect.centerX() + itemIconSize / 2 + itemIconMargin, item.rect.centerY() - textHeight, paintText)
 
-            // Draw item badge
-            if (item.badge != null) drawBadge(canvas, item)
-        }
-    }
-
-    // Draw item badge
-    private fun drawBadge(canvas: Canvas, item: BottomBarItem) {
-        paintBadge.style = Paint.Style.FILL
-        paintBadge.color = item.badge?.badgeColor!!
-
-        val cy = (height / 2).toFloat() - itemIconSize - itemIconMargin / 2 + 10
-
-        val boxRectF = RectF(
-            item.rect.centerX() + itemIconSize / 2 + 4 - (item.badge?.badgeSize ?: 0F) * 1.2f,
-            (height / 2).toFloat() - itemIconSize - itemIconMargin / 2 - 8,
-            (item.rect.centerX() + itemIconSize / 2 + 4) + (item.badge?.badgeSize ?: 0F) * 1.2f,
-            ((height / 2).toFloat() - itemIconSize - itemIconMargin / 2 - 8) + (item.badge?.badgeSize ?: 0F) * 2f
-        )
-
-        (item.badge)?.let {
-            if (it.badgeType == BadgeType.CIRCLE)
-                canvas.drawCircle(item.rect.centerX() + itemIconSize / 2 + 4,
-                    cy, it.badgeSize + 2f, paintBadge)
-            else if (it.badgeType == BadgeType.BOX) {
-                canvas.drawRoundRect(boxRectF, it.badgeBoxCornerRadius, it.badgeBoxCornerRadius, paintBadge)
-            }
-        }
-
-        paintBadge.style = Paint.Style.STROKE
-        paintBadge.color = barBackgroundColor
-
-        (item.badge)?.let {
-            if (it.badgeType == BadgeType.CIRCLE)
-                canvas.drawCircle(item.rect.centerX() + itemIconSize / 2 + 4,
-                    cy, it.badgeSize + 2f, paintBadge)
-            else if (it.badgeType == BadgeType.BOX && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                canvas.drawRoundRect(boxRectF, it.badgeBoxCornerRadius, it.badgeBoxCornerRadius, paintBadge)
-            }
-        }
-
-        (item.badge)?.let {
-            this.paintBadgeText.color = it.badgeTextColor
-
-            val textHeight = (paintBadgeText.descent() + paintBadgeText.ascent()) / 2
             canvas.drawText(
-                it.badgeText,
-
-                if (it.badgeType == BadgeType.CIRCLE) item.rect.centerX() + itemIconSize / 2 + 4
-                else boxRectF.centerX() ,
-
-                if (it.badgeType == BadgeType.CIRCLE) {
-                    cy - textHeight
-                } else boxRectF.centerY() - textHeight,
-
-                paintBadgeText)
-
-        }
-    }
-
-    // Add item badge
-    fun setBadge(pos: Int, badge: Badge) {
-        if (pos >= 0 && pos < items.size && badge.badgeSize > 0f) {
-            items[pos].badge = badge
-
-            val animator = ValueAnimator.ofFloat(0f, badge.badgeSize)
-            animator.duration = 100
-
-            animator.addUpdateListener { animation ->
-                items[pos].badge?.badgeSize = animation.animatedValue as Float
-                invalidate()
-            }
-
-            animator.start()
-        }
-    }
-
-    fun getBadge(pos: Int) : Badge? {
-        return if (pos >= 0 && pos < items.size) items[pos].badge else null
-    }
-
-    // Remove item badge
-    fun removeBadge(pos: Int) {
-        if (pos >= 0 && pos < items.size && items[pos].badge != null && items[pos].badge?.badgeSize!! > 0f) {
-            val animator = ValueAnimator.ofFloat(items[pos].badge?.badgeSize!!, 0f)
-            animator.duration = 100
-            animator.addUpdateListener {
-                animation -> items[pos].badge?.badgeSize = animation.animatedValue as Float
-                invalidate()
-            }
-
-            animator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    super.onAnimationEnd(animation)
-                    items[pos].badge = null
-                }
-            })
-
-            animator.start()
+                item.title,
+                item.rect.centerX() + itemIconSize / 2 + itemIconMargin,
+                item.rect.centerY() - textHeight, paintText
+            )
         }
     }
 
@@ -329,10 +246,11 @@ class SmoothBottomBar : View {
         activeItemIndex = pos
 
         for ((index, item) in items.withIndex()) {
-            if (index == pos)
+            if (index == pos) {
                 animateAlpha(item, OPAQUE)
-             else
+            } else {
                 animateAlpha(item, TRANSPARENT)
+            }
         }
 
         animateIndicator(pos)
@@ -360,11 +278,9 @@ class SmoothBottomBar : View {
         val animator = ValueAnimator.ofFloat(indicatorLocation, items[pos].rect.left)
         animator.duration = itemAnimDuration
         animator.interpolator = DecelerateInterpolator()
-
         animator.addUpdateListener { animation ->
             indicatorLocation = animation.animatedValue as Float
         }
-
         animator.start()
     }
 
@@ -374,7 +290,6 @@ class SmoothBottomBar : View {
         animator.addUpdateListener {
             currentIconTint = it.animatedValue as Int
         }
-
         animator.start()
     }
 

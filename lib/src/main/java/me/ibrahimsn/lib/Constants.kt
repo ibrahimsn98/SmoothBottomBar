@@ -23,8 +23,5 @@ object Constants {
 
     const val OPAQUE = 255
     const val TRANSPARENT = 0
-
-    const val COS_45 = 0.525321988
-    const val SHADOW_MULTIPLIER = 1.5f
 }
 

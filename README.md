@@ -81,20 +81,6 @@ bottomBar.setOnItemReselectedListener(object: OnItemReselectedListener {
 })
 ```
 
--   Add badge to a specific item
-```kotlin
-bottomBar.setBadge(1, Badge(
-    badgeSize = 20F,
-    badgeBoxCornerRadius = 8F,
-    badgeColor = ContextCompat.getColor(this , R.color.colorBadge),
-    badgeText = "99+",
-    badgeTextColor = Color.BLACK,
-    badgeType = BadgeType.BOX // or BadgeType.CIRCLE
-))
-
-bottomBar.removeBadge(1)
-```
-
 ## Customization
 
 ```xml
@@ -132,6 +118,37 @@ dependencies {
         implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7'
 }
 ```
+
+## Contributors ✨
+<table>
+    <tr>
+        <td align="center">
+            <a href="https://github.com/brookmg">
+                <img src="https://avatars3.githubusercontent.com/u/7487888?s=460&u=7ba52b250536b301987aaa350f605bbaf3ffa8ed&v=4" width="100px;" alt=""/><br />
+                <sub><b>brookmg</b></sub>
+            </a>
+        </td>
+        <td align="center">
+            <a href="https://github.com/rezaepsilon0">
+                <img src="https://avatars0.githubusercontent.com/u/18679475?s=460&u=a5e771cc32bff987aceccafa55edab06a8aa804f&v=4" width="100px;" alt=""/><br />
+                <sub><b>rezaepsilon0</b></sub>
+            </a>
+        </td>
+        <td align="center">
+            <a href="https://github.com/amitdash291">
+                <img src="https://avatars2.githubusercontent.com/u/18529185?s=460&v=4" width="100px;" alt=""/><br />
+                <sub><b>amitdash291</b></sub>
+            </a>
+        </td>
+           <td align="center">
+            <a href="https://github.com/tobiasschuerg">
+                <img src="https://avatars2.githubusercontent.com/u/1324555?s=460&v=4" width="100px;" alt=""/><br />
+                <sub><b>tobiasschuerg</b></sub>
+            </a>
+        </td>
+    </tr>
+</table>
+
 
 ## License
 

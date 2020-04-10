@@ -23,7 +23,6 @@
         app:backgroundColor="@color/colorPrimary"
         app:textColor="@color/colorTextPrimary"
         app:textSize="14sp"
-        app:cornerRadius="10dp"
         app:iconSize="24dp"
         app:indicatorColor="#2DFFFFFF"
         app:indicatorRadius="10dp"

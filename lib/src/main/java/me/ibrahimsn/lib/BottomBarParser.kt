@@ -36,7 +36,11 @@ class BottomBarParser(private val context: Context, @XmlRes res: Int) {
         for (index in 0 until attributeCount) {
             when (parser.getAttributeName(index)) {
                 ICON_ATTRIBUTE ->
-                    itemDrawable = ContextCompat.getDrawable(context, parser.getAttributeResourceValue(index, 0))
+                    itemDrawable = ContextCompat.getDrawable(
+                        context,
+                        parser.getAttributeResourceValue(index, 0)
+                    )
+
                 TITLE_ATTRIBUTE -> {
                     itemText = try {
                         context.getString(parser.getAttributeResourceValue(index, 0))
@@ -50,6 +54,6 @@ class BottomBarParser(private val context: Context, @XmlRes res: Int) {
         if (itemDrawable == null)
             throw Throwable("Item icon can not be null!")
 
-        return BottomBarItem(itemText ?: "", itemDrawable, alpha = 0, badge = null)
+        return BottomBarItem(itemText ?: "", itemDrawable, alpha = 0)
     }
 }
