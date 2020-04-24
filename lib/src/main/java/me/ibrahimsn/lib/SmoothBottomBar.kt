@@ -10,12 +10,14 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
+import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.FontRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.navigation.NavController
 import me.ibrahimsn.lib.Constants.DEFAULT_ANIM_DURATION
 import me.ibrahimsn.lib.Constants.DEFAULT_BAR_CORNER_RADIUS
 import me.ibrahimsn.lib.Constants.DEFAULT_CORNER_RADIUS
@@ -303,5 +305,9 @@ class SmoothBottomBar : View {
 
     fun setOnItemReselectedListener(listener: OnItemReselectedListener) {
         this.onItemReselectedListener = listener
+    }
+
+    fun setupWithNavController(menu: Menu, navController: NavController){
+        NavigationComponentHelper.setupWithNavController(menu,this,navController)
     }
 }
