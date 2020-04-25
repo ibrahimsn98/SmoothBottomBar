@@ -3,7 +3,6 @@ package me.ibrahimsn.lib
 import android.os.Bundle
 import android.view.Menu
 import androidx.annotation.IdRes
-import androidx.core.view.size
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.ui.NavigationUI
@@ -26,20 +25,25 @@ class NavigationComponentHelper {
                     return NavigationUI.onNavDestinationSelected(menu.getItem(pos), navController)
                 }
             })
+
             val weakReference = WeakReference(smoothBottomBar)
+
             navController.addOnDestinationChangedListener(object :
                 NavController.OnDestinationChangedListener {
+
                 override fun onDestinationChanged(
                     controller: NavController,
                     destination: NavDestination,
                     arguments: Bundle?
                 ) {
                     val view = weakReference.get()
+
                     if (view == null) {
                         navController.removeOnDestinationChangedListener(this)
                         return
                     }
-                    for (h in 0 until menu.size) {
+
+                    for (h in 0 until menu.size()) {
                         val menuItem = menu.getItem(h)
                         if (matchDestination(destination, menuItem.itemId)) {
                             menuItem.isChecked = true
@@ -47,7 +51,6 @@ class NavigationComponentHelper {
                         }
                     }
                 }
-
             })
         }
 

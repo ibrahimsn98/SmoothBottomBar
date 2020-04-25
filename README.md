@@ -214,7 +214,7 @@ allprojects {
 }
 
 dependencies {
-        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.4'
+        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.5'
 }
 ```
 

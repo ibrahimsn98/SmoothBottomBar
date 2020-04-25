@@ -15,6 +15,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.FontRes
+import androidx.annotation.MenuRes
+import androidx.annotation.XmlRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.NavController
@@ -242,6 +244,15 @@ class SmoothBottomBar : View {
         }
 
         return true
+    }
+
+    fun setMenuRes(@MenuRes menuRes: Int, activeItem: Int? = null) {
+        items = BottomBarParser(context, menuRes).parse()
+        invalidate()
+
+        activeItem?.let {
+            setActiveItem(it)
+        }
     }
 
     fun setActiveItem(pos: Int) {
