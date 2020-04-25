@@ -214,7 +214,7 @@ allprojects {
 }
 
 dependencies {
-        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.3'
+        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.4'
 }
 ```
 
@@ -243,6 +243,13 @@ dependencies {
             <a href="https://github.com/tobiasschuerg">
                 <img src="https://avatars2.githubusercontent.com/u/1324555?s=460&v=4" width="100px;" alt=""/><br />
                 <sub><b>tobiasschuerg</b></sub>
+            </a>
+        </td>
+        </td>
+           <td align="center">
+            <a href="https://github.com/mayokunthefirst">
+                <img src="https://avatars0.githubusercontent.com/u/29807085?s=460&u=493fd9b143dd96eecea56749f57d20e002e246e4&v=4" width="100px;" alt=""/><br />
+                <sub><b>mayokunthefirst</b></sub>
             </a>
         </td>
     </tr>
