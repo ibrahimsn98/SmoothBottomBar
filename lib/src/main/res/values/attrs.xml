@@ -17,6 +17,7 @@
         <attr name="cornerRadius" format="dimension" />
         <attr name="activeItem" format="integer" />
         <attr name="duration" format="integer" />
+        <attr name="itemIconMargin" format="dimension" />
     </declare-styleable>
 
 </resources>

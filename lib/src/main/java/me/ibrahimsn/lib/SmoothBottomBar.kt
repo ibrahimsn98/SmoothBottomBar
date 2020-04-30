@@ -109,6 +109,7 @@ class SmoothBottomBar : View {
         barSideMargins = typedArray.getDimension(R.styleable.SmoothBottomBar_sideMargins, this.barSideMargins)
         barCornerRadius = typedArray.getDimension(R.styleable.SmoothBottomBar_cornerRadius, this.barCornerRadius)
         itemPadding = typedArray.getDimension(R.styleable.SmoothBottomBar_itemPadding, this.itemPadding)
+        itemIconMargin = typedArray.getDimension(R.styleable.SmoothBottomBar_itemIconMargin, this.itemIconMargin)
         itemTextColor = typedArray.getColor(R.styleable.SmoothBottomBar_textColor, this.itemTextColor)
         itemTextSize = typedArray.getDimension(R.styleable.SmoothBottomBar_textSize, this.itemTextSize)
         itemIconSize = typedArray.getDimension(R.styleable.SmoothBottomBar_iconSize, this.itemIconSize)

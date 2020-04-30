@@ -32,6 +32,7 @@
         app:sideMargins="10dp"
         app:itemPadding="10dp"
         app:iconTint="#C8FFFFFF"
+        app:itemIconMargin="4dp"
         app:iconTintActive="#FFFFFF"
         app:menu="@menu/menu_bottom"
         app:layout_constraintBottom_toBottomOf="parent"/>

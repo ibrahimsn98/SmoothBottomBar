@@ -200,7 +200,8 @@ Result:
         app:iconTint=""
         app:iconTintActive=""
         app:activeItem=""
-        app:duration="" />
+        app:duration=""
+        app:itemIconMargin="" />
 ```
 
 ## Setup
