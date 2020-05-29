@@ -12,6 +12,7 @@
         <attr name="itemFontFamily" format="reference" />
         <attr name="textSize" format="dimension" />
         <attr name="iconSize" format="dimension" />
+        <attr name="iconMargin" format="dimension" />
         <attr name="iconTint" format="color"/>
         <attr name="iconTintActive" format="color"/>
         <attr name="cornerRadius" format="dimension" />

@@ -295,6 +295,11 @@ class SmoothBottomBar @JvmOverloads constructor(
                 itemIconSize
             )
 
+            itemIconMargin = typedArray.getDimension(
+                R.styleable.SmoothBottomBar_iconMargin,
+                itemIconMargin
+            )
+
             itemIconTint = typedArray.getColor(
                 R.styleable.SmoothBottomBar_iconTint,
                 itemIconTint
