@@ -91,6 +91,7 @@ class SmoothBottomBar @JvmOverloads constructor(
         set(@ColorInt value) {
             _barBackgroundColor = value
             paintBackground.color = value
+            invalidate()
         }
 
     var barIndicatorColor: Int
@@ -98,24 +99,28 @@ class SmoothBottomBar @JvmOverloads constructor(
         set(@ColorInt value) {
             _barIndicatorColor = value
             paintIndicator.color = value
+            invalidate()
         }
 
     var barIndicatorRadius: Float
         @Dimension get() = _barIndicatorRadius
         set(@Dimension value) {
             _barIndicatorRadius = value
+            invalidate()
         }
 
     var barSideMargins: Float
         @Dimension get() = _barSideMargins
         set(@Dimension value) {
             _barSideMargins = value
+            invalidate()
         }
 
     var barCornerRadius: Float
         @Dimension get() = _barCornerRadius
         set(@Dimension value) {
             _barCornerRadius = value
+            invalidate()
         }
 
     var itemTextSize: Float
@@ -123,6 +128,7 @@ class SmoothBottomBar @JvmOverloads constructor(
         set(@Dimension value) {
             _itemTextSize = value
             paintText.textSize = value
+            invalidate()
         }
 
     var itemTextColor: Int
@@ -130,12 +136,14 @@ class SmoothBottomBar @JvmOverloads constructor(
         set(@ColorInt value) {
             _itemTextColor = value
             paintText.color = value
+            invalidate()
         }
 
     var itemPadding: Float
         @Dimension get() = _itemPadding
         set(@Dimension value) {
             _itemPadding = value
+            invalidate()
         }
 
     var itemAnimDuration: Long
@@ -148,24 +156,28 @@ class SmoothBottomBar @JvmOverloads constructor(
         @Dimension get() = _itemIconSize
         set(@Dimension value) {
             _itemIconSize = value
+            invalidate()
         }
 
     var itemIconMargin: Float
         @Dimension get() = _itemIconMargin
         set(@Dimension value) {
             _itemIconMargin = value
+            invalidate()
         }
 
     var itemIconTint: Int
         @ColorInt get() = _itemIconTint
         set(@ColorInt value) {
             _itemIconTint = value
+            invalidate()
         }
 
     var itemIconTintActive: Int
         @ColorInt get() = _itemIconTintActive
         set(@ColorInt value) {
             _itemIconTintActive = value
+            invalidate()
         }
 
     var itemFontFamily: Int
@@ -174,6 +186,7 @@ class SmoothBottomBar @JvmOverloads constructor(
             _itemFontFamily = value
             if (value != INVALID_RES) {
                 paintText.typeface = ResourcesCompat.getFont(context, value)
+                invalidate()
             }
         }
 
@@ -183,6 +196,7 @@ class SmoothBottomBar @JvmOverloads constructor(
             _itemMenuRes = value
             if (value != INVALID_RES) {
                 items = BottomBarParser(context, value).parse()
+                invalidate()
             }
         }
 
