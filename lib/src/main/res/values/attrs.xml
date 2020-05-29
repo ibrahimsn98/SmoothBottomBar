@@ -19,4 +19,6 @@
         <attr name="duration" format="integer" />
     </declare-styleable>
 
+    <attr name="SmoothBottomBarStyle" format="reference" />
+
 </resources>

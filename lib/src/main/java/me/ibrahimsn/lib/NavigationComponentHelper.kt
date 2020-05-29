@@ -11,7 +11,6 @@ import java.lang.ref.WeakReference
 /**
  * Created by Mayokun Adeniyi on 24/04/2020.
  */
-
 class NavigationComponentHelper {
     companion object {
 
@@ -20,11 +19,11 @@ class NavigationComponentHelper {
             smoothBottomBar: SmoothBottomBar,
             navController: NavController
         ) {
-            smoothBottomBar.setOnItemSelectedListener(object : OnItemSelectedListener {
+            smoothBottomBar.onItemSelectedListener = object : OnItemSelectedListener {
                 override fun onItemSelect(pos: Int): Boolean {
                     return NavigationUI.onNavDestinationSelected(menu.getItem(pos), navController)
                 }
-            })
+            }
 
             val weakReference = WeakReference(smoothBottomBar)
 
@@ -47,7 +46,7 @@ class NavigationComponentHelper {
                         val menuItem = menu.getItem(h)
                         if (matchDestination(destination, menuItem.itemId)) {
                             menuItem.isChecked = true
-                            smoothBottomBar.setActiveItem(h)
+                            smoothBottomBar.itemActiveIndex = h
                         }
                     }
                 }

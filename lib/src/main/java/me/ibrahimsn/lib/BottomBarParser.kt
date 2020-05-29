@@ -6,9 +6,6 @@ import android.content.res.XmlResourceParser
 import android.graphics.drawable.Drawable
 import androidx.annotation.XmlRes
 import androidx.core.content.ContextCompat
-import me.ibrahimsn.lib.Constants.ICON_ATTRIBUTE
-import me.ibrahimsn.lib.Constants.ITEM_TAG
-import me.ibrahimsn.lib.Constants.TITLE_ATTRIBUTE
 
 class BottomBarParser(private val context: Context, @XmlRes res: Int) {
 
@@ -55,5 +52,11 @@ class BottomBarParser(private val context: Context, @XmlRes res: Int) {
             throw Throwable("Item icon can not be null!")
 
         return BottomBarItem(itemText ?: "", itemDrawable, alpha = 0)
+    }
+
+    companion object {
+        private const val ITEM_TAG = "item"
+        private const val ICON_ATTRIBUTE = "icon"
+        private const val TITLE_ATTRIBUTE = "title"
     }
 }

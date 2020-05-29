@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
     <fragment
         android:id="@+id/main_fragment"
         android:layout_width="match_parent"
