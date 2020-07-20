@@ -410,10 +410,10 @@ class SmoothBottomBar @JvmOverloads constructor(
 
             item.icon.mutate()
             item.icon.setBounds(
-                    item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
-                    height / 2 - itemIconSize.toInt() / 2,
-                    item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
-                    height / 2 + itemIconSize.toInt() / 2
+                item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
+                height / 2 - itemIconSize.toInt() / 2,
+                item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
+                height / 2 + itemIconSize.toInt() / 2
             )
 
             DrawableCompat.setTint(
