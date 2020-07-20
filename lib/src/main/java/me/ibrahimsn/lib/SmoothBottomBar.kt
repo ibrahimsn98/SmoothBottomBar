@@ -10,7 +10,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
@@ -26,9 +25,9 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class SmoothBottomBar @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = R.attr.SmoothBottomBarStyle
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = R.attr.SmoothBottomBarStyle
 ) : View(context, attrs, defStyleAttr) {
 
     // Dynamic Variables
@@ -197,7 +196,6 @@ class SmoothBottomBar @JvmOverloads constructor(
             _itemMenuRes = value
             if (value != INVALID_RES) {
                 items = BottomBarParser(context, value).parse()
-
                 invalidate()
             }
         }
@@ -208,7 +206,6 @@ class SmoothBottomBar @JvmOverloads constructor(
             _itemActiveIndex = value
             applyItemActiveIndex()
         }
-
 
     // Listeners
     var onItemSelectedListener: OnItemSelectedListener? = null
@@ -247,90 +244,90 @@ class SmoothBottomBar @JvmOverloads constructor(
 
     private fun obtainStyledAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
         val typedArray = context.theme.obtainStyledAttributes(
-                attrs,
-                R.styleable.SmoothBottomBar,
-                defStyleAttr,
-                0)
+            attrs,
+            R.styleable.SmoothBottomBar,
+            defStyleAttr,
+            0)
 
         try {
             barBackgroundColor = typedArray.getColor(
-                    R.styleable.SmoothBottomBar_backgroundColor,
-                    barBackgroundColor
+                R.styleable.SmoothBottomBar_backgroundColor,
+                barBackgroundColor
             )
 
             barIndicatorColor = typedArray.getColor(
-                    R.styleable.SmoothBottomBar_indicatorColor,
-                    barIndicatorColor
+                R.styleable.SmoothBottomBar_indicatorColor,
+                barIndicatorColor
             )
 
             barIndicatorRadius = typedArray.getDimension(
-                    R.styleable.SmoothBottomBar_indicatorRadius,
-                    barIndicatorRadius
+                R.styleable.SmoothBottomBar_indicatorRadius,
+                barIndicatorRadius
             )
 
             barSideMargins = typedArray.getDimension(
-                    R.styleable.SmoothBottomBar_sideMargins,
-                    barSideMargins
+                R.styleable.SmoothBottomBar_sideMargins,
+                barSideMargins
             )
 
             barCornerRadius = typedArray.getDimension(
-                    R.styleable.SmoothBottomBar_cornerRadius,
-                    barCornerRadius
+                R.styleable.SmoothBottomBar_cornerRadius,
+                barCornerRadius
             )
 
             itemPadding = typedArray.getDimension(
-                    R.styleable.SmoothBottomBar_itemPadding,
-                    itemPadding
+                R.styleable.SmoothBottomBar_itemPadding,
+                itemPadding
             )
 
             itemTextColor = typedArray.getColor(
-                    R.styleable.SmoothBottomBar_textColor,
-                    itemTextColor
+                R.styleable.SmoothBottomBar_textColor,
+                itemTextColor
             )
 
             itemTextSize = typedArray.getDimension(
-                    R.styleable.SmoothBottomBar_textSize,
-                    itemTextSize
+                R.styleable.SmoothBottomBar_textSize,
+                itemTextSize
             )
 
             itemIconSize = typedArray.getDimension(
-                    R.styleable.SmoothBottomBar_iconSize,
-                    itemIconSize
+                R.styleable.SmoothBottomBar_iconSize,
+                itemIconSize
             )
 
             itemIconMargin = typedArray.getDimension(
-                    R.styleable.SmoothBottomBar_iconMargin,
-                    itemIconMargin
+                R.styleable.SmoothBottomBar_iconMargin,
+                itemIconMargin
             )
 
             itemIconTint = typedArray.getColor(
-                    R.styleable.SmoothBottomBar_iconTint,
-                    itemIconTint
+                R.styleable.SmoothBottomBar_iconTint,
+                itemIconTint
             )
 
             itemIconTintActive = typedArray.getColor(
-                    R.styleable.SmoothBottomBar_iconTintActive,
-                    itemIconTintActive
+                R.styleable.SmoothBottomBar_iconTintActive,
+                itemIconTintActive
             )
 
             itemActiveIndex = typedArray.getInt(
-                    R.styleable.SmoothBottomBar_activeItem,
-                    itemActiveIndex
+                R.styleable.SmoothBottomBar_activeItem,
+                itemActiveIndex
             )
 
             itemFontFamily = typedArray.getResourceId(
-                    R.styleable.SmoothBottomBar_itemFontFamily,
-                    itemFontFamily
+                R.styleable.SmoothBottomBar_itemFontFamily,
+                itemFontFamily
             )
 
             itemAnimDuration = typedArray.getInt(
-                    R.styleable.SmoothBottomBar_duration,
-                    itemAnimDuration.toInt()
+                R.styleable.SmoothBottomBar_duration,
+                itemAnimDuration.toInt()
             ).toLong()
 
             itemMenuRes = typedArray.getResourceId(
-                    R.styleable.SmoothBottomBar_menu,
-                    itemMenuRes
+                R.styleable.SmoothBottomBar_menu,
+                itemMenuRes
             )
         } catch (e: Exception) {
             e.printStackTrace()
@@ -377,19 +374,19 @@ class SmoothBottomBar @JvmOverloads constructor(
         // Draw background
         if (barCornerRadius > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             canvas.drawRoundRect(
-                    0f, 0f,
-                    width.toFloat(),
-                    height.toFloat(),
-                    barCornerRadius,
-                    barCornerRadius,
-                    paintBackground
+                0f, 0f,
+                width.toFloat(),
+                height.toFloat(),
+                barCornerRadius,
+                barCornerRadius,
+                paintBackground
             )
         } else {
             canvas.drawRect(
-                    0f, 0f,
-                    width.toFloat(),
-                    height.toFloat(),
-                    paintBackground
+                0f, 0f,
+                width.toFloat(),
+                height.toFloat(),
+                paintBackground
             )
         }
 
@@ -400,10 +397,10 @@ class SmoothBottomBar @JvmOverloads constructor(
         rect.bottom = items[itemActiveIndex].rect.centerY() + itemIconSize / 2 + itemPadding
 
         canvas.drawRoundRect(
-                rect,
-                barIndicatorRadius,
-                barIndicatorRadius,
-                paintIndicator
+            rect,
+            barIndicatorRadius,
+            barIndicatorRadius,
+            paintIndicator
         )
 
         val textHeight = (paintText.descent() + paintText.ascent()) / 2
@@ -420,17 +417,17 @@ class SmoothBottomBar @JvmOverloads constructor(
             )
 
             DrawableCompat.setTint(
-                    item.icon,
-                    if (index == itemActiveIndex) currentIconTint else itemIconTint
+                item.icon,
+                if(index == itemActiveIndex) currentIconTint else itemIconTint
             )
 
             item.icon.draw(canvas)
             this.paintText.alpha = item.alpha
 
             canvas.drawText(
-                    item.title,
-                    item.rect.centerX() + itemIconSize / 2 + itemIconMargin,
-                    item.rect.centerY() - textHeight, paintText
+                item.title,
+                item.rect.centerX() + itemIconSize / 2 + itemIconMargin,
+                item.rect.centerY() - textHeight, paintText
             )
         }
     }
@@ -469,8 +466,8 @@ class SmoothBottomBar @JvmOverloads constructor(
             }
 
             ValueAnimator.ofFloat(
-                    indicatorLocation,
-                    items[itemActiveIndex].rect.left
+                indicatorLocation,
+                items[itemActiveIndex].rect.left
             ).apply {
                 duration = itemAnimDuration
                 interpolator = DecelerateInterpolator()
@@ -502,8 +499,8 @@ class SmoothBottomBar @JvmOverloads constructor(
         }
     }
 
-    fun setupWithNavController(menu: Menu, navController: NavController) {
-        NavigationComponentHelper.setupWithNavController(menu, this, navController)
+    fun setupWithNavController(menu: Menu, navController: NavController){
+        NavigationComponentHelper.setupWithNavController(menu,this,navController)
     }
 
     companion object {
