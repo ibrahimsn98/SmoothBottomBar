@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmoothBottomBar</string>
+    <string name="menu_dashboard">الرئيسية</string>
+    <string name="menu_profile">حسابي</string>
+    <string name="menu_store">المتجر</string>
+    <string name="menu_leaderboard">المتصدرين</string>
+</resources>

@@ -247,7 +247,8 @@ class SmoothBottomBar @JvmOverloads constructor(
             attrs,
             R.styleable.SmoothBottomBar,
             defStyleAttr,
-            0)
+            0
+        )
 
         try {
             barBackgroundColor = typedArray.getColor(
@@ -344,7 +345,8 @@ class SmoothBottomBar @JvmOverloads constructor(
 
         // reverse items layout order if layout direction is RTL
         val itemsToLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
-                && layoutDirection == LAYOUT_DIRECTION_RTL) items.reversed() else items
+            && layoutDirection == LAYOUT_DIRECTION_RTL
+        ) items.reversed() else items
 
         for (item in itemsToLayout) {
             // Prevent text overflow by shortening the item title
@@ -405,31 +407,68 @@ class SmoothBottomBar @JvmOverloads constructor(
 
         val textHeight = (paintText.descent() + paintText.ascent()) / 2
 
-        for ((index, item) in items.withIndex()) {
-            val textLength = paintText.measureText(item.title)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+            && layoutDirection == LAYOUT_DIRECTION_RTL
+        ) {
+            for ((index, item) in items.withIndex()) {
+                val textLength = paintText.measureText(item.title)
+                item.icon.mutate()
+                item.icon.setBounds(
+                    item.rect.centerX()
+                        .toInt() - itemIconSize.toInt() / 2 + ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
+                    height / 2 - itemIconSize.toInt() / 2,
+                    item.rect.centerX()
+                        .toInt() + itemIconSize.toInt() / 2 + ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
+                    height / 2 + itemIconSize.toInt() / 2
+                )
 
-            item.icon.mutate()
-            item.icon.setBounds(
-                item.rect.centerX().toInt() - itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
-                height / 2 - itemIconSize.toInt() / 2,
-                item.rect.centerX().toInt() + itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
-                height / 2 + itemIconSize.toInt() / 2
-            )
+                tintAndDrawIcon(item, index, canvas)
 
-            DrawableCompat.setTint(
-                item.icon,
-                if(index == itemActiveIndex) currentIconTint else itemIconTint
-            )
+                paintText.alpha = item.alpha
+                canvas.drawText(
+                    item.title,
+                    item.rect.centerX() - (itemIconSize / 2 + itemIconMargin),
+                    item.rect.centerY() - textHeight, paintText
+                )
+            }
 
-            item.icon.draw(canvas)
-            this.paintText.alpha = item.alpha
+        } else {
+            for ((index, item) in items.withIndex()) {
+                val textLength = paintText.measureText(item.title)
 
-            canvas.drawText(
-                item.title,
-                item.rect.centerX() + itemIconSize / 2 + itemIconMargin,
-                item.rect.centerY() - textHeight, paintText
-            )
+                item.icon.mutate()
+                item.icon.setBounds(
+                    item.rect.centerX()
+                        .toInt() - itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
+                    height / 2 - itemIconSize.toInt() / 2,
+                    item.rect.centerX()
+                        .toInt() + itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
+                    height / 2 + itemIconSize.toInt() / 2
+                )
+
+                tintAndDrawIcon(item, index, canvas)
+
+                paintText.alpha = item.alpha
+                canvas.drawText(
+                    item.title,
+                    item.rect.centerX() + itemIconSize / 2 + itemIconMargin,
+                    item.rect.centerY() - textHeight, paintText
+                )
+            }
         }
+    }
+
+    private fun tintAndDrawIcon(
+        item: BottomBarItem,
+        index: Int,
+        canvas: Canvas
+    ) {
+        DrawableCompat.setTint(
+            item.icon,
+            if (index == itemActiveIndex) currentIconTint else itemIconTint
+        )
+
+        item.icon.draw(canvas)
     }
 
     /**
@@ -499,8 +538,8 @@ class SmoothBottomBar @JvmOverloads constructor(
         }
     }
 
-    fun setupWithNavController(menu: Menu, navController: NavController){
-        NavigationComponentHelper.setupWithNavController(menu,this,navController)
+    fun setupWithNavController(menu: Menu, navController: NavController) {
+        NavigationComponentHelper.setupWithNavController(menu, this, navController)
     }
 
     companion object {
