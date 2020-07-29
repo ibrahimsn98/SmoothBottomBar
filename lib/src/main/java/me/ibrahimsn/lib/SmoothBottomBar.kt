@@ -542,6 +542,43 @@ class SmoothBottomBar @JvmOverloads constructor(
         NavigationComponentHelper.setupWithNavController(menu, this, navController)
     }
 
+    /**
+    * Created by Vladislav Perevedentsev on 29.07.2020.
+    *
+    * Just call [SmoothBottomBar.setOnItemSelectedListener] to override [onItemSelectedListener]
+    *
+    * @sample
+    * setOnItemSelectedListener { position ->
+    *     //TODO: Something
+    * }
+    */
+    fun setOnItemSelectedListener(listener: (position: Int) -> Unit) {
+        onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelect(pos: Int): Boolean {
+                listener.invoke(pos)
+                return true
+            }
+        }
+    }
+
+    /**
+    * Created by Vladislav Perevedentsev on 29.07.2020.
+    *
+    * Just call [SmoothBottomBar.setOnItemReselectedListener] to override [onItemReselectedListener]
+    *
+    * @sample
+    * setOnItemReselectedListener { position ->
+    *     //TODO: Something
+    * }
+    */
+    fun setOnItemReselectedListener(listener: (position: Int) -> Unit) {
+        onItemReselectedListener = object : OnItemReselectedListener {
+            override fun onItemReselect(pos: Int) {
+                listener.invoke(pos)
+            }
+        }
+    }
+
     companion object {
         private const val INVALID_RES = -1
         private const val DEFAULT_INDICATOR_COLOR = "#2DFFFFFF"
