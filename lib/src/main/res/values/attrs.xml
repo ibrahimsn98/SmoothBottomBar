@@ -18,6 +18,10 @@
         <attr name="cornerRadius" format="dimension" />
         <attr name="activeItem" format="integer" />
         <attr name="duration" format="integer" />
+        <attr name="shadowColor" format="color"/>
+        <attr name="shadowX" format="dimension"/>
+        <attr name="shadowY" format="dimension"/>
+        <attr name="shadowRadius" format="dimension"/>
     </declare-styleable>
 
     <attr name="SmoothBottomBarStyle" format="reference" />

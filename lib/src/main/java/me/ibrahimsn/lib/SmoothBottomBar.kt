@@ -85,6 +85,18 @@ class SmoothBottomBar @JvmOverloads constructor(
 
     private var _itemActiveIndex: Int = 0
 
+    @ColorInt
+    private  var _itemShadowColor = Color.BLACK
+
+    @Dimension
+    private var _shadowX = 0F
+
+    @Dimension
+    private var _shadowY = 4F
+
+    @Dimension
+    private var _shadowRadius = 4F
+
     // Core Attributes
     var barBackgroundColor: Int
         @ColorInt get() = _barBackgroundColor
@@ -205,6 +217,34 @@ class SmoothBottomBar @JvmOverloads constructor(
         set(value) {
             _itemActiveIndex = value
             applyItemActiveIndex()
+        }
+
+    var itemShadowColor: Int
+        @ColorInt get() = _itemShadowColor
+        set(@ColorInt value) {
+            _itemShadowColor = value
+            invalidate()
+        }
+
+    var itemShadowX: Float
+        @Dimension get() = _shadowX
+        set(@Dimension value) {
+            _shadowX = value
+            invalidate()
+        }
+
+    var itemShadowY: Float
+        @Dimension get() = _shadowY
+        set(@Dimension value) {
+            _shadowY = value
+            invalidate()
+        }
+
+    var itemShadowRadius: Float
+        @Dimension get() = _shadowRadius
+        set(@Dimension value) {
+            _shadowRadius = value
+            invalidate()
         }
 
     // Listeners
@@ -330,6 +370,26 @@ class SmoothBottomBar @JvmOverloads constructor(
                 R.styleable.SmoothBottomBar_menu,
                 itemMenuRes
             )
+
+            itemShadowColor = typedArray.getColor(
+                R.styleable.SmoothBottomBar_shadowColor,
+                itemShadowColor
+            )
+
+            itemShadowX= typedArray.getDimension(
+                R.styleable.SmoothBottomBar_shadowX,
+                itemShadowX
+            )
+
+            itemShadowY = typedArray.getDimension(
+                R.styleable.SmoothBottomBar_shadowY,
+                itemShadowY
+            )
+
+            itemShadowRadius= typedArray.getDimension(
+                R.styleable.SmoothBottomBar_shadowRadius,
+                itemShadowRadius
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
@@ -404,6 +464,8 @@ class SmoothBottomBar @JvmOverloads constructor(
             barIndicatorRadius,
             paintIndicator
         )
+
+        paintIndicator.setShadowLayer(itemShadowRadius, itemShadowX, itemShadowY, itemShadowColor)
 
         val textHeight = (paintText.descent() + paintText.ascent()) / 2
 
