@@ -33,6 +33,7 @@
         app:iconTint="#C8FFFFFF"
         app:iconTintActive="#FFFFFF"
         app:menu="@menu/menu_bottom"
+        app:textSlide="true"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,6 +18,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
 import androidx.annotation.FontRes
 import androidx.annotation.XmlRes
+import androidx.core.animation.doOnCancel
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.NavController
@@ -35,8 +36,12 @@ class SmoothBottomBar @JvmOverloads constructor(
     private var currentIconTint = itemIconTintActive
     private var indicatorLocation = barSideMargins
     private val rect = RectF()
+    private var textTranslationValue: Float = 0F
+
+    private lateinit var textTranslationAnimator: ValueAnimator
 
     private var items = listOf<BottomBarItem>()
+    private var itemsIsTextShortened = mutableListOf<Boolean>()
 
     // Attribute Defaults
     @ColorInt
@@ -84,6 +89,8 @@ class SmoothBottomBar @JvmOverloads constructor(
     private var _itemMenuRes: Int = INVALID_RES
 
     private var _itemActiveIndex: Int = 0
+
+    private var _itemTextSlide: Boolean = false
 
     // Core Attributes
     var barBackgroundColor: Int
@@ -205,6 +212,12 @@ class SmoothBottomBar @JvmOverloads constructor(
         set(value) {
             _itemActiveIndex = value
             applyItemActiveIndex()
+        }
+
+    var itemTextSlide: Boolean
+        get() = _itemTextSlide
+        set(value) {
+            _itemTextSlide = value
         }
 
     // Listeners
@@ -330,6 +343,11 @@ class SmoothBottomBar @JvmOverloads constructor(
                 R.styleable.SmoothBottomBar_menu,
                 itemMenuRes
             )
+
+            itemTextSlide = typedArray.getBoolean(
+                R.styleable.SmoothBottomBar_textSlide,
+                itemTextSlide
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
@@ -348,19 +366,29 @@ class SmoothBottomBar @JvmOverloads constructor(
             && layoutDirection == LAYOUT_DIRECTION_RTL
         ) items.reversed() else items
 
-        for (item in itemsToLayout) {
+        for ((i, item) in itemsToLayout.withIndex()) {
+
+            // At first, we assume that text is never shortened
+            itemsIsTextShortened.add(i, false)
+
             // Prevent text overflow by shortening the item title
             var shorted = false
-            while (paintText.measureText(item.title) > itemWidth - itemIconSize - itemIconMargin - (itemPadding * 2)) {
-                item.title = item.title.dropLast(1)
+            while (paintText.measureText(item.titleShortened) > itemWidth - itemIconSize - itemIconMargin - (itemPadding * 2)) {
+                item.titleShortened = item.titleShortened.dropLast(1)
                 shorted = true
             }
 
             // Add ellipsis character to item text if it is shorted
             if (shorted) {
-                item.title = item.title.dropLast(1)
-                item.title += context.getString(R.string.ellipsis)
+                item.titleShortened = item.titleShortened.dropLast(1)
+                item.titleShortened += context.getString(R.string.ellipsis)
+                itemsIsTextShortened[i] = true
+
+                textTranslationAnimator =
+                    ValueAnimator.ofFloat(0F, items[itemActiveIndex].rect.width())
             }
+
+
 
             item.rect = RectF(lastX, 0f, itemWidth + lastX, height.toFloat())
             lastX += itemWidth
@@ -411,7 +439,7 @@ class SmoothBottomBar @JvmOverloads constructor(
             && layoutDirection == LAYOUT_DIRECTION_RTL
         ) {
             for ((index, item) in items.withIndex()) {
-                val textLength = paintText.measureText(item.title)
+                val textLength = paintText.measureText(item.titleShortened)
                 item.icon.mutate()
                 item.icon.setBounds(
                     item.rect.centerX()
@@ -425,16 +453,29 @@ class SmoothBottomBar @JvmOverloads constructor(
                 tintAndDrawIcon(item, index, canvas)
 
                 paintText.alpha = item.alpha
+                canvas.save()
+                canvas.clipRect(
+                    item.icon.bounds.right + itemIconMargin.toInt(),
+                    0,
+                    (items[itemActiveIndex].rect.right - barSideMargins).toInt(),
+                    height
+                )
+                
+                var titleToDraw = item.titleShortened
+                if (itemTextSlide) {
+                    titleToDraw = item.title
+                }
                 canvas.drawText(
-                    item.title,
-                    item.rect.centerX() - (itemIconSize / 2 + itemIconMargin),
+                    titleToDraw,
+                    item.rect.centerX() - (itemIconSize / 2 + itemIconMargin) + textTranslationValue,
                     item.rect.centerY() - textHeight, paintText
                 )
+                canvas.restore()
             }
 
         } else {
             for ((index, item) in items.withIndex()) {
-                val textLength = paintText.measureText(item.title)
+                val textLength = paintText.measureText(item.titleShortened)
 
                 item.icon.mutate()
                 item.icon.setBounds(
@@ -449,11 +490,24 @@ class SmoothBottomBar @JvmOverloads constructor(
                 tintAndDrawIcon(item, index, canvas)
 
                 paintText.alpha = item.alpha
+                canvas.save()
+                canvas.clipRect(
+                    item.icon.bounds.right + itemIconMargin.toInt(),
+                    0,
+                    (items[itemActiveIndex].rect.right - barSideMargins).toInt(),
+                    height
+                )
+
+                var itemTitleToDraw = item.titleShortened
+                if (itemTextSlide) {
+                    itemTitleToDraw = item.title
+                }
                 canvas.drawText(
-                    item.title,
-                    item.rect.centerX() + itemIconSize / 2 + itemIconMargin,
+                    itemTitleToDraw,
+                    item.rect.centerX() + itemIconSize / 2 + itemIconMargin - textTranslationValue,
                     item.rect.centerY() - textHeight, paintText
                 )
+                canvas.restore()
             }
         }
     }
@@ -523,8 +577,33 @@ class SmoothBottomBar @JvmOverloads constructor(
                 }
                 start()
             }
+
+            if (itemTextSlide) {
+                animateTextSlide()
+            }
         }
     }
+
+    private fun animateTextSlide() {
+        if (itemsIsTextShortened[itemActiveIndex]) {
+            textTranslationAnimator.apply {
+                duration = DEFAULT_TEXT_SLIDE_ANIM_DURATION
+                repeatCount = ValueAnimator.INFINITE
+                addUpdateListener {
+                    textTranslationValue = it.animatedValue as Float
+                    invalidate()
+                }
+                start()
+            }
+        } else {
+            textTranslationAnimator.apply {
+                cancel()
+                duration = 0
+                textTranslationValue = 0F
+            }
+        }
+    }
+
 
     private fun animateAlpha(item: BottomBarItem, to: Int) {
         ValueAnimator.ofInt(item.alpha, to).apply {
@@ -543,15 +622,15 @@ class SmoothBottomBar @JvmOverloads constructor(
     }
 
     /**
-    * Created by Vladislav Perevedentsev on 29.07.2020.
-    *
-    * Just call [SmoothBottomBar.setOnItemSelectedListener] to override [onItemSelectedListener]
-    *
-    * @sample
-    * setOnItemSelectedListener { position ->
-    *     //TODO: Something
-    * }
-    */
+     * Created by Vladislav Perevedentsev on 29.07.2020.
+     *
+     * Just call [SmoothBottomBar.setOnItemSelectedListener] to override [onItemSelectedListener]
+     *
+     * @sample
+     * setOnItemSelectedListener { position ->
+     *     //TODO: Something
+     * }
+     */
     fun setOnItemSelectedListener(listener: (position: Int) -> Unit) {
         onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelect(pos: Int): Boolean {
@@ -562,15 +641,15 @@ class SmoothBottomBar @JvmOverloads constructor(
     }
 
     /**
-    * Created by Vladislav Perevedentsev on 29.07.2020.
-    *
-    * Just call [SmoothBottomBar.setOnItemReselectedListener] to override [onItemReselectedListener]
-    *
-    * @sample
-    * setOnItemReselectedListener { position ->
-    *     //TODO: Something
-    * }
-    */
+     * Created by Vladislav Perevedentsev on 29.07.2020.
+     *
+     * Just call [SmoothBottomBar.setOnItemReselectedListener] to override [onItemReselectedListener]
+     *
+     * @sample
+     * setOnItemReselectedListener { position ->
+     *     //TODO: Something
+     * }
+     */
     fun setOnItemReselectedListener(listener: (position: Int) -> Unit) {
         onItemReselectedListener = object : OnItemReselectedListener {
             override fun onItemReselect(pos: Int) {
@@ -592,6 +671,7 @@ class SmoothBottomBar @JvmOverloads constructor(
         private const val DEFAULT_TEXT_SIZE = 11F
         private const val DEFAULT_CORNER_RADIUS = 20F
         private const val DEFAULT_BAR_CORNER_RADIUS = 0F
+        private const val DEFAULT_TEXT_SLIDE_ANIM_DURATION = 4500L
 
         private const val OPAQUE = 255
         private const val TRANSPARENT = 0

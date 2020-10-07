@@ -51,7 +51,7 @@ class BottomBarParser(private val context: Context, @XmlRes res: Int) {
         if (itemDrawable == null)
             throw Throwable("Item icon can not be null!")
 
-        return BottomBarItem(itemText ?: "", itemDrawable, alpha = 0)
+        return BottomBarItem(itemText ?: "", itemText ?: "", itemDrawable, alpha = 0)
     }
 
     companion object {

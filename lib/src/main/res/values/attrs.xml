@@ -18,6 +18,7 @@
         <attr name="cornerRadius" format="dimension" />
         <attr name="activeItem" format="integer" />
         <attr name="duration" format="integer" />
+        <attr name="textSlide" format="boolean" />
     </declare-styleable>
 
     <attr name="SmoothBottomBarStyle" format="reference" />
