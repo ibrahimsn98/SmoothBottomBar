@@ -370,6 +370,8 @@ class SmoothBottomBar @JvmOverloads constructor(
 
             // At first, we assume that text is never shortened
             itemsIsTextShortened.add(i, false)
+            textTranslationAnimator =
+                ValueAnimator.ofFloat(0F, items[itemActiveIndex].rect.width())
 
             // Prevent text overflow by shortening the item title
             var shorted = false
@@ -383,9 +385,6 @@ class SmoothBottomBar @JvmOverloads constructor(
                 item.titleShortened = item.titleShortened.dropLast(1)
                 item.titleShortened += context.getString(R.string.ellipsis)
                 itemsIsTextShortened[i] = true
-
-                textTranslationAnimator =
-                    ValueAnimator.ofFloat(0F, items[itemActiveIndex].rect.width())
             }
 
 
@@ -460,7 +459,7 @@ class SmoothBottomBar @JvmOverloads constructor(
                     (items[itemActiveIndex].rect.right - barSideMargins).toInt(),
                     height
                 )
-                
+
                 var titleToDraw = item.titleShortened
                 if (itemTextSlide) {
                     titleToDraw = item.title
