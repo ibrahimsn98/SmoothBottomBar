@@ -2,17 +2,18 @@ package me.ibrahimsn.lib
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
+import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityEvent.obtain
+import android.view.accessibility.AccessibilityManager
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
@@ -20,9 +21,11 @@ import androidx.annotation.FontRes
 import androidx.annotation.XmlRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.ViewCompat
 import androidx.navigation.NavController
 import kotlin.math.abs
 import kotlin.math.roundToInt
+
 
 class SmoothBottomBar @JvmOverloads constructor(
     context: Context,
@@ -238,9 +241,15 @@ class SmoothBottomBar @JvmOverloads constructor(
         isFakeBoldText = true
     }
 
+
+    var exploreByTouchHelper : AccessibleExploreByTouchHelper
     init {
         obtainStyledAttributes(attrs, defStyleAttr)
+        exploreByTouchHelper = AccessibleExploreByTouchHelper(this, items)
+
+        ViewCompat.setAccessibilityDelegate(this, exploreByTouchHelper)
     }
+
 
     private fun obtainStyledAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
         val typedArray = context.theme.obtainStyledAttributes(
@@ -370,6 +379,11 @@ class SmoothBottomBar @JvmOverloads constructor(
         applyItemActiveIndex()
     }
 
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        Log.d("Fanny", "test onLayout")
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -458,6 +472,8 @@ class SmoothBottomBar @JvmOverloads constructor(
         }
     }
 
+
+
     private fun tintAndDrawIcon(
         item: BottomBarItem,
         index: Int,
@@ -474,8 +490,10 @@ class SmoothBottomBar @JvmOverloads constructor(
     /**
      * Handle item clicks
      */
-    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        super.onTouchEvent(event)
+        Log.d("Fanny","event action onTouchEvent ACTION_UP = ${event.action}")
+
         if (event.action == MotionEvent.ACTION_UP && abs(event.downTime - event.eventTime) < 500) {
             for ((i, item) in items.withIndex()) {
                 if (item.rect.contains(event.x, event.y)) {
@@ -483,16 +501,63 @@ class SmoothBottomBar @JvmOverloads constructor(
                         itemActiveIndex = i
                         onItemSelected?.invoke(i)
                         onItemSelectedListener?.onItemSelect(i)
+                        exploreByTouchHelper.sendEventForVirtualView(
+                            i,
+                            AccessibilityEvent.TYPE_VIEW_CLICKED
+                        )
+                        performClick()
                     } else {
                         onItemReselected?.invoke(i)
                         onItemReselectedListener?.onItemReselect(i)
+                        performClick()
+                        onPopulateAccessibilityEvent(obtain())
+                        exploreByTouchHelper.sendEventForVirtualView(
+                            i,
+                            AccessibilityEvent.TYPE_VIEW_CLICKED
+                        )
                     }
                 }
             }
         }
+        if(event.action == MotionEvent.ACTION_HOVER_EXIT){
+            Log.d("Fanny","here action hover exit")
+            exploreByTouchHelper.invalidateVirtualView(itemActiveIndex)
+            for ((i, item) in items.withIndex()) {
+                if (item.rect.contains(event.x, event.y)) {
+                    exploreByTouchHelper.sendEventForVirtualView(
+                        i,
+                        AccessibilityEvent.TYPE_VIEW_FOCUSED
+                    )
+                }
+            }
+
+        }
 
         return true
     }
+
+
+    override fun onHoverEvent(event: MotionEvent): Boolean {
+        val accessibilityManager : AccessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        if(accessibilityManager.isTouchExplorationEnabled && event.pointerCount == 1){
+            Log.d("Fanny","event hover action = ${event.action}")
+            when (event.action) {
+                MotionEvent.ACTION_HOVER_ENTER -> {
+                    event.action = MotionEvent.ACTION_DOWN
+                }
+                MotionEvent.ACTION_HOVER_MOVE -> {
+                    event.action = MotionEvent.ACTION_MOVE
+                }
+                MotionEvent.ACTION_HOVER_EXIT -> {
+                    sendAccessibilityEventUnchecked(obtain())
+                }
+
+            }
+            return onTouchEvent(event)
+        }
+        return true
+    }
+
 
     private fun applyItemActiveIndex() {
         if (items.isNotEmpty()) {
@@ -578,6 +643,7 @@ class SmoothBottomBar @JvmOverloads constructor(
             }
         }
     }
+
 
     companion object {
         private const val INVALID_RES = -1
