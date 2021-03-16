@@ -2,6 +2,7 @@ package me.ibrahimsn.lib
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -23,7 +24,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.navigation.NavController
 import kotlin.math.roundToInt
-
 
 class SmoothBottomBar @JvmOverloads constructor(
     context: Context,
@@ -239,15 +239,14 @@ class SmoothBottomBar @JvmOverloads constructor(
         isFakeBoldText = true
     }
 
+    private var exploreByTouchHelper : AccessibleExploreByTouchHelper
 
-    var exploreByTouchHelper : AccessibleExploreByTouchHelper
     init {
         obtainStyledAttributes(attrs, defStyleAttr)
         exploreByTouchHelper = AccessibleExploreByTouchHelper(this, items, ::onClickAction)
 
         ViewCompat.setAccessibilityDelegate(this, exploreByTouchHelper)
     }
-
 
     private fun obtainStyledAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
         val typedArray = context.theme.obtainStyledAttributes(
@@ -262,77 +261,62 @@ class SmoothBottomBar @JvmOverloads constructor(
                 R.styleable.SmoothBottomBar_backgroundColor,
                 barBackgroundColor
             )
-
             barIndicatorColor = typedArray.getColor(
                 R.styleable.SmoothBottomBar_indicatorColor,
                 barIndicatorColor
             )
-
             barIndicatorRadius = typedArray.getDimension(
                 R.styleable.SmoothBottomBar_indicatorRadius,
                 barIndicatorRadius
             )
-
             barSideMargins = typedArray.getDimension(
                 R.styleable.SmoothBottomBar_sideMargins,
                 barSideMargins
             )
-
             barCornerRadius = typedArray.getDimension(
                 R.styleable.SmoothBottomBar_cornerRadius,
                 barCornerRadius
             )
-
             itemPadding = typedArray.getDimension(
                 R.styleable.SmoothBottomBar_itemPadding,
                 itemPadding
             )
-
             itemTextColor = typedArray.getColor(
                 R.styleable.SmoothBottomBar_textColor,
                 itemTextColor
             )
-
             itemTextSize = typedArray.getDimension(
                 R.styleable.SmoothBottomBar_textSize,
                 itemTextSize
             )
-
             itemIconSize = typedArray.getDimension(
                 R.styleable.SmoothBottomBar_iconSize,
                 itemIconSize
             )
-
             itemIconMargin = typedArray.getDimension(
                 R.styleable.SmoothBottomBar_iconMargin,
                 itemIconMargin
             )
-
             itemIconTint = typedArray.getColor(
                 R.styleable.SmoothBottomBar_iconTint,
                 itemIconTint
             )
-
             itemIconTintActive = typedArray.getColor(
                 R.styleable.SmoothBottomBar_iconTintActive,
                 itemIconTintActive
             )
-
             itemActiveIndex = typedArray.getInt(
                 R.styleable.SmoothBottomBar_activeItem,
                 itemActiveIndex
             )
-
             itemFontFamily = typedArray.getResourceId(
                 R.styleable.SmoothBottomBar_itemFontFamily,
                 itemFontFamily
             )
-
             itemAnimDuration = typedArray.getInt(
                 R.styleable.SmoothBottomBar_duration,
                 itemAnimDuration.toInt()
             ).toLong()
-
             itemMenuRes = typedArray.getResourceId(
                 R.styleable.SmoothBottomBar_menu,
                 itemMenuRes
@@ -376,7 +360,6 @@ class SmoothBottomBar @JvmOverloads constructor(
         // Set initial active item
         applyItemActiveIndex()
     }
-
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -466,8 +449,6 @@ class SmoothBottomBar @JvmOverloads constructor(
         }
     }
 
-
-
     private fun tintAndDrawIcon(
         item: BottomBarItem,
         index: Int,
@@ -484,6 +465,7 @@ class SmoothBottomBar @JvmOverloads constructor(
     /**
      * Handle item clicks
      */
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when(event?.action){
             MotionEvent.ACTION_DOWN -> {
@@ -605,7 +587,6 @@ class SmoothBottomBar @JvmOverloads constructor(
             }
         }
     }
-
 
     companion object {
         private const val INVALID_RES = -1

@@ -12,6 +12,7 @@ import java.lang.ref.WeakReference
  * Created by Mayokun Adeniyi on 24/04/2020.
  */
 class NavigationComponentHelper {
+
     companion object {
 
         fun setupWithNavController(

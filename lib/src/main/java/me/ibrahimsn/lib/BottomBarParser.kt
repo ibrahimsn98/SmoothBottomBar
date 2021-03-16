@@ -30,6 +30,7 @@ class BottomBarParser(private val context: Context, @XmlRes res: Int) {
         var itemText: String? = null
         var itemDrawable: Drawable? = null
         var contentDescription : String? = null
+
         for (index in 0 until attributeCount) {
             when (parser.getAttributeName(index)) {
                 ICON_ATTRIBUTE ->
@@ -55,13 +56,16 @@ class BottomBarParser(private val context: Context, @XmlRes res: Int) {
             }
         }
 
-        if (itemDrawable == null)
+        if (itemDrawable == null) {
             throw Throwable("Item icon can not be null!")
+        }
 
-        return BottomBarItem(itemText ?: "",
-            contentDescription ?: itemText ?: "",
+        return BottomBarItem(
+            itemText.toString(),
+            contentDescription ?: itemText.toString(),
             itemDrawable,
-            alpha = 0)
+            alpha = 0
+        )
     }
 
     companion object {
@@ -69,6 +73,5 @@ class BottomBarParser(private val context: Context, @XmlRes res: Int) {
         private const val ICON_ATTRIBUTE = "icon"
         private const val TITLE_ATTRIBUTE = "title"
         private const val CONTENT_DESCRIPTION_ATTRIBUTE = "contentDescription"
-
     }
 }

@@ -6,9 +6,11 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.customview.widget.ExploreByTouchHelper
 
 
-class AccessibleExploreByTouchHelper(private val host : SmoothBottomBar,
-                                           private val bottomBarItems : List<BottomBarItem>,
-                                           private val onClickAction : (id : Int) -> Unit) : ExploreByTouchHelper(host) {
+class AccessibleExploreByTouchHelper(
+    private val host : SmoothBottomBar,
+    private val bottomBarItems : List<BottomBarItem>,
+    private val onClickAction : (id : Int) -> Unit
+) : ExploreByTouchHelper(host) {
 
     override fun getVisibleVirtualViews(virtualViewIds: MutableList<Int>) {
         //defining simple ids for each item of the bottombar
@@ -21,7 +23,6 @@ class AccessibleExploreByTouchHelper(private val host : SmoothBottomBar,
         val itemWidth = host.width / bottomBarItems.size
         return (x / itemWidth).toInt()
     }
-
 
     @Suppress("DEPRECATION") // setBoundsInParent is required by [ExploreByTouchHelper]
     override fun onPopulateNodeForVirtualView(
@@ -53,7 +54,6 @@ class AccessibleExploreByTouchHelper(private val host : SmoothBottomBar,
         }
         return false
     }
-
 
     private fun updateBoundsForBottomItem(index: Int): Rect {
         val itemBounds = Rect()
