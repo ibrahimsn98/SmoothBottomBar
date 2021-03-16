@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
+import android.view.accessibility.AccessibilityEvent
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
@@ -514,6 +515,10 @@ class SmoothBottomBar @JvmOverloads constructor(
             onItemReselected?.invoke(viewId)
             onItemReselectedListener?.onItemReselect(viewId)
         }
+        exploreByTouchHelper.sendEventForVirtualView(
+            viewId,
+            AccessibilityEvent.TYPE_VIEW_CLICKED
+        )
     }
 
     private fun applyItemActiveIndex() {
