@@ -4,15 +4,17 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.accessibility.AccessibilityEvent
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.customview.widget.ExploreByTouchHelper
 
-class AccessibleExploreByTouchHelper(private val host : View, private val bottomBarItems : List<BottomBarItem>) : ExploreByTouchHelper(host) {
+
+class AccessibleExploreByTouchHelper(private val host : View,
+                                           private val bottomBarItems : List<BottomBarItem>,
+                                           private val onClickAction : (id : Int) -> Unit) : ExploreByTouchHelper(host) {
 
     override fun getVisibleVirtualViews(virtualViewIds: MutableList<Int>) {
         //defining simple ids for each item of the bottombar
-        for( i in bottomBarItems.indices){
+        for (i in bottomBarItems.indices) {
             virtualViewIds.add(i)
         }
     }
@@ -28,15 +30,16 @@ class AccessibleExploreByTouchHelper(private val host : View, private val bottom
         virtualViewId: Int,
         node: AccessibilityNodeInfoCompat
     ) {
-        Log.d("Fanny", "onPopulateNodeForVirtualView $virtualViewId")
         node.className = BottomBarItem::class.simpleName
         node.contentDescription = bottomBarItems[virtualViewId].contentDescription
-        val bottomItemBoundRect = updateBoundsForBottomItem(virtualViewId)
         node.isClickable = true
         node.isFocusable = true
+        node.isScreenReaderFocusable = true
+
+
         node.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CLICK)
 
-        node.isScreenReaderFocusable = true
+        val bottomItemBoundRect = updateBoundsForBottomItem(virtualViewId)
         node.setBoundsInParent(bottomItemBoundRect)
     }
 
@@ -45,24 +48,15 @@ class AccessibleExploreByTouchHelper(private val host : View, private val bottom
         action: Int,
         arguments: Bundle?
     ): Boolean {
-        Log.d("Fanny","action $action")
-        if(action == AccessibilityEvent.TYPE_VIEW_CLICKED){
-            Log.d("Fanny", "sendAccessibilityEvent")
-            sendAccessibilityEvent(host, action)
+        Log.d("Fanny", "action $action")
+        if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
+            onClickAction.invoke(virtualViewId)
         }
         return true
     }
 
-    override fun onPopulateAccessibilityEvent(host: View?, event: AccessibilityEvent) {
-        super.onPopulateAccessibilityEvent(host, event)
-        Log.d("Fanny", "onPopulateAccessibilityEvent $event")
-        if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
-            event.text.add("Activé")
-        }
-    }
 
-
-    private fun updateBoundsForBottomItem(index : Int) : Rect{
+    private fun updateBoundsForBottomItem(index: Int): Rect {
         val itemBounds = Rect()
         val itemWidth = host.width / bottomBarItems.size
         val left = index * itemWidth

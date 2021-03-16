@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.os.Build
+import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
 import android.view.KeyEvent
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityEvent.obtain
 import android.view.accessibility.AccessibilityManager
+import android.view.accessibility.AccessibilityNodeInfo
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
@@ -22,6 +24,9 @@ import androidx.annotation.XmlRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_ACCESSIBILITY_FOCUS
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import androidx.customview.widget.ExploreByTouchHelper
 import androidx.navigation.NavController
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -245,7 +250,7 @@ class SmoothBottomBar @JvmOverloads constructor(
     var exploreByTouchHelper : AccessibleExploreByTouchHelper
     init {
         obtainStyledAttributes(attrs, defStyleAttr)
-        exploreByTouchHelper = AccessibleExploreByTouchHelper(this, items)
+        exploreByTouchHelper = AccessibleExploreByTouchHelper(this, items, ::onClickAction)
 
         ViewCompat.setAccessibilityDelegate(this, exploreByTouchHelper)
     }
@@ -492,36 +497,15 @@ class SmoothBottomBar @JvmOverloads constructor(
      */
     override fun onTouchEvent(event: MotionEvent): Boolean {
         super.onTouchEvent(event)
-        Log.d("Fanny","event action onTouchEvent ACTION_UP = ${event.action}")
-
         if (event.action == MotionEvent.ACTION_UP && abs(event.downTime - event.eventTime) < 500) {
             for ((i, item) in items.withIndex()) {
                 if (item.rect.contains(event.x, event.y)) {
-                    if (i != itemActiveIndex) {
-                        itemActiveIndex = i
-                        onItemSelected?.invoke(i)
-                        onItemSelectedListener?.onItemSelect(i)
-                        exploreByTouchHelper.sendEventForVirtualView(
-                            i,
-                            AccessibilityEvent.TYPE_VIEW_CLICKED
-                        )
-                        performClick()
-                    } else {
-                        onItemReselected?.invoke(i)
-                        onItemReselectedListener?.onItemReselect(i)
-                        performClick()
-                        onPopulateAccessibilityEvent(obtain())
-                        exploreByTouchHelper.sendEventForVirtualView(
-                            i,
-                            AccessibilityEvent.TYPE_VIEW_CLICKED
-                        )
-                    }
+                    onClickAction(i)
                 }
             }
         }
         if(event.action == MotionEvent.ACTION_HOVER_EXIT){
             Log.d("Fanny","here action hover exit")
-            exploreByTouchHelper.invalidateVirtualView(itemActiveIndex)
             for ((i, item) in items.withIndex()) {
                 if (item.rect.contains(event.x, event.y)) {
                     exploreByTouchHelper.sendEventForVirtualView(
@@ -558,6 +542,16 @@ class SmoothBottomBar @JvmOverloads constructor(
         return true
     }
 
+    private fun onClickAction(viewId : Int){
+        if (viewId != itemActiveIndex) {
+            itemActiveIndex = viewId
+            onItemSelected?.invoke(viewId)
+            onItemSelectedListener?.onItemSelect(viewId)
+        } else {
+            onItemReselected?.invoke(viewId)
+            onItemReselectedListener?.onItemReselect(viewId)
+        }
+    }
 
     private fun applyItemActiveIndex() {
         if (items.isNotEmpty()) {
@@ -608,15 +602,15 @@ class SmoothBottomBar @JvmOverloads constructor(
     }
 
     /**
-    * Created by Vladislav Perevedentsev on 29.07.2020.
-    *
-    * Just call [SmoothBottomBar.setOnItemSelectedListener] to override [onItemSelectedListener]
-    *
-    * @sample
-    * setOnItemSelectedListener { position ->
-    *     //TODO: Something
-    * }
-    */
+     * Created by Vladislav Perevedentsev on 29.07.2020.
+     *
+     * Just call [SmoothBottomBar.setOnItemSelectedListener] to override [onItemSelectedListener]
+     *
+     * @sample
+     * setOnItemSelectedListener { position ->
+     *     //TODO: Something
+     * }
+     */
     fun setOnItemSelectedListener(listener: (position: Int) -> Unit) {
         onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelect(pos: Int): Boolean {
@@ -627,15 +621,15 @@ class SmoothBottomBar @JvmOverloads constructor(
     }
 
     /**
-    * Created by Vladislav Perevedentsev on 29.07.2020.
-    *
-    * Just call [SmoothBottomBar.setOnItemReselectedListener] to override [onItemReselectedListener]
-    *
-    * @sample
-    * setOnItemReselectedListener { position ->
-    *     //TODO: Something
-    * }
-    */
+     * Created by Vladislav Perevedentsev on 29.07.2020.
+     *
+     * Just call [SmoothBottomBar.setOnItemReselectedListener] to override [onItemReselectedListener]
+     *
+     * @sample
+     * setOnItemReselectedListener { position ->
+     *     //TODO: Something
+     * }
+     */
     fun setOnItemReselectedListener(listener: (position: Int) -> Unit) {
         onItemReselectedListener = object : OnItemReselectedListener {
             override fun onItemReselect(pos: Int) {
