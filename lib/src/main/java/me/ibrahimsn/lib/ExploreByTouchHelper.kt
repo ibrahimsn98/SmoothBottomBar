@@ -2,13 +2,11 @@ package me.ibrahimsn.lib
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.customview.widget.ExploreByTouchHelper
 
 
-class AccessibleExploreByTouchHelper(private val host : View,
+class AccessibleExploreByTouchHelper(private val host : SmoothBottomBar,
                                            private val bottomBarItems : List<BottomBarItem>,
                                            private val onClickAction : (id : Int) -> Unit) : ExploreByTouchHelper(host) {
 
@@ -36,8 +34,9 @@ class AccessibleExploreByTouchHelper(private val host : View,
         node.isFocusable = true
         node.isScreenReaderFocusable = true
 
-
         node.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CLICK)
+
+        node.isSelected = host.itemActiveIndex == virtualViewId
 
         val bottomItemBoundRect = updateBoundsForBottomItem(virtualViewId)
         node.setBoundsInParent(bottomItemBoundRect)
@@ -48,11 +47,11 @@ class AccessibleExploreByTouchHelper(private val host : View,
         action: Int,
         arguments: Bundle?
     ): Boolean {
-        Log.d("Fanny", "action $action")
         if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
             onClickAction.invoke(virtualViewId)
+            return true
         }
-        return true
+        return false
     }
 
 

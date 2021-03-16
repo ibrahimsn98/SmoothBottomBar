@@ -3,19 +3,15 @@ package me.ibrahimsn.lib
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
 import android.os.Build
-import android.os.Bundle
 import android.util.AttributeSet
-import android.util.Log
-import android.view.KeyEvent
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
-import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityEvent.obtain
-import android.view.accessibility.AccessibilityManager
-import android.view.accessibility.AccessibilityNodeInfo
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
@@ -24,11 +20,7 @@ import androidx.annotation.XmlRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_ACCESSIBILITY_FOCUS
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import androidx.customview.widget.ExploreByTouchHelper
 import androidx.navigation.NavController
-import kotlin.math.abs
 import kotlin.math.roundToInt
 
 
@@ -384,10 +376,6 @@ class SmoothBottomBar @JvmOverloads constructor(
         applyItemActiveIndex()
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-        Log.d("Fanny", "test onLayout")
-    }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -495,54 +483,29 @@ class SmoothBottomBar @JvmOverloads constructor(
     /**
      * Handle item clicks
      */
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        super.onTouchEvent(event)
-        if (event.action == MotionEvent.ACTION_UP && abs(event.downTime - event.eventTime) < 500) {
-            for ((i, item) in items.withIndex()) {
-                if (item.rect.contains(event.x, event.y)) {
-                    onClickAction(i)
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        when(event?.action){
+            MotionEvent.ACTION_DOWN -> {
+                return true
+            }
+            MotionEvent.ACTION_UP -> {
+                for ((i, item) in items.withIndex()) {
+                    if (item.rect.contains(event.x, event.y)) {
+                        onClickAction(i)
+                        break
+                    }
                 }
             }
         }
-        if(event.action == MotionEvent.ACTION_HOVER_EXIT){
-            Log.d("Fanny","here action hover exit")
-            for ((i, item) in items.withIndex()) {
-                if (item.rect.contains(event.x, event.y)) {
-                    exploreByTouchHelper.sendEventForVirtualView(
-                        i,
-                        AccessibilityEvent.TYPE_VIEW_FOCUSED
-                    )
-                }
-            }
-
-        }
-
-        return true
+        return super.onTouchEvent(event)
     }
 
-
-    override fun onHoverEvent(event: MotionEvent): Boolean {
-        val accessibilityManager : AccessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-        if(accessibilityManager.isTouchExplorationEnabled && event.pointerCount == 1){
-            Log.d("Fanny","event hover action = ${event.action}")
-            when (event.action) {
-                MotionEvent.ACTION_HOVER_ENTER -> {
-                    event.action = MotionEvent.ACTION_DOWN
-                }
-                MotionEvent.ACTION_HOVER_MOVE -> {
-                    event.action = MotionEvent.ACTION_MOVE
-                }
-                MotionEvent.ACTION_HOVER_EXIT -> {
-                    sendAccessibilityEventUnchecked(obtain())
-                }
-
-            }
-            return onTouchEvent(event)
-        }
-        return true
+    override fun dispatchHoverEvent(event: MotionEvent): Boolean {
+        return exploreByTouchHelper.dispatchHoverEvent(event) || super.dispatchHoverEvent(event)
     }
 
     private fun onClickAction(viewId : Int){
+        exploreByTouchHelper.invalidateVirtualView(viewId)
         if (viewId != itemActiveIndex) {
             itemActiveIndex = viewId
             onItemSelected?.invoke(viewId)
