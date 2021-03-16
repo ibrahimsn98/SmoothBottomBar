@@ -4,21 +4,25 @@
     <item
         android:id="@+id/first_fragment"
         android:title="@string/menu_dashboard"
+        android:contentDescription="@string/menu_dashboard"
         android:icon="@drawable/ic_dashboard_white_24dp"/>
 
     <item
         android:id="@+id/second_fragment"
         android:title="@string/menu_leaderboard"
+        android:contentDescription="@string/menu_leaderboard"
         android:icon="@drawable/ic_multiline_chart_white_24dp"/>
 
     <item
         android:id="@+id/third_fragment"
         android:title="@string/menu_store"
+        android:contentDescription="@string/menu_store"
         android:icon="@drawable/ic_store_white_24dp"/>
 
     <item
         android:id="@+id/fourth_fragment"
         android:title="@string/menu_profile"
+        android:contentDescription="@string/menu_profile"
         android:icon="@drawable/ic_person_outline_white_24dp"/>
 
 </menu>

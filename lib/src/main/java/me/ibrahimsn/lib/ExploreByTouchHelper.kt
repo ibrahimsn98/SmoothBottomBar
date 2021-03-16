@@ -30,7 +30,7 @@ class AccessibleExploreByTouchHelper(private val host : View, private val bottom
     ) {
         Log.d("Fanny", "onPopulateNodeForVirtualView $virtualViewId")
         node.className = BottomBarItem::class.simpleName
-        node.contentDescription = bottomBarItems[virtualViewId].title
+        node.contentDescription = bottomBarItems[virtualViewId].contentDescription
         val bottomItemBoundRect = updateBoundsForBottomItem(virtualViewId)
         node.isClickable = true
         node.isFocusable = true
