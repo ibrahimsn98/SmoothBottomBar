@@ -23,6 +23,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.navigation.NavController
+import me.ibrahimsn.lib.ext.d2p
 import kotlin.math.roundToInt
 
 class SmoothBottomBar @JvmOverloads constructor(
@@ -33,8 +34,11 @@ class SmoothBottomBar @JvmOverloads constructor(
 
     // Dynamic Variables
     private var itemWidth: Float = 0F
+
     private var currentIconTint = itemIconTintActive
+
     private var indicatorLocation = barSideMargins
+
     private val rect = RectF()
 
     private var items = listOf<BottomBarItem>()
@@ -604,9 +608,5 @@ class SmoothBottomBar @JvmOverloads constructor(
 
         private const val OPAQUE = 255
         private const val TRANSPARENT = 0
-
-        fun Context.d2p(dp: Float): Float {
-            return (dp * resources.displayMetrics.density).roundToInt().toFloat()
-        }
     }
 }

@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.XmlRes
 import androidx.core.content.ContextCompat
 
-class BottomBarParser(private val context: Context, @XmlRes res: Int) {
+internal class BottomBarParser(private val context: Context, @XmlRes res: Int) {
 
     private val parser: XmlResourceParser = context.resources.getXml(res)
 
@@ -33,25 +33,19 @@ class BottomBarParser(private val context: Context, @XmlRes res: Int) {
 
         for (index in 0 until attributeCount) {
             when (parser.getAttributeName(index)) {
-                ICON_ATTRIBUTE ->
-                    itemDrawable = ContextCompat.getDrawable(
-                        context,
-                        parser.getAttributeResourceValue(index, 0)
-                    )
-
-                TITLE_ATTRIBUTE -> {
-                    itemText = try {
-                        context.getString(parser.getAttributeResourceValue(index, 0))
-                    } catch (notFoundException: Resources.NotFoundException) {
-                        parser.getAttributeValue(index)
-                    }
+                ICON_ATTRIBUTE -> itemDrawable = ContextCompat.getDrawable(
+                    context,
+                    parser.getAttributeResourceValue(index, 0)
+                )
+                TITLE_ATTRIBUTE -> itemText = try {
+                    context.getString(parser.getAttributeResourceValue(index, 0))
+                } catch (notFoundException: Resources.NotFoundException) {
+                    parser.getAttributeValue(index)
                 }
-                CONTENT_DESCRIPTION_ATTRIBUTE -> {
-                    contentDescription = try {
-                        context.getString(parser.getAttributeResourceValue(index, 0))
-                    } catch (notFoundException: Resources.NotFoundException) {
-                        parser.getAttributeValue(index)
-                    }
+                CONTENT_DESCRIPTION_ATTRIBUTE -> contentDescription = try {
+                    context.getString(parser.getAttributeResourceValue(index, 0))
+                } catch (notFoundException: Resources.NotFoundException) {
+                    parser.getAttributeValue(index)
                 }
             }
         }
