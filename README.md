@@ -163,7 +163,7 @@ Navigation Graph i.e res/navigation/ folder
 - Get a reference to your `SmoothBottomBar` and call `setupWithNavController()` which takes in a `Menu` and `NavController`, pass in the menu of the previously instantiated `PopupMenu` i.e.(`popUpMenu.menu`)  and your `NavController`. 
 - Preferably set this up in a function as shown below and call this function i.e. (`setupSmoothBottomMenu()`) in the `onCreate` method of your activity. 
 
-N.B: Sample app makes use of [ViewBinding](https://developer.android.com/topic/libraries/view-binding) to get reference to views in the layout.
+**N.B:**  Sample app makes use of [ViewBinding](https://developer.android.com/topic/libraries/view-binding) to get reference to views in the layout.
 
 ```kotlin
    private fun setupSmoothBottomMenu() {
@@ -173,7 +173,31 @@ N.B: Sample app makes use of [ViewBinding](https://developer.android.com/topic/l
         binding.bottomBar.setupWithNavController(menu, navController)
     }
 ```
-- You can also setup your `ActionBar` with the Navigation Component by calling `setupActionBarWithNavController` and pass in your `NavController`. We now have something like this:
+
+### ActionBar
+You can also setup your `ActionBar` with the Navigation Component by calling `setupActionBarWithNavController` and pass in your `NavController`. 
+
+**N.B:** Your app needs to have a `Toolbar` for `setupActionBarWithNavController` to work. If your app theme doesn't have a `Toolbar` i.e. (Theme.AppCompat.Light.NoActionBar) you would need to: 
+
+- Add one to your layout i.e.
+
+```xml
+ <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.appbar.AppBarLayout>
+```
+- Set the support action bar to your `Toolbar` using `setSupportActionBar(your_toolbar_id)` in this case `setSupportActionBar(binding.toolBar)`
+
+We now have something like this:
 
 ```kotlin
  private lateinit var navController: NavController
