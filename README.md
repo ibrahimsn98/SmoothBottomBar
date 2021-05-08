@@ -381,6 +381,20 @@ dependencies {
                 <sub><b>mayokunthefirst</b></sub>
             </a>
         </td>
+        <td align="center">
+            <a href="https://github.com/FannyDemey">
+                <img src="https://avatars.githubusercontent.com/u/3006608?v=4" width="100px;" alt=""/><br />
+                <sub><b>FannyDemey</b></sub>
+            </a>
+        </td>
+    </tr>
+    <tr>
+    	 <td align="center">
+            <a href="https://github.com/Milad-Akarie">
+                <img src="https://avatars.githubusercontent.com/u/55059449?v=4" width="100px;" alt=""/><br />
+                <sub><b>Milad akarie</b></sub>
+            </a>
+        </td>
     </tr>
 </table>
 
