@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/first_fragment"
         android:name="me.ibrahimsn.smoothbottombar.FirstFragment"
-        android:label="First Fragment"
+        android:label="Dashboard"
         tools:layout="@layout/fragment_first" >
         <action
             android:id="@+id/action_firstFragment_to_secondFragment"
@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/second_fragment"
         android:name="me.ibrahimsn.smoothbottombar.SecondFragment"
-        android:label="Second Fragment"
+        android:label="Leaderboard"
         tools:layout="@layout/fragment_second" >
         <action
             android:id="@+id/action_secondFragment_to_thirdFragment"
@@ -26,7 +26,7 @@
     <fragment
         android:id="@+id/third_fragment"
         android:name="me.ibrahimsn.smoothbottombar.ThirdFragment"
-        android:label="Third Fragment"
+        android:label="Store"
         tools:layout="@layout/fragment_third" >
         <action
             android:id="@+id/action_thirdFragment_to_fourthFragment"
@@ -35,6 +35,6 @@
     <fragment
         android:id="@+id/fourth_fragment"
         android:name="me.ibrahimsn.smoothbottombar.FourthFragment"
-        android:label="Fourth Fragment"
+        android:label="Profile"
         tools:layout="@layout/fragment_fourth" />
 </navigation>
