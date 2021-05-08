@@ -127,57 +127,160 @@ Navigation Graph i.e res/navigation/ folder
     <fragment
         android:id="@+id/first_fragment"
         android:name="me.ibrahimsn.smoothbottombar.FirstFragment"
-        android:label="First Fragment"
-        tools:layout="@layout/fragment_first" />
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_first" >
+        <action
+            android:id="@+id/action_firstFragment_to_secondFragment"
+            app:destination="@id/second_fragment" />
+    </fragment>
     <fragment
         android:id="@+id/second_fragment"
         android:name="me.ibrahimsn.smoothbottombar.SecondFragment"
-        android:label="Second Fragment"
-        tools:layout="@layout/fragment_second" />
+        android:label="Leaderboard"
+        tools:layout="@layout/fragment_second" >
+        <action
+            android:id="@+id/action_secondFragment_to_thirdFragment"
+            app:destination="@id/third_fragment" />
+    </fragment>
     <fragment
         android:id="@+id/third_fragment"
         android:name="me.ibrahimsn.smoothbottombar.ThirdFragment"
-        android:label="Third Fragment"
-        tools:layout="@layout/fragment_third" />
+        android:label="Store"
+        tools:layout="@layout/fragment_third" >
+        <action
+            android:id="@+id/action_thirdFragment_to_fourthFragment"
+            app:destination="@id/fourth_fragment" />
+    </fragment>
     <fragment
         android:id="@+id/fourth_fragment"
         android:name="me.ibrahimsn.smoothbottombar.FourthFragment"
-        android:label="Fourth Fragment"
+        android:label="Profile"
         tools:layout="@layout/fragment_fourth" />
 </navigation>
 ```
 
-- In your activity i.e `MainActivity`, override `onCreateOptionsMenu`, get a reference to your SmoothBottomBar and call `setupWithNavController()` which takes in a `Menu` and `NavController` on the SmoothBottomBar.
+- In your activity i.e `MainActivity`, create an instance of `PopupMenu` which takes a `context` and an `anchor`(pass in null) and then inflate this `PopupMenu` with the layout menu for the `SmoothBottomBar`.  
+- Get a reference to your `SmoothBottomBar` and call `setupWithNavController()` which takes in a `Menu` and `NavController`, pass in the menu of the previously instantiated `PopupMenu` i.e.(`popUpMenu.menu`)  and your `NavController`. 
+- Preferably set this up in a function as shown below and call this function i.e. (`setupSmoothBottomMenu()`) in the `onCreate` method of your activity. 
+
+N.B: Sample app makes use of [ViewBinding](https://developer.android.com/topic/libraries/view-binding) to get reference to views in the layout.
+
 ```kotlin
-  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_bottom,menu)
-        bottomBar.setupWithNavController(menu!!,navController)
-        return true
+   private fun setupSmoothBottomMenu() {
+        val popupMenu = PopupMenu(this, null)
+        popupMenu.inflate(R.menu.menu_bottom)
+        val menu = popupMenu.menu
+        binding.bottomBar.setupWithNavController(menu, navController)
     }
 ```
-- You can also setup your `ActionBar` with the Navigation Component
+- You can also setup your `ActionBar` with the Navigation Component by calling `setupActionBarWithNavController` and pass in your `NavController`. We now have something like this:
+
 ```kotlin
  private lateinit var navController: NavController
+ private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        navController = findNavController(R.id.fragment)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        navController = findNavController(R.id.main_fragment)
         setupActionBarWithNavController(navController)
+        setupSmoothBottomMenu()
     }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_bottom,menu)
-        bottomBar.setupWithNavController(menu!!,navController)
-        return true
+    
+    private fun setupSmoothBottomMenu() {
+        val popupMenu = PopupMenu(this, null)
+        popupMenu.inflate(R.menu.menu_bottom)
+        val menu = popupMenu.menu
+        binding.bottomBar.setupWithNavController(menu, navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        navController.navigateUp()
-        return true
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 ```
 
-Result:
-<p align="center"><a><img src="https://github.com/mayokunthefirst/SmoothBottomBar/blob/navigation-component-dev/GIF/smooth_bar_gif.gif?raw=true" width="300"></a></p>
+### Result Demo:
+
+<p align="center"><a><img src="https://user-images.githubusercontent.com/29807085/117545623-78f8a280-b01e-11eb-9a2a-06d610bd6f95.gif" width="300"></a></p>
+
+### Update [8th May, 2021]
+Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/SmoothBottomBar/pull/33), you can now inflate separate menu items for the `SmoothBottomBar` and your `Toolbar`. 
+- Create the menu item you want to inflate in the `Toolbar` i.e.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/another_item_1"
+        android:title="Another Item 1" />
+    <item
+        android:id="@+id/another_item_2"
+        android:title="Another Item 2" />
+    <item
+        android:id="@+id/another_item_3"
+        android:title="Another Item 3" />
+</menu>
+```
+- Override `OnCreateOptionsMenu` and `onOptionsItemSelected` (ensure it returns `super.onOptionsItemSelected(item)`). Now we have:
+
+```kotlin
+  class MainActivity : AppCompatActivity() {
+    private lateinit var navController: NavController
+    private lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        navController = findNavController(R.id.main_fragment)
+        setupActionBarWithNavController(navController)
+        setupSmoothBottomMenu()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.another_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.another_item_1 -> {
+                showToast("Another Menu Item 1 Selected")
+            }
+
+            R.id.another_item_2 -> {
+                showToast("Another Menu Item 2 Selected")
+            }
+
+            R.id.another_item_3 -> {
+                showToast("Another Menu Item 3 Selected")
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
+    private fun showToast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setupSmoothBottomMenu() {
+        val popupMenu = PopupMenu(this, null)
+        popupMenu.inflate(R.menu.menu_bottom)
+        val menu = popupMenu.menu
+        binding.bottomBar.setupWithNavController(menu, navController)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+}
+```
+
+### Result Demo:
+
+<p align="center"><a><img src="https://user-images.githubusercontent.com/29807085/117545665-a6dde700-b01e-11eb-8ede-bb9263826814.gif" width="300"></a></p>
 
 
 ## Customization
