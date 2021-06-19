@@ -563,8 +563,12 @@ class SmoothBottomBar @JvmOverloads constructor(
     }
 
     fun selectItem(pos:Int){
-        this.itemActiveIndex=pos
-        NavigationUI.onNavDestinationSelected(menu.getItem(pos), this.findNavController())
+        try{
+            this.itemActiveIndex=pos
+            NavigationUI.onNavDestinationSelected(menu.getItem(pos), this.findNavController())
+        }catch (e:Exception){
+            throw Exception("set menu using PopupMenu")
+        }
     }
 
     /**
