@@ -25,7 +25,7 @@ class FirstFragment : Fragment() {
 
         val textView=view.findViewById<TextView>(R.id.textView)
         textView.setOnClickListener {
-            (requireActivity() as MainActivity).setItem(3)
+            (requireActivity() as MainActivity).selectItem(2)
         }
 
     }

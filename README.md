@@ -170,20 +170,6 @@ Navigation Graph i.e res/navigation/ folder
         binding.bottomBar.setupWithNavController(navController)
    }
 ```
-### select Bottom Item from fragment
-```kotlin
-//process 1
-   //in MainActivity or NavHostActivity(view example) 
-   fun setItem(pos:Int){
-       binding.bottomBar.selectItem(pos)
-   }
-   //in any child fragment
-   (requireActivity() as MainActivity).setItem(3)
-//process 2
-   //or directly call
-   (requireActivity() as MainActivity).bottomBar.selectItem(pos)
-```
-
 
 
 ### ActionBar
@@ -225,10 +211,7 @@ We now have something like this:
     }
     
     private fun setupSmoothBottomMenu() {
-        val popupMenu = PopupMenu(this, null)
-        popupMenu.inflate(R.menu.menu_bottom)
-        val menu = popupMenu.menu
-        binding.bottomBar.setupWithNavController(menu, navController)
+        binding.bottomBar.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -302,10 +285,11 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
     }
 
     private fun setupSmoothBottomMenu() {
-        val popupMenu = PopupMenu(this, null)
-        popupMenu.inflate(R.menu.menu_bottom)
-        val menu = popupMenu.menu
-        binding.bottomBar.setupWithNavController(menu, navController)
+        binding.bottomBar.setupWithNavController(navController)
+    }
+
+    fun setItem(pos:Int){
+        binding.bottomBar.selectItem(pos)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -313,6 +297,12 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
     }
 }
 ```
+
+### select Bottom Item from any fragment
+```
+    (requireActivity() as MainActivity).setItem(pos)//pos=menu item position
+```
+
 
 ### Result Demo:
 

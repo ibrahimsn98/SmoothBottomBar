@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun setItem(pos:Int){
+    fun selectItem(pos:Int){
         binding.bottomBar.selectItem(pos)
     }
 
