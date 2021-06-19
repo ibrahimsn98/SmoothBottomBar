@@ -214,7 +214,7 @@ We now have something like this:
         binding.bottomBar.setupWithNavController(navController)
     }
 
-    fun setItem(pos:Int){
+    fun selectItem(pos:Int){
         binding.bottomBar.selectItem(pos)
     }
 
@@ -292,7 +292,7 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
         binding.bottomBar.setupWithNavController(navController)
     }
 
-    fun setItem(pos:Int){
+    fun selectItem(pos:Int){
         binding.bottomBar.selectItem(pos)
     }
 
