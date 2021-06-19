@@ -15,10 +15,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.accessibility.AccessibilityEvent
 import android.view.animation.DecelerateInterpolator
-import androidx.annotation.ColorInt
-import androidx.annotation.Dimension
-import androidx.annotation.FontRes
-import androidx.annotation.XmlRes
+import android.widget.PopupMenu
+import androidx.annotation.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
@@ -92,6 +90,8 @@ class SmoothBottomBar @JvmOverloads constructor(
     private var _itemMenuRes: Int = INVALID_RES
 
     private var _itemActiveIndex: Int = 0
+
+    lateinit var menu:Menu
 
     // Core Attributes
     var barBackgroundColor: Int
@@ -200,8 +200,11 @@ class SmoothBottomBar @JvmOverloads constructor(
 
     var itemMenuRes: Int
         @XmlRes get() = _itemMenuRes
-        set(@XmlRes value) {
+        set(value) {
             _itemMenuRes = value
+            val popupMenu = PopupMenu(context, null)
+            popupMenu.inflate(value)
+            this.menu = popupMenu.menu
             if (value != INVALID_RES) {
                 items = BottomBarParser(context, value).parse()
                 invalidate()
@@ -215,7 +218,6 @@ class SmoothBottomBar @JvmOverloads constructor(
             applyItemActiveIndex()
         }
 
-    lateinit var menu:Menu
 
     // Listeners
     var onItemSelectedListener: OnItemSelectedListener? = null
@@ -556,16 +558,19 @@ class SmoothBottomBar @JvmOverloads constructor(
         }
     }
 
-    fun setupWithNavController(menu: Menu, navController: NavController) {
+    fun setupWithNavController(menu:Menu,navController: NavController) {
         NavigationComponentHelper.setupWithNavController(menu, this, navController)
+    }
+
+    fun setupWithNavController(navController: NavController) {
+        NavigationComponentHelper.setupWithNavController(this.menu, this, navController)
         Navigation.setViewNavController(this,navController)
-        this.menu=menu
     }
 
     fun selectItem(pos:Int){
         try{
             this.itemActiveIndex=pos
-            NavigationUI.onNavDestinationSelected(menu.getItem(pos), this.findNavController())
+            NavigationUI.onNavDestinationSelected(this.menu.getItem(pos), this.findNavController())
         }catch (e:Exception){
             throw Exception("set menu using PopupMenu")
         }

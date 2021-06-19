@@ -167,12 +167,24 @@ Navigation Graph i.e res/navigation/ folder
 
 ```kotlin
    private fun setupSmoothBottomMenu() {
-        val popupMenu = PopupMenu(this, null)
-        popupMenu.inflate(R.menu.menu_bottom)
-        val menu = popupMenu.menu
-        binding.bottomBar.setupWithNavController(menu, navController)
-    }
+        binding.bottomBar.setupWithNavController(navController)
+   }
 ```
+### select Bottom Item from fragment
+```kotlin
+//process 1
+   //in MainActivity or NavHostActivity(view example) 
+   fun setItem(pos:Int){
+       binding.bottomBar.selectItem(pos)
+   }
+   //in any child fragment
+   (requireActivity() as MainActivity).setItem(3)
+//process 2
+   //or directly call
+   (requireActivity() as MainActivity).bottomBar.selectItem(pos)
+```
+
+
 
 ### ActionBar
 You can also setup your `ActionBar` with the Navigation Component by calling `setupActionBarWithNavController` and pass in your `NavController`. 
@@ -376,14 +388,13 @@ dependencies {
                 <sub><b>amitdash291</b></sub>
             </a>
         </td>
-           <td align="center">
+        <td align="center">
             <a href="https://github.com/tobiasschuerg">
                 <img src="https://avatars2.githubusercontent.com/u/1324555?s=460&v=4" width="100px;" alt=""/><br />
                 <sub><b>tobiasschuerg</b></sub>
             </a>
         </td>
-        </td>
-           <td align="center">
+        <td align="center">
             <a href="https://github.com/mayokunthefirst">
                 <img src="https://avatars0.githubusercontent.com/u/29807085?s=460&u=493fd9b143dd96eecea56749f57d20e002e246e4&v=4" width="100px;" alt=""/><br />
                 <sub><b>mayokunthefirst</b></sub>
