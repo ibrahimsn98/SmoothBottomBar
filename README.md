@@ -335,13 +335,21 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
 > Follow me on Twitter [@ibrahimsn98](https://twitter.com/ibrahimsn98)
 
 ```gradle
-allprojects {
-	repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
+//project label build.gradle
+buildscript {
+    repositories {
+         ....
+        maven { url 'https://jitpack.io' }
+    }
 }
 
+allprojects {
+    repositories {
+     .......
+        maven { url 'https://www.jitpack.io' }
+    }
+}
+//app label build.gradle
 dependencies {
         implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.6'
 }
