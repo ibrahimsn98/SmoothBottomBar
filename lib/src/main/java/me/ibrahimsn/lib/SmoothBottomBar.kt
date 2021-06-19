@@ -23,6 +23,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import me.ibrahimsn.lib.ext.d2p
 import kotlin.math.roundToInt
 
@@ -211,6 +214,8 @@ class SmoothBottomBar @JvmOverloads constructor(
             _itemActiveIndex = value
             applyItemActiveIndex()
         }
+
+    lateinit var menu:Menu
 
     // Listeners
     var onItemSelectedListener: OnItemSelectedListener? = null
@@ -553,6 +558,13 @@ class SmoothBottomBar @JvmOverloads constructor(
 
     fun setupWithNavController(menu: Menu, navController: NavController) {
         NavigationComponentHelper.setupWithNavController(menu, this, navController)
+        Navigation.setViewNavController(this,navController)
+        this.menu=menu
+    }
+
+    fun selectItem(pos:Int){
+        this.itemActiveIndex=pos
+        NavigationUI.onNavDestinationSelected(menu.getItem(pos), this.findNavController())
     }
 
     /**
