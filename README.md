@@ -214,6 +214,10 @@ We now have something like this:
         binding.bottomBar.setupWithNavController(navController)
     }
 
+    fun setItem(pos:Int){
+        binding.bottomBar.selectItem(pos)
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
@@ -298,9 +302,11 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
 }
 ```
 
-### select Bottom Item from any fragment
-```
-    (requireActivity() as MainActivity).setItem(pos)//pos=menu item position
+### Select Bottom Item from any fragment
+```kotlin
+    buttonId.setOnClickListener {
+        (requireActivity() as MainActivity).selectItem(2)
+    }
 ```
 
 
