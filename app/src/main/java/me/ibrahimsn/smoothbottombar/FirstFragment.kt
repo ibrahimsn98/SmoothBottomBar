@@ -17,7 +17,7 @@ class FirstFragment : Fragment(R.layout.fragment_first) {
 
         val textView=view.findViewById<TextView>(R.id.textView)
         textView.setOnClickListener {
-            (requireActivity() as MainActivity).selectItem(2)
+            (requireActivity() as MainActivity).setSelectedItem(2)
             (requireActivity() as MainActivity).removeBadge(2)
         }
 

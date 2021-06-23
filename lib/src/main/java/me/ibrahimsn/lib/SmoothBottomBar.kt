@@ -609,7 +609,7 @@ class SmoothBottomBar @JvmOverloads constructor(
         Navigation.setViewNavController(this,navController)
     }
 
-    fun selectItem(pos:Int){
+    fun setSelectedItem(pos:Int){
         try{
             this.itemActiveIndex=pos
             NavigationUI.onNavDestinationSelected(this.menu.getItem(pos), this.findNavController())

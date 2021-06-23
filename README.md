@@ -216,8 +216,8 @@ We now have something like this:
     }
 
     //set an active fragment programmatically
-    fun selectItem(pos:Int){
-        binding.bottomBar.selectItem(pos)
+    fun setSelectedItem(pos:Int){
+        binding.bottomBar.setSelectedItem(pos)
     }
     //set badge indicator
     fun setBadge(pos:Int){
@@ -303,8 +303,8 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
     }
 
     //set an active fragment programmatically
-    fun selectItem(pos:Int){
-        binding.bottomBar.selectItem(pos)
+    fun setSelectedItem(pos:Int){
+        binding.bottomBar.setSelectedItem(pos)
     }
     //set badge indicator
     fun setBadge(pos:Int){
@@ -324,7 +324,7 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
 ### Select Bottom Item from any fragment
 ```kotlin
     buttonId.setOnClickListener {
-        (requireActivity() as MainActivity).selectItem(2)
+        (requireActivity() as MainActivity).setSelectedItem(2)
     }
 ```
 

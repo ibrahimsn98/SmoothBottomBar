@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     //set an active fragment programmatically
-    fun selectItem(pos:Int){
-        binding.bottomBar.selectItem(pos)
+    fun setSelectedItem(pos:Int){
+        binding.bottomBar.setSelectedItem(pos)
     }
     //set badge indicator
     fun setBadge(pos:Int){
