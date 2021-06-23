@@ -32,7 +32,7 @@ class SmoothBottomBar @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = R.attr.SmoothBottomBarStyle
 ) : View(context, attrs, defStyleAttr) {
-
+    private var total:Int=0
     // Dynamic Variables
     private var itemWidth: Float = 0F
 
@@ -92,6 +92,8 @@ class SmoothBottomBar @JvmOverloads constructor(
     private var _itemActiveIndex: Int = 0
 
     lateinit var menu:Menu
+
+    private val badge_arr=HashSet<Int>()
 
     // Core Attributes
     var barBackgroundColor: Int
@@ -241,6 +243,12 @@ class SmoothBottomBar @JvmOverloads constructor(
         color = barIndicatorColor
     }
 
+    private val badgePaint = Paint().apply {
+        isAntiAlias = true
+        style = Paint.Style.FILL
+        color = Color.RED
+    }
+
     private val paintText = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
@@ -372,6 +380,17 @@ class SmoothBottomBar @JvmOverloads constructor(
         applyItemActiveIndex()
     }
 
+
+    fun setBadge(pos:Int){
+        badge_arr.add(pos)
+        invalidate()
+    }
+
+    fun removeBadge(pos:Int){
+        badge_arr.remove(pos)
+        invalidate()
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -447,6 +466,16 @@ class SmoothBottomBar @JvmOverloads constructor(
                         .toInt() + itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
                     height / 2 + itemIconSize.toInt() / 2
                 )
+                //set badge indicator
+                if(badge_arr.contains(index)){
+                    canvas.drawCircle(
+                        item.rect.centerX()
+                            .toInt() - itemIconSize.toInt() / 2f - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE)),
+                        height / 2f - itemIconSize.toInt() / 2f,
+                        10f,
+                        badgePaint
+                    )
+                }
 
                 tintAndDrawIcon(item, index, canvas)
 

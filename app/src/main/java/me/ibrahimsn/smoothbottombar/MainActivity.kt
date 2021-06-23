@@ -47,8 +47,17 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    //set an active fragment programmatically
     fun selectItem(pos:Int){
         binding.bottomBar.selectItem(pos)
+    }
+    //set badge indicator
+    fun setBadge(pos:Int){
+        binding.bottomBar.setBadge(pos)
+    }
+    //remove badge indicator
+    fun removeBadge(pos:Int){
+        binding.bottomBar.removeBadge(pos)
     }
 
     private fun showToast(msg: String) {

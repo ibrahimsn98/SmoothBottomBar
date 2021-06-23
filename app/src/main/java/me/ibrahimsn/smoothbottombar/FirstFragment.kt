@@ -10,15 +10,7 @@ import android.widget.TextView
 /**
  * A simple [Fragment] subclass.
  */
-class FirstFragment : Fragment() {
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_first, container, false)
-    }
+class FirstFragment : Fragment(R.layout.fragment_first) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -26,8 +18,11 @@ class FirstFragment : Fragment() {
         val textView=view.findViewById<TextView>(R.id.textView)
         textView.setOnClickListener {
             (requireActivity() as MainActivity).selectItem(2)
+            (requireActivity() as MainActivity).removeBadge(2)
         }
 
+        (requireActivity() as MainActivity).setBadge(2)
+        (requireActivity() as MainActivity).setBadge(0)
     }
 
 }
