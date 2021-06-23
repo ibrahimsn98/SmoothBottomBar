@@ -52,6 +52,7 @@ All design and inspiration credits belong to [Alejandro Ausejo](https://dribbble
     android:layout_width="match_parent"
     android:layout_height="70dp"
     app:backgroundColor="@color/colorPrimary"
+    app:badgeColor="@color/colorBadge"
     app:menu="@menu/menu_bottom"/>
 ```
 
@@ -347,6 +348,7 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
         app:sideMargins=""
         app:itemPadding=""
         app:textColor=""
+        app:badgeColor=""
         app:itemFontFamily=""
         app:textSize=""
         app:iconSize=""
