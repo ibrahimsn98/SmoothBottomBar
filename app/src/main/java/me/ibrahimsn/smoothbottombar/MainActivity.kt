@@ -47,6 +47,18 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    //set an active fragment programmatically
+    fun setSelectedItem(pos:Int){
+        binding.bottomBar.setSelectedItem(pos)
+    }
+    //set badge indicator
+    fun setBadge(pos:Int){
+        binding.bottomBar.setBadge(pos)
+    }
+    //remove badge indicator
+    fun removeBadge(pos:Int){
+        binding.bottomBar.removeBadge(pos)
+    }
 
     private fun showToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
@@ -56,7 +68,8 @@ class MainActivity : AppCompatActivity() {
         val popupMenu = PopupMenu(this, null)
         popupMenu.inflate(R.menu.menu_bottom)
         val menu = popupMenu.menu
-        binding.bottomBar.setupWithNavController(menu, navController)
+        //binding.bottomBar.setupWithNavController(menu, navController)
+        binding.bottomBar.setupWithNavController( navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -52,6 +52,7 @@ All design and inspiration credits belong to [Alejandro Ausejo](https://dribbble
     android:layout_width="match_parent"
     android:layout_height="70dp"
     app:backgroundColor="@color/colorPrimary"
+    app:badgeColor="@color/colorBadge"
     app:menu="@menu/menu_bottom"/>
 ```
 
@@ -167,12 +168,10 @@ Navigation Graph i.e res/navigation/ folder
 
 ```kotlin
    private fun setupSmoothBottomMenu() {
-        val popupMenu = PopupMenu(this, null)
-        popupMenu.inflate(R.menu.menu_bottom)
-        val menu = popupMenu.menu
-        binding.bottomBar.setupWithNavController(menu, navController)
-    }
+        binding.bottomBar.setupWithNavController(navController)
+   }
 ```
+
 
 ### ActionBar
 You can also setup your `ActionBar` with the Navigation Component by calling `setupActionBarWithNavController` and pass in your `NavController`. 
@@ -213,10 +212,20 @@ We now have something like this:
     }
     
     private fun setupSmoothBottomMenu() {
-        val popupMenu = PopupMenu(this, null)
-        popupMenu.inflate(R.menu.menu_bottom)
-        val menu = popupMenu.menu
-        binding.bottomBar.setupWithNavController(menu, navController)
+        binding.bottomBar.setupWithNavController(navController)
+    }
+
+    //set an active fragment programmatically
+    fun setSelectedItem(pos:Int){
+        binding.bottomBar.setSelectedItem(pos)
+    }
+    //set badge indicator
+    fun setBadge(pos:Int){
+        binding.bottomBar.setBadge(pos)
+    }
+    //remove badge indicator
+    fun removeBadge(pos:Int){
+        binding.bottomBar.removeBadge(pos)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -290,10 +299,20 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
     }
 
     private fun setupSmoothBottomMenu() {
-        val popupMenu = PopupMenu(this, null)
-        popupMenu.inflate(R.menu.menu_bottom)
-        val menu = popupMenu.menu
-        binding.bottomBar.setupWithNavController(menu, navController)
+        binding.bottomBar.setupWithNavController(navController)
+    }
+
+    //set an active fragment programmatically
+    fun setSelectedItem(pos:Int){
+        binding.bottomBar.setSelectedItem(pos)
+    }
+    //set badge indicator
+    fun setBadge(pos:Int){
+        binding.bottomBar.setBadge(pos)
+    }
+    //remove badge indicator
+    fun removeBadge(pos:Int){
+        binding.bottomBar.removeBadge(pos)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -301,6 +320,14 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
     }
 }
 ```
+
+### Select Bottom Item from any fragment
+```kotlin
+    buttonId.setOnClickListener {
+        (requireActivity() as MainActivity).setSelectedItem(2)
+    }
+```
+
 
 ### Result Demo:
 
@@ -321,6 +348,7 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
         app:sideMargins=""
         app:itemPadding=""
         app:textColor=""
+        app:badgeColor=""
         app:itemFontFamily=""
         app:textSize=""
         app:iconSize=""
@@ -376,14 +404,13 @@ dependencies {
                 <sub><b>amitdash291</b></sub>
             </a>
         </td>
-           <td align="center">
+        <td align="center">
             <a href="https://github.com/tobiasschuerg">
                 <img src="https://avatars2.githubusercontent.com/u/1324555?s=460&v=4" width="100px;" alt=""/><br />
                 <sub><b>tobiasschuerg</b></sub>
             </a>
         </td>
-        </td>
-           <td align="center">
+        <td align="center">
             <a href="https://github.com/mayokunthefirst">
                 <img src="https://avatars0.githubusercontent.com/u/29807085?s=460&u=493fd9b143dd96eecea56749f57d20e002e246e4&v=4" width="100px;" alt=""/><br />
                 <sub><b>mayokunthefirst</b></sub>
@@ -401,6 +428,12 @@ dependencies {
             <a href="https://github.com/Milad-Akarie">
                 <img src="https://avatars.githubusercontent.com/u/55059449?v=4" width="100px;" alt=""/><br />
                 <sub><b>Milad akarie</b></sub>
+            </a>
+        </td>
+        <td align="center">
+            <a href="https://github.com/milon27">
+                <img src="https://avatars.githubusercontent.com/u/44096479?v=4" width="100px;" alt=""/><br />
+                <sub><b>Milon27</b></sub>
             </a>
         </td>
     </tr>
