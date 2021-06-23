@@ -301,8 +301,17 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
         binding.bottomBar.setupWithNavController(navController)
     }
 
+    //set an active fragment programmatically
     fun selectItem(pos:Int){
         binding.bottomBar.selectItem(pos)
+    }
+    //set badge indicator
+    fun setBadge(pos:Int){
+        binding.bottomBar.setBadge(pos)
+    }
+    //remove badge indicator
+    fun removeBadge(pos:Int){
+        binding.bottomBar.removeBadge(pos)
     }
 
     override fun onSupportNavigateUp(): Boolean {

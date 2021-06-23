@@ -32,7 +32,6 @@ class SmoothBottomBar @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = R.attr.SmoothBottomBarStyle
 ) : View(context, attrs, defStyleAttr) {
-    private var total:Int=0
     // Dynamic Variables
     private var itemWidth: Float = 0F
 
@@ -79,6 +78,9 @@ class SmoothBottomBar @JvmOverloads constructor(
 
     @ColorInt
     private var _itemTextColor = Color.WHITE
+
+    @ColorInt
+    private var _itemBadgeColor = Color.RED
 
     @Dimension
     private var _itemTextSize = context.d2p(DEFAULT_TEXT_SIZE)
@@ -148,6 +150,13 @@ class SmoothBottomBar @JvmOverloads constructor(
             paintText.color = value
             invalidate()
         }
+    var itemBadgeColor: Int
+            @ColorInt get() = _itemBadgeColor
+            set(@ColorInt value) {
+                _itemBadgeColor = value
+                badgePaint.color = value
+                invalidate()
+            }
 
     var itemPadding: Float
         @Dimension get() = _itemPadding
@@ -246,7 +255,7 @@ class SmoothBottomBar @JvmOverloads constructor(
     private val badgePaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
-        color = Color.RED
+        color = itemBadgeColor
     }
 
     private val paintText = Paint().apply {
@@ -319,6 +328,10 @@ class SmoothBottomBar @JvmOverloads constructor(
             itemIconTint = typedArray.getColor(
                 R.styleable.SmoothBottomBar_iconTint,
                 itemIconTint
+            )
+            itemBadgeColor = typedArray.getColor(
+                R.styleable.SmoothBottomBar_badgeColor,
+                itemBadgeColor
             )
             itemIconTintActive = typedArray.getColor(
                 R.styleable.SmoothBottomBar_iconTintActive,

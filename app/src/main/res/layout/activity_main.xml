@@ -24,6 +24,7 @@
         android:layout_height="70dp"
         app:backgroundColor="@color/colorPrimary"
         app:textColor="@color/colorTextPrimary"
+        app:badgeColor="@color/colorBadge"
         app:textSize="14sp"
         app:iconSize="24dp"
         app:indicatorColor="#2DFFFFFF"
