@@ -318,6 +318,8 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
         app:backgroundColor=""
         app:indicatorColor=""
         app:indicatorRadius=""
+        app:cornerRadius=""
+        app:corners=""
         app:sideMargins=""
         app:itemPadding=""
         app:textColor=""

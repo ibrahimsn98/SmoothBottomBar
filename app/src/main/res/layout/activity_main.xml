@@ -27,11 +27,13 @@
         app:textSize="14sp"
         app:iconSize="24dp"
         app:indicatorColor="#2DFFFFFF"
-        app:indicatorRadius="10dp"
+        app:indicatorRadius="16dp"
         app:sideMargins="10dp"
         app:itemPadding="10dp"
         app:iconTint="#C8FFFFFF"
         app:iconTintActive="#FFFFFF"
+        app:cornerRadius="16dp"
+        app:corners="top_left|bottom_right"
         app:menu="@menu/menu_bottom"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

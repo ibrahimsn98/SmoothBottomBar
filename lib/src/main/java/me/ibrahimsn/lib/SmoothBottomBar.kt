@@ -58,6 +58,8 @@ class SmoothBottomBar @JvmOverloads constructor(
 
     @Dimension
     private var _barCornerRadius = context.d2p(DEFAULT_BAR_CORNER_RADIUS)
+    
+    private var _barCorners = DEFAULT_BAR_CORNERS
 
     @Dimension
     private var _itemPadding = context.d2p(DEFAULT_ITEM_PADDING)
@@ -125,6 +127,13 @@ class SmoothBottomBar @JvmOverloads constructor(
         @Dimension get() = _barCornerRadius
         set(@Dimension value) {
             _barCornerRadius = value
+            invalidate()
+        }
+
+    var barCorners: Int
+        get() = _barCorners
+        set(value) {
+            _barCorners = value
             invalidate()
         }
 
@@ -281,6 +290,10 @@ class SmoothBottomBar @JvmOverloads constructor(
                 R.styleable.SmoothBottomBar_cornerRadius,
                 barCornerRadius
             )
+            barCorners = typedArray.getInteger(
+                R.styleable.SmoothBottomBar_corners,
+                barCorners
+            )
             itemPadding = typedArray.getDimension(
                 R.styleable.SmoothBottomBar_itemPadding,
                 itemPadding
@@ -374,10 +387,39 @@ class SmoothBottomBar @JvmOverloads constructor(
                 0f, 0f,
                 width.toFloat(),
                 height.toFloat(),
-                barCornerRadius,
-                barCornerRadius,
+                minOf(barCornerRadius.toFloat(), height.toFloat() / 2),
+                minOf(barCornerRadius.toFloat(), height.toFloat() / 2),
                 paintBackground
             )
+
+            if (barCorners != ALL_CORNERS) {
+
+                if ((barCorners and TOP_LEFT_CORNER) != TOP_LEFT_CORNER) {
+                    // Draw a box to cover the curve on the top left
+                    canvas.drawRect(0f, 0f, width.toFloat() / 2,
+                        height.toFloat() / 2, paintBackground)
+                }
+
+                if ((barCorners and TOP_RIGHT_CORNER) != TOP_RIGHT_CORNER) {
+                    // Draw a box to cover the curve on the top right
+                    canvas.drawRect(width.toFloat() / 2, 0f, width.toFloat(),
+                        height.toFloat() / 2, paintBackground)
+                }
+
+                if ((barCorners and BOTTOM_LEFT_CORNER) != BOTTOM_LEFT_CORNER) {
+                    // Draw a box to cover the curve on the bottom left
+                    canvas.drawRect(0f, height.toFloat() / 2, width.toFloat() / 2,
+                        height.toFloat(), paintBackground)
+                }
+
+                if ((barCorners and BOTTOM_RIGHT_CORNER) != BOTTOM_RIGHT_CORNER) {
+                    // Draw a box to cover the curve on the bottom right
+                    canvas.drawRect(width.toFloat() / 2, height.toFloat() / 2, width.toFloat(),
+                        height.toFloat(), paintBackground)
+                }
+
+            }
+
         } else {
             canvas.drawRect(
                 0f, 0f,
@@ -597,6 +639,14 @@ class SmoothBottomBar @JvmOverloads constructor(
         private const val DEFAULT_INDICATOR_COLOR = "#2DFFFFFF"
         private const val DEFAULT_TINT = "#C8FFFFFF"
 
+        // corner flags
+        private const val NO_CORNERS = 0;
+        private const val TOP_LEFT_CORNER = 1;
+        private const val TOP_RIGHT_CORNER = 2;
+        private const val BOTTOM_RIGHT_CORNER = 4;
+        private const val BOTTOM_LEFT_CORNER = 8;
+        private const val ALL_CORNERS = 15;
+
         private const val DEFAULT_SIDE_MARGIN = 10f
         private const val DEFAULT_ITEM_PADDING = 10f
         private const val DEFAULT_ANIM_DURATION = 200L
@@ -605,6 +655,7 @@ class SmoothBottomBar @JvmOverloads constructor(
         private const val DEFAULT_TEXT_SIZE = 11F
         private const val DEFAULT_CORNER_RADIUS = 20F
         private const val DEFAULT_BAR_CORNER_RADIUS = 0F
+        private const val DEFAULT_BAR_CORNERS = TOP_LEFT_CORNER or TOP_RIGHT_CORNER
 
         private const val OPAQUE = 255
         private const val TRANSPARENT = 0
