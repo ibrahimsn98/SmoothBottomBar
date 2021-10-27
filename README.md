@@ -82,6 +82,8 @@ bottomBar.setOnItemReselectedListener(object: OnItemReselectedListener {
 })
 ```
 
+ >**Note:** For projects without kotlin, you may need to add `org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion` to your dependencies since this is a Kotlin library.
+
 ## **Use SmoothBottomBar with [Navigation Components](https://developer.android.com/guide/navigation/).**
 
 Coupled with the Navigation Component from the [Android Jetpack](https://developer.android.com/jetpack), SmoothBottomBar offers easier navigation within your application by designating navigation to the Navigation Component. This works best when using fragments, as the Navigation component helps to handle your fragment transactions.
