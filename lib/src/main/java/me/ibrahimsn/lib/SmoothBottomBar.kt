@@ -382,6 +382,7 @@ class SmoothBottomBar @JvmOverloads constructor(
 
       // Draw background
       if (barCornerRadius > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
          canvas.drawRoundRect(
                0f, 0f,
                width.toFloat(),
