@@ -355,7 +355,7 @@ allprojects {
 }
 //app label build.gradle
 dependencies {
-        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.8'
+        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.9'
 }
 ```
 
