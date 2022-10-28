@@ -15,14 +15,15 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.accessibility.AccessibilityEvent
 import android.view.animation.DecelerateInterpolator
-import androidx.annotation.ColorInt
-import androidx.annotation.Dimension
-import androidx.annotation.FontRes
-import androidx.annotation.XmlRes
+import android.widget.PopupMenu
+import androidx.annotation.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import me.ibrahimsn.lib.ext.d2p
 import kotlin.math.roundToInt
 
@@ -31,7 +32,6 @@ class SmoothBottomBar @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = R.attr.SmoothBottomBarStyle
 ) : View(context, attrs, defStyleAttr) {
-
     // Dynamic Variables
     private var itemWidth: Float = 0F
 
@@ -81,6 +81,9 @@ class SmoothBottomBar @JvmOverloads constructor(
     @ColorInt
     private var _itemTextColor = Color.WHITE
 
+    @ColorInt
+    private var _itemBadgeColor = Color.RED
+
     @Dimension
     private var _itemTextSize = context.d2p(DEFAULT_TEXT_SIZE)
 
@@ -91,6 +94,10 @@ class SmoothBottomBar @JvmOverloads constructor(
     private var _itemMenuRes: Int = INVALID_RES
 
     private var _itemActiveIndex: Int = 0
+
+    lateinit var menu:Menu
+
+    private val badge_arr=HashSet<Int>()
 
     // Core Attributes
     var barBackgroundColor: Int
@@ -152,6 +159,13 @@ class SmoothBottomBar @JvmOverloads constructor(
             paintText.color = value
             invalidate()
         }
+    var itemBadgeColor: Int
+            @ColorInt get() = _itemBadgeColor
+            set(@ColorInt value) {
+                _itemBadgeColor = value
+                badgePaint.color = value
+                invalidate()
+            }
 
     var itemPadding: Float
         @Dimension get() = _itemPadding
@@ -206,8 +220,11 @@ class SmoothBottomBar @JvmOverloads constructor(
 
     var itemMenuRes: Int
         @XmlRes get() = _itemMenuRes
-        set(@XmlRes value) {
+        set(value) {
             _itemMenuRes = value
+            val popupMenu = PopupMenu(context, null)
+            popupMenu.inflate(value)
+            this.menu = popupMenu.menu
             if (value != INVALID_RES) {
                 items = BottomBarParser(context, value).parse()
                 invalidate()
@@ -220,6 +237,7 @@ class SmoothBottomBar @JvmOverloads constructor(
             _itemActiveIndex = value
             applyItemActiveIndex()
         }
+
 
     // Listeners
     var onItemSelectedListener: OnItemSelectedListener? = null
@@ -241,6 +259,12 @@ class SmoothBottomBar @JvmOverloads constructor(
         isAntiAlias = true
         style = Paint.Style.FILL
         color = barIndicatorColor
+    }
+
+    private val badgePaint = Paint().apply {
+        isAntiAlias = true
+        style = Paint.Style.FILL
+        color = itemBadgeColor
     }
 
     private val paintText = Paint().apply {
@@ -318,6 +342,10 @@ class SmoothBottomBar @JvmOverloads constructor(
                 R.styleable.SmoothBottomBar_iconTint,
                 itemIconTint
             )
+            itemBadgeColor = typedArray.getColor(
+                R.styleable.SmoothBottomBar_badgeColor,
+                itemBadgeColor
+            )
             itemIconTintActive = typedArray.getColor(
                 R.styleable.SmoothBottomBar_iconTintActive,
                 itemIconTintActive
@@ -376,6 +404,17 @@ class SmoothBottomBar @JvmOverloads constructor(
 
         // Set initial active item
         applyItemActiveIndex()
+    }
+
+
+    fun setBadge(pos:Int){
+        badge_arr.add(pos)
+        invalidate()
+    }
+
+    fun removeBadge(pos:Int){
+        badge_arr.remove(pos)
+        invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -482,6 +521,16 @@ class SmoothBottomBar @JvmOverloads constructor(
                         .toInt() + itemIconSize.toInt() / 2 - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE.toFloat())).toInt(),
                     height / 2 + itemIconSize.toInt() / 2
                 )
+                //set badge indicator
+                if(badge_arr.contains(index)){
+                    canvas.drawCircle(
+                        item.rect.centerX()
+                            .toInt() - itemIconSize.toInt() / 2f - ((textLength / 2) * (1 - (OPAQUE - item.alpha) / OPAQUE)),
+                        height / 2f - itemIconSize.toInt() / 2f,
+                        10f,
+                        badgePaint
+                    )
+                }
 
                 tintAndDrawIcon(item, index, canvas)
 
@@ -593,8 +642,22 @@ class SmoothBottomBar @JvmOverloads constructor(
         }
     }
 
-    fun setupWithNavController(menu: Menu, navController: NavController) {
+    fun setupWithNavController(menu:Menu,navController: NavController) {
         NavigationComponentHelper.setupWithNavController(menu, this, navController)
+    }
+
+    fun setupWithNavController(navController: NavController) {
+        NavigationComponentHelper.setupWithNavController(this.menu, this, navController)
+        Navigation.setViewNavController(this,navController)
+    }
+
+    fun setSelectedItem(pos:Int){
+        try{
+            this.itemActiveIndex=pos
+            NavigationUI.onNavDestinationSelected(this.menu.getItem(pos), this.findNavController())
+        }catch (e:Exception){
+            throw Exception("set menu using PopupMenu")
+        }
     }
 
     /**
