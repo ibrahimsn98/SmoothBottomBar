@@ -21,6 +21,7 @@ class FirstFragment : Fragment(R.layout.fragment_first) {
             (requireActivity() as MainActivity).removeBadge(2)
         }
 
+
         (requireActivity() as MainActivity).setBadge(2)
         (requireActivity() as MainActivity).setBadge(0)
     }

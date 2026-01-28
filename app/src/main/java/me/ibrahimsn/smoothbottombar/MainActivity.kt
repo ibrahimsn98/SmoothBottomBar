@@ -9,8 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
-import me.ibrahimsn.smoothbottombar.databinding.ActivityMainBinding
 
+import me.ibrahimsn.smoothbottombar.databinding.ActivityMainBinding
+import me.ibrahimsn.lib.*
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var binding: ActivityMainBinding

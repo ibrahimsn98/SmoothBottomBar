@@ -2,6 +2,9 @@
 
 A lightweight Android material bottom navigation bar library
 
+exposed setBadge and removeBadge for jvm 
+implementation 'com.github.Cherdenko:SmoothBottomBar:-SNAPSHOT'
+
 [![](https://jitpack.io/v/ibrahimsn98/SmoothBottomBar.svg)](https://jitpack.io/#ibrahimsn98/SmoothBottomBar)
 [![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=16)
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-SmoothBottomBar-green.svg?style=flat )]( https://android-arsenal.com/details/1/7932 )
