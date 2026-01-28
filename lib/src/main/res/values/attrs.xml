@@ -7,6 +7,7 @@
         <attr name="indicatorRadius" format="dimension" />
         <attr name="sideMargins" format="dimension" />
         <attr name="itemPadding" format="dimension" />
+        <attr name="itemSpacing" format="dimension" />
         <attr name="textColor" format="color" />
         <attr name="badgeColor" format="color" />
         <!-- New: icon background color and padding -->
