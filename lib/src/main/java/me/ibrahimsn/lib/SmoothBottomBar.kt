@@ -602,7 +602,14 @@ class SmoothBottomBar @JvmOverloads constructor(
                     drawIconBackground(item, index, canvas)
                 }
                 tintAndDrawIcon(item, index, canvas)
-
+                if (badgeIndices.contains(index)) {
+                    canvas.drawCircle(
+                        centerX + halfIconSize.toFloat() + ((textLength / 2) * alphaFactor),
+                        halfHeight.toFloat() - halfIconSize.toFloat(),
+                        10f,
+                        badgePaint
+                    )
+                }
                 paintText.alpha = item.alpha
                 canvas.drawText(
                     item.title,

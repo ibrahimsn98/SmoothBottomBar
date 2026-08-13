@@ -21,9 +21,13 @@ class FirstFragment : Fragment(R.layout.fragment_first) {
             (requireActivity() as MainActivity).removeBadge(2)
         }
 
-
-        (requireActivity() as MainActivity).setBadge(2)
-        (requireActivity() as MainActivity).setBadge(0)
+        // Posted because the hosting MainActivity's view binding is still being
+        // assigned while this fragment's view is created (it's nested inside the
+        // same inflate() call), so it isn't safe to touch yet.
+        view.post {
+            (requireActivity() as MainActivity).setBadge(2)
+            (requireActivity() as MainActivity).setBadge(0)
+        }
     }
 
 }
