@@ -2,11 +2,8 @@
 
 A lightweight Android material bottom navigation bar library
 
-exposed setBadge and removeBadge for jvm 
-implementation 'com.github.Cherdenko:SmoothBottomBar:-SNAPSHOT'
-
 [![](https://jitpack.io/v/ibrahimsn98/SmoothBottomBar.svg)](https://jitpack.io/#ibrahimsn98/SmoothBottomBar)
-[![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=16)
+[![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-SmoothBottomBar-green.svg?style=flat )]( https://android-arsenal.com/details/1/7932 )
 [![Android Weekly](https://androidweekly.net/issues/issue-385/badge)](https://androidweekly.net/issues/issue-385)
 
@@ -74,8 +71,9 @@ OR
 
 ```kotlin
 bottomBar.setOnItemSelectedListener(object: OnItemSelectedListener {
-    override fun onItemSelect(pos: Int) {
+    override fun onItemSelect(pos: Int): Boolean {
         status.text = "Item $pos selected"
+        return true
     }
 })
 
@@ -354,11 +352,15 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
         app:corners=""
         app:sideMargins=""
         app:itemPadding=""
+        app:itemSpacing=""
         app:textColor=""
         app:badgeColor=""
+        app:iconBackgroundColor=""
+        app:iconBackgroundPadding=""
         app:itemFontFamily=""
         app:textSize=""
         app:iconSize=""
+        app:iconMargin=""
         app:iconTint=""
         app:iconTintActive=""
         app:activeItem=""
@@ -386,7 +388,7 @@ allprojects {
 }
 //app label build.gradle
 dependencies {
-        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.9'
+        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.8.0'
 }
 ```
 

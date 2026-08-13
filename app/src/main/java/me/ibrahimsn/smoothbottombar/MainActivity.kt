@@ -3,7 +3,6 @@ package me.ibrahimsn.smoothbottombar
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -66,11 +65,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSmoothBottomMenu() {
-        val popupMenu = PopupMenu(this, null)
-        popupMenu.inflate(R.menu.menu_bottom)
-        val menu = popupMenu.menu
-        //binding.bottomBar.setupWithNavController(menu, navController)
-        binding.bottomBar.setupWithNavController( navController)
+        binding.bottomBar.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {

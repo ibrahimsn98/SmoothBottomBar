@@ -14,7 +14,6 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
     }
 
     buildTypes {
@@ -42,16 +41,10 @@ android {
 dependencies {
     implementation project(":lib")
 
-    // ✅ Use a valid Kotlin version
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:2.2.21"
-
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.core:core-ktx:1.17.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation "androidx.multidex:multidex:2.0.1"
-    implementation project(":lib")
     androidTestImplementation project(path: ':app')
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

@@ -10,10 +10,6 @@ android {
     defaultConfig {
         minSdkVersion 24
         targetSdkVersion 36
-        multiDexEnabled true
-
-
-
     }
 
     buildTypes {
@@ -34,10 +30,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.10"
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.core:core-ktx:1.17.0'
-    implementation "androidx.multidex:multidex:2.0.1"
 
     //Navigation Architecture Component
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

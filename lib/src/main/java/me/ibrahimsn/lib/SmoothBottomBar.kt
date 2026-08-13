@@ -8,8 +8,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
-import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
@@ -69,7 +69,6 @@ class SmoothBottomBar @JvmOverloads constructor(
     // Cache for performance optimization
     private val iconBackgroundRect = RectF()
     private var cachedTextHeight: Float = 0f
-    private var needsRecalculation = true
 
     private var items = listOf<BottomBarItem>()
 
@@ -131,7 +130,7 @@ class SmoothBottomBar @JvmOverloads constructor(
     lateinit var menu: Menu
 
 
-    private val badge_arr = HashSet<Int>()
+    private val badgeIndices = HashSet<Int>()
 
     // Core Attributes
     var barBackgroundColor: Int
@@ -205,7 +204,6 @@ class SmoothBottomBar @JvmOverloads constructor(
         @Dimension get() = _itemPadding
         set(@Dimension value) {
             _itemPadding = value
-            needsRecalculation = true
             invalidate()
         }
 
@@ -213,7 +211,6 @@ class SmoothBottomBar @JvmOverloads constructor(
         @Dimension get() = _itemSpacing
         set(@Dimension value) {
             _itemSpacing = value
-            needsRecalculation = true
             invalidate()
         }
 
@@ -425,7 +422,7 @@ class SmoothBottomBar @JvmOverloads constructor(
                 itemMenuRes
             )
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "Failed to parse SmoothBottomBar attributes", e)
         } finally {
             typedArray.recycle()
         }
@@ -467,8 +464,7 @@ class SmoothBottomBar @JvmOverloads constructor(
         var lastX = barSideMargins
 
         // reverse items layout order if layout direction is RTL
-        val isRTL = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
-                && layoutDirection == LAYOUT_DIRECTION_RTL
+        val isRTL = layoutDirection == LAYOUT_DIRECTION_RTL
         val itemsToLayout = if (isRTL) items.reversed() else items
 
         for ((index, item) in itemsToLayout.withIndex()) {
@@ -492,18 +488,17 @@ class SmoothBottomBar @JvmOverloads constructor(
 
         // Cache text height calculation
         cachedTextHeight = (paintText.descent() + paintText.ascent()) / 2
-        needsRecalculation = false
     }
 
     @JvmName("setBadge")
     fun setBadge(pos: Int) {
-        badge_arr.add(pos)
+        badgeIndices.add(pos)
         invalidate()
     }
 
     @JvmName("removeBadge")
     fun removeBadge(pos: Int) {
-        badge_arr.remove(pos)
+        badgeIndices.remove(pos)
         invalidate()
     }
 
@@ -589,9 +584,7 @@ class SmoothBottomBar @JvmOverloads constructor(
         val halfIconSize = itemIconSize.toInt() / 2
         val opaqueFloat = OPAQUE.toFloat()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
-            && layoutDirection == LAYOUT_DIRECTION_RTL
-        ) {
+        if (layoutDirection == LAYOUT_DIRECTION_RTL) {
             for ((index, item) in items.withIndex()) {
                 val textLength = paintText.measureText(item.title)
                 val alphaFactor = (1 - (OPAQUE - item.alpha) / opaqueFloat)
@@ -638,7 +631,7 @@ class SmoothBottomBar @JvmOverloads constructor(
                     drawIconBackground(item, index, canvas)
                 }
                 tintAndDrawIcon(item, index, canvas)
-                if (badge_arr.contains(index)) {
+                if (badgeIndices.contains(index)) {
                     canvas.drawCircle(
                         centerX - halfIconSize.toFloat() - ((textLength / 2) * alphaFactor),
                         halfHeight.toFloat() - halfIconSize.toFloat(),
@@ -805,7 +798,7 @@ class SmoothBottomBar @JvmOverloads constructor(
             NavigationUI.onNavDestinationSelected(this.menu.getItem(pos), this.findNavController())
             invalidate()
         } catch (e: Exception) {
-            throw Exception("set menu using PopupMenu")
+            throw IllegalStateException("Failed to set selected item at position $pos", e)
         }
     }
 
@@ -847,6 +840,7 @@ class SmoothBottomBar @JvmOverloads constructor(
     }
 
     companion object {
+        private const val TAG = "SmoothBottomBar"
         private const val INVALID_RES = -1
         private const val DEFAULT_INDICATOR_COLOR = "#2DFFFFFF"
         private const val DEFAULT_TINT = "#C8FFFFFF"

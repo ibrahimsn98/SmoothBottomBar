@@ -63,9 +63,9 @@ class NavigationComponentHelper {
             destination: NavDestination,
             @IdRes destId: Int
         ): Boolean {
-            var currentDestination: NavDestination? = destination
-            while (currentDestination!!.id != destId && currentDestination.parent != null) {
-                currentDestination = currentDestination.parent
+            var currentDestination: NavDestination = destination
+            while (currentDestination.id != destId) {
+                currentDestination = currentDestination.parent ?: break
             }
             return currentDestination.id == destId
         }

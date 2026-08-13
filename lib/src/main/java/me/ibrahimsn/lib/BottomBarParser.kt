@@ -13,7 +13,7 @@ internal class BottomBarParser(private val context: Context, @XmlRes res: Int) {
 
     fun parse(): List<BottomBarItem> {
         val items: MutableList<BottomBarItem> = mutableListOf()
-        var eventType: Int?
+        var eventType: Int
 
         do {
             eventType = parser.next()
@@ -51,7 +51,7 @@ internal class BottomBarParser(private val context: Context, @XmlRes res: Int) {
         }
 
         if (itemDrawable == null) {
-            throw Throwable("Item icon can not be null!")
+            throw IllegalStateException("Item icon can not be null!")
         }
 
         return BottomBarItem(
