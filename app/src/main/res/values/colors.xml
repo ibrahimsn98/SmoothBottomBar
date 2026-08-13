@@ -6,5 +6,5 @@
 
     <color name="colorTextPrimary">#ffffff</color>
     <color name="colorTextSecondary">#A3FFFFFF</color>
-    <color name="colorBadge">@color/colorAccent</color>
+    <color name="colorBadge">#C7BFFA</color>
 </resources>
