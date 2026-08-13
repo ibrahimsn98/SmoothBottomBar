@@ -736,9 +736,20 @@ class SmoothBottomBar @JvmOverloads constructor(
 
     private fun applyItemActiveIndex() {
         if (items.isNotEmpty()) {
-            // Store old indicator location before recalculating bounds
+            // Snapshot current bounds before recalculating, so item rects can
+            // animate from where they are now instead of jumping straight to
+            // the new layout (calculateItemBounds() below mutates them in place).
+            val oldRects = items.map { RectF(it.rect) }
             val oldIndicatorLocation = indicatorLocation
             val oldItemWidth = itemWidth
+
+            // This can fire before the view has ever been measured (e.g. a
+            // NavController destination-changed listener invokes immediately
+            // on registration, during onCreate()). calculateItemBounds() is a
+            // no-op with no size yet, so there's nothing meaningful to animate
+            // toward - onSizeChanged() will set the correct bounds directly
+            // once real layout happens.
+            val hadValidLayout = width > 0 && height > 0
 
             // Recalculate item bounds with new active index
             calculateItemBounds()
@@ -755,17 +766,38 @@ class SmoothBottomBar @JvmOverloads constructor(
                 }
             }
 
-            // Animate indicator position and width smoothly
-            ValueAnimator.ofFloat(0f, 1f).apply {
-                duration = itemAnimDuration
-                interpolator = DecelerateInterpolator()
-                addUpdateListener { animation ->
-                    val progress = animation.animatedValue as Float
-                    indicatorLocation = oldIndicatorLocation +
-                            (items[itemActiveIndex].rect.left - oldIndicatorLocation) * progress
-                    invalidate()
+            if (hadValidLayout) {
+                // Snapshot the newly calculated bounds as the animation target,
+                // then hold items at their old bounds until the animator below runs.
+                val targetRects = items.map { RectF(it.rect) }
+                val targetIndicatorLocation = items[itemActiveIndex].rect.left
+                val targetItemWidth = itemWidth
+                items.forEachIndexed { index, item -> item.rect.set(oldRects[index]) }
+                itemWidth = oldItemWidth
+
+                // Animate item bounds, indicator position and indicator width smoothly
+                ValueAnimator.ofFloat(0f, 1f).apply {
+                    duration = itemAnimDuration
+                    interpolator = DecelerateInterpolator()
+                    addUpdateListener { animation ->
+                        val progress = animation.animatedValue as Float
+                        for ((index, item) in items.withIndex()) {
+                            val old = oldRects[index]
+                            val target = targetRects[index]
+                            item.rect.set(
+                                old.left + (target.left - old.left) * progress,
+                                old.top + (target.top - old.top) * progress,
+                                old.right + (target.right - old.right) * progress,
+                                old.bottom + (target.bottom - old.bottom) * progress
+                            )
+                        }
+                        itemWidth = oldItemWidth + (targetItemWidth - oldItemWidth) * progress
+                        indicatorLocation = oldIndicatorLocation +
+                                (targetIndicatorLocation - oldIndicatorLocation) * progress
+                        invalidate()
+                    }
+                    start()
                 }
-                start()
             }
 
             ValueAnimator.ofObject(ArgbEvaluator(), itemIconTint, itemIconTintActive).apply {
