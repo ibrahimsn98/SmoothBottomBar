@@ -762,12 +762,13 @@ class SmoothBottomBar @JvmOverloads constructor(
 
     private fun applyItemActiveIndex() {
         if (items.isNotEmpty()) {
-            // Snapshot current bounds before recalculating, so item rects can
-            // animate from where they are now instead of jumping straight to
-            // the new layout (calculateItemBounds() below mutates them in place).
+            // Snapshot current bounds/alpha before recalculating, so everything
+            // animates from where it is now instead of jumping straight to the
+            // new state (calculateItemBounds() below mutates rects in place).
             val oldRects = items.map { RectF(it.rect) }
             val oldIndicatorLocation = indicatorLocation
             val oldItemWidth = itemWidth
+            val oldAlphas = items.map { it.alpha }
 
             // This can fire before the view has ever been measured (e.g. a
             // NavController destination-changed listener invokes immediately
@@ -780,17 +781,7 @@ class SmoothBottomBar @JvmOverloads constructor(
             // Recalculate item bounds with new active index
             calculateItemBounds()
 
-            for ((index, item) in items.withIndex()) {
-                if (index == itemActiveIndex) {
-                    // Set initial state immediately if not animated
-                    if (item.alpha == TRANSPARENT) {
-                        item.alpha = OPAQUE
-                    }
-                    animateAlpha(item, OPAQUE)
-                } else {
-                    animateAlpha(item, TRANSPARENT)
-                }
-            }
+            val targetAlphas = items.indices.map { if (it == itemActiveIndex) OPAQUE else TRANSPARENT }
 
             if (hadValidLayout) {
                 // Snapshot the newly calculated bounds as the animation target,
@@ -801,7 +792,12 @@ class SmoothBottomBar @JvmOverloads constructor(
                 items.forEachIndexed { index, item -> item.rect.set(oldRects[index]) }
                 itemWidth = oldItemWidth
 
-                // Animate item bounds, indicator position and indicator width smoothly
+                // Single animator drives bounds, indicator position/width, item
+                // alpha and icon tint together off the same progress value, so
+                // onDraw()'s icon-shift (derived from item.alpha) and badge
+                // position move on the exact same curve as the pill instead of
+                // drifting apart on separate, differently-interpolated animators.
+                val argbEvaluator = ArgbEvaluator()
                 ValueAnimator.ofFloat(0f, 1f).apply {
                     duration = itemAnimDuration
                     interpolator = DecelerateInterpolator()
@@ -816,35 +812,26 @@ class SmoothBottomBar @JvmOverloads constructor(
                                 old.right + (target.right - old.right) * progress,
                                 old.bottom + (target.bottom - old.bottom) * progress
                             )
+                            item.alpha = (oldAlphas[index] +
+                                    (targetAlphas[index] - oldAlphas[index]) * progress).roundToInt()
                         }
                         itemWidth = oldItemWidth + (targetItemWidth - oldItemWidth) * progress
                         indicatorLocation = oldIndicatorLocation +
                                 (targetIndicatorLocation - oldIndicatorLocation) * progress
+                        currentIconTint = argbEvaluator.evaluate(
+                            progress, itemIconTint, itemIconTintActive
+                        ) as Int
                         invalidate()
                     }
                     start()
                 }
+            } else {
+                // No layout yet - nothing to animate toward; jump straight to
+                // final state, matching what onSizeChanged() does for the true
+                // initial-layout case.
+                items.forEachIndexed { index, item -> item.alpha = targetAlphas[index] }
+                currentIconTint = itemIconTintActive
             }
-
-            ValueAnimator.ofObject(ArgbEvaluator(), itemIconTint, itemIconTintActive).apply {
-                duration = itemAnimDuration
-                addUpdateListener {
-                    currentIconTint = it.animatedValue as Int
-                }
-                start()
-            }
-        }
-    }
-
-    private fun animateAlpha(item: BottomBarItem, to: Int) {
-        ValueAnimator.ofInt(item.alpha, to).apply {
-            duration = itemAnimDuration
-            addUpdateListener {
-                val value = it.animatedValue as Int
-                item.alpha = value
-                invalidate()
-            }
-            start()
         }
     }
 
