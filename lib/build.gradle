@@ -9,7 +9,6 @@ android {
     namespace 'me.ibrahimsn.lib'
     defaultConfig {
         minSdkVersion 24
-        targetSdkVersion 36
     }
 
     buildTypes {
@@ -24,6 +23,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_21
+    }
+    lint {
+        targetSdk 36
+    }
+    testOptions {
+        targetSdk 36
     }
 
 }

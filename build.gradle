@@ -4,7 +4,7 @@ def nav_version = "2.9.5"
 buildscript {
     ext.kotlin_version = '2.2.21'
     ext {
-        agp_version = '8.13.0'
+        agp_version = '9.3.1'
     }
     repositories {
 
