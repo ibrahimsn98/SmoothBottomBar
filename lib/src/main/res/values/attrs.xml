@@ -10,6 +10,7 @@
         <attr name="itemSpacing" format="dimension" />
         <attr name="textColor" format="color" />
         <attr name="badgeColor" format="color" />
+        <attr name="badgeRadius" format="dimension" />
         <!-- New: icon background color and padding -->
         <attr name="iconBackgroundColor" format="color" />
         <attr name="iconBackgroundPadding" format="dimension" />

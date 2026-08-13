@@ -117,6 +117,9 @@ class SmoothBottomBar @JvmOverloads constructor(
     private var _itemBadgeColor = Color.RED
 
     @Dimension
+    private var _itemBadgeRadius = context.d2p(DEFAULT_BADGE_RADIUS)
+
+    @Dimension
     private var _itemTextSize = context.d2p(DEFAULT_TEXT_SIZE)
 
     @FontRes
@@ -197,6 +200,13 @@ class SmoothBottomBar @JvmOverloads constructor(
         set(@ColorInt value) {
             _itemBadgeColor = value
             badgePaint.color = value
+            invalidate()
+        }
+
+    var itemBadgeRadius: Float
+        @Dimension get() = _itemBadgeRadius
+        set(@Dimension value) {
+            _itemBadgeRadius = value
             invalidate()
         }
 
@@ -307,6 +317,11 @@ class SmoothBottomBar @JvmOverloads constructor(
         color = itemBadgeColor
     }
 
+    // ponytail: border color/width are fixed rather than new attributes - this is
+    // a punch-hole ring in the bar's own background, add a dedicated badgeBorderColor
+    // attribute only if someone actually needs a ring that doesn't match the bar.
+    private val badgeBorderWidth = context.d2p(DEFAULT_BADGE_BORDER_WIDTH)
+
     private val paintText = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
@@ -400,6 +415,10 @@ class SmoothBottomBar @JvmOverloads constructor(
             itemBadgeColor = typedArray.getColor(
                 R.styleable.SmoothBottomBar_badgeColor,
                 itemBadgeColor
+            )
+            itemBadgeRadius = typedArray.getDimension(
+                R.styleable.SmoothBottomBar_badgeRadius,
+                itemBadgeRadius
             )
             itemIconTintActive = typedArray.getColor(
                 R.styleable.SmoothBottomBar_iconTintActive,
@@ -629,12 +648,11 @@ class SmoothBottomBar @JvmOverloads constructor(
                 }
                 tintAndDrawIcon(item, index, canvas)
                 if (badgeIndices.contains(index)) {
-                    canvas.drawCircle(
-                        centerX + halfIconSize.toFloat() + ((textLength / 2) * alphaFactor),
-                        halfHeight.toFloat() - halfIconSize.toFloat(),
-                        10f,
-                        badgePaint
-                    )
+                    val badgeX = centerX + halfIconSize.toFloat() +
+                            ((textLength / 2) * alphaFactor) - itemBadgeRadius
+                    val badgeY = halfHeight.toFloat() - halfIconSize.toFloat() + itemBadgeRadius
+                    canvas.drawCircle(badgeX, badgeY, itemBadgeRadius + badgeBorderWidth, paintBackground)
+                    canvas.drawCircle(badgeX, badgeY, itemBadgeRadius, badgePaint)
                 }
                 paintText.alpha = item.alpha
                 canvas.drawText(
@@ -665,12 +683,11 @@ class SmoothBottomBar @JvmOverloads constructor(
                 }
                 tintAndDrawIcon(item, index, canvas)
                 if (badgeIndices.contains(index)) {
-                    canvas.drawCircle(
-                        centerX - halfIconSize.toFloat() - ((textLength / 2) * alphaFactor),
-                        halfHeight.toFloat() - halfIconSize.toFloat(),
-                        10f,
-                        badgePaint
-                    )
+                    val badgeX = centerX - halfIconSize.toFloat() -
+                            ((textLength / 2) * alphaFactor) + itemBadgeRadius
+                    val badgeY = halfHeight.toFloat() - halfIconSize.toFloat() + itemBadgeRadius
+                    canvas.drawCircle(badgeX, badgeY, itemBadgeRadius + badgeBorderWidth, paintBackground)
+                    canvas.drawCircle(badgeX, badgeY, itemBadgeRadius, badgePaint)
                 }
                 paintText.alpha = item.alpha
                 canvas.drawText(
@@ -912,6 +929,8 @@ class SmoothBottomBar @JvmOverloads constructor(
         private const val DEFAULT_ANIM_DURATION = 200L
         private const val DEFAULT_ICON_SIZE = 18F
         private const val DEFAULT_ICON_MARGIN = 4F
+        private const val DEFAULT_BADGE_RADIUS = 4F
+        private const val DEFAULT_BADGE_BORDER_WIDTH = 2F
         private const val DEFAULT_TEXT_SIZE = 11F
         private const val DEFAULT_CORNER_RADIUS = 20F
         private const val DEFAULT_BAR_CORNER_RADIUS = 0F
