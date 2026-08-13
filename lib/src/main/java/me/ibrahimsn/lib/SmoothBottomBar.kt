@@ -452,20 +452,30 @@ class SmoothBottomBar @JvmOverloads constructor(
     private fun calculateItemBounds() {
         if (items.isEmpty() || width == 0 || height == 0) return
 
-        // Calculate total spacing between items
-        val totalSpacing = if (items.size > 1) itemSpacing * (items.size - 1) else 0f
-
-        // Calculate available width after margins and spacing
-        val totalAvailableWidth = width - (barSideMargins * 2) - totalSpacing
-
         // Calculate minimum width for inactive items (icon + padding only)
         val inactiveItemWidth = itemIconSize + (itemPadding * 2)
 
-        // Calculate total width needed for inactive items
-        val totalInactiveWidth = inactiveItemWidth * (items.size - 1)
+        // Active item only needs enough room for its icon + text content,
+        // not all the space left over after the inactive items.
+        val activeItemWidth = if (itemActiveIndex in items.indices) {
+            indicatorWidthFor(items[itemActiveIndex])
+        } else {
+            inactiveItemWidth
+        }
 
-        // Active item gets remaining space (ensures text fits and spreads across bar)
-        val activeItemWidth = totalAvailableWidth - totalInactiveWidth
+        // Total width the items' own content takes up, excluding spacing/margins
+        val totalContentWidth = inactiveItemWidth * (items.size - 1) + activeItemWidth
+
+        // Distribute whatever space is left over as spacing between items, so
+        // the bar still spans edge-to-edge instead of the active item hogging
+        // space or the row clustering to one side. itemSpacing acts as a floor
+        // for tight layouts where there's no leftover space to distribute.
+        val effectiveItemSpacing = if (items.size > 1) {
+            ((width - (barSideMargins * 2) - totalContentWidth) / (items.size - 1))
+                .coerceAtLeast(itemSpacing)
+        } else {
+            0f
+        }
 
         var lastX = barSideMargins
 
@@ -484,12 +494,12 @@ class SmoothBottomBar @JvmOverloads constructor(
             }
 
             item.rect.set(lastX, 0f, currentItemWidth + lastX, height.toFloat())
-            lastX += currentItemWidth + itemSpacing
+            lastX += currentItemWidth + effectiveItemSpacing
         }
 
         // Update itemWidth to match the active item's content width for the indicator
         if (_itemActiveIndex in items.indices) {
-            itemWidth = indicatorWidthFor(items[_itemActiveIndex])
+            itemWidth = activeItemWidth
         }
 
         // Cache text height calculation
