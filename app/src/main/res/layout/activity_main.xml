@@ -34,7 +34,7 @@
         app:iconTint="#C8FFFFFF"
         app:iconTintActive="#FFFFFF"
         app:cornerRadius="16dp"
-        app:corners="top_left|bottom_right"
+        app:corners="top_left|top_right"
         app:menu="@menu/menu_bottom"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
