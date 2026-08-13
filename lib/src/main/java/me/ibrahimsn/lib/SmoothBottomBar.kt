@@ -437,10 +437,20 @@ class SmoothBottomBar @JvmOverloads constructor(
             for ((index, item) in items.withIndex()) {
                 item.alpha = if (index == itemActiveIndex) OPAQUE else TRANSPARENT
             }
-            indicatorLocation = items[itemActiveIndex].rect.centerX() - itemWidth / 2
+            indicatorLocation = indicatorCenterX(items[itemActiveIndex]) - itemWidth / 2
             currentIconTint = itemIconTintActive
             invalidate()
         }
+    }
+
+    // The icon+text content isn't actually centered on rect.centerX(): the icon
+    // shifts one way and the text label extends the other way by itemIconMargin,
+    // so the content's true center is offset from rect.centerX() by half that
+    // margin (mirrored in RTL). Centering the indicator here instead of on
+    // rect.centerX() keeps its left/right padding around the content equal.
+    private fun indicatorCenterX(item: BottomBarItem): Float {
+        val margin = itemIconMargin / 2
+        return item.rect.centerX() + if (layoutDirection == LAYOUT_DIRECTION_RTL) -margin else margin
     }
 
     // Width the indicator should hug: icon + icon/text margin + text, plus
@@ -787,7 +797,7 @@ class SmoothBottomBar @JvmOverloads constructor(
                 // then hold items at their old bounds until the animator below runs.
                 val targetRects = items.map { RectF(it.rect) }
                 val targetItemWidth = itemWidth
-                val targetIndicatorLocation = items[itemActiveIndex].rect.centerX() - targetItemWidth / 2
+                val targetIndicatorLocation = indicatorCenterX(items[itemActiveIndex]) - targetItemWidth / 2
                 items.forEachIndexed { index, item -> item.rect.set(oldRects[index]) }
                 itemWidth = oldItemWidth
 
