@@ -437,10 +437,16 @@ class SmoothBottomBar @JvmOverloads constructor(
             for ((index, item) in items.withIndex()) {
                 item.alpha = if (index == itemActiveIndex) OPAQUE else TRANSPARENT
             }
-            indicatorLocation = items[itemActiveIndex].rect.left
+            indicatorLocation = items[itemActiveIndex].rect.centerX() - itemWidth / 2
             currentIconTint = itemIconTintActive
             invalidate()
         }
+    }
+
+    // Width the indicator should hug: icon + icon/text margin + text, plus
+    // itemPadding on each side - not the item's full (leftover-space) rect width.
+    private fun indicatorWidthFor(item: BottomBarItem): Float {
+        return itemIconSize + itemIconMargin + paintText.measureText(item.title) + itemPadding * 2
     }
 
     private fun calculateItemBounds() {
@@ -481,9 +487,9 @@ class SmoothBottomBar @JvmOverloads constructor(
             lastX += currentItemWidth + itemSpacing
         }
 
-        // Update itemWidth to match active item width for indicator
+        // Update itemWidth to match the active item's content width for the indicator
         if (_itemActiveIndex in items.indices) {
-            itemWidth = items[_itemActiveIndex].rect.width()
+            itemWidth = indicatorWidthFor(items[_itemActiveIndex])
         }
 
         // Cache text height calculation
@@ -770,8 +776,8 @@ class SmoothBottomBar @JvmOverloads constructor(
                 // Snapshot the newly calculated bounds as the animation target,
                 // then hold items at their old bounds until the animator below runs.
                 val targetRects = items.map { RectF(it.rect) }
-                val targetIndicatorLocation = items[itemActiveIndex].rect.left
                 val targetItemWidth = itemWidth
+                val targetIndicatorLocation = items[itemActiveIndex].rect.centerX() - targetItemWidth / 2
                 items.forEachIndexed { index, item -> item.rect.set(oldRects[index]) }
                 itemWidth = oldItemWidth
 
