@@ -30,7 +30,7 @@
         app:indicatorColor="#2DFFFFFF"
         app:indicatorRadius="16dp"
         app:sideMargins="16dp"
-        app:itemPadding="10dp"
+        app:itemPadding="14dp"
         app:iconTint="#C8FFFFFF"
         app:iconTintActive="#FFFFFF"
         app:menu="@menu/menu_bottom"
