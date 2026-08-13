@@ -5,6 +5,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -19,6 +22,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        // Edge-to-edge is enforced on newer targetSdk levels, so the toolbar's
+        // background now extends behind the status bar by default - push its
+        // content down by the status bar inset instead of leaving it under it.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, insets ->
+            view.updatePadding(top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top)
+            insets
+        }
         navController = findNavController(R.id.main_fragment)
         setupActionBarWithNavController(navController)
         setupSmoothBottomMenu()
