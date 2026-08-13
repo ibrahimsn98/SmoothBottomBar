@@ -8,5 +8,9 @@ data class BottomBarItem (
     var contentDescription : String,
     val icon: Drawable,
     var rect: RectF = RectF(),
-    var alpha: Int
+    var alpha: Int,
+    // Perf caches, recomputed in SmoothBottomBar.calculateItemBounds() /
+    // tintAndDrawIcon() instead of every onDraw() frame.
+    var titleWidth: Float = 0f,
+    var lastAppliedTint: Int? = null
 )

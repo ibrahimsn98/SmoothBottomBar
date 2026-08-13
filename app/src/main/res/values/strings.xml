@@ -5,7 +5,16 @@
     <string name="menu_leaderboard">Leaderboard</string>
     <string name="menu_store">Store</string>
     <string name="menu_profile">Profile</string>
+    <string name="menu_another_item_1">Another Item 1</string>
+    <string name="menu_another_item_2">Another Item 2</string>
+    <string name="menu_another_item_3">Another Item 3</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="toast_another_item_1">Another Menu Item 1 Selected</string>
+    <string name="toast_another_item_2">Another Menu Item 2 Selected</string>
+    <string name="toast_another_item_3">Another Menu Item 3 Selected</string>
+
+    <string name="fragment_dashboard_placeholder">Dashboard Fragment</string>
+    <string name="fragment_leaderboard_placeholder">Leaderboard Fragment</string>
+    <string name="fragment_store_placeholder">Store Fragment</string>
+    <string name="fragment_profile_placeholder">Profile Fragment</string>
 </resources>

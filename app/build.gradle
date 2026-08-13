@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-def nav_version = "2.9.5"
+def nav_version = "2.9.8"
 
 android {
     namespace 'me.ibrahimsn.smoothbottombar'
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId "me.ibrahimsn.smoothbottombar"
@@ -34,20 +34,15 @@ android {
 
     buildFeatures {
         viewBinding true
-        dataBinding true
     }
 }
 
 dependencies {
     implementation project(":lib")
 
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.core:core-ktx:1.17.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    androidTestImplementation project(path: ':app')
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'androidx.core:core-ktx:1.19.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
 
     // Navigation Architecture Component
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

@@ -3,13 +3,15 @@ package me.ibrahimsn.smoothbottombar
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 
 import me.ibrahimsn.smoothbottombar.databinding.ActivityMainBinding
@@ -30,7 +32,25 @@ class MainActivity : AppCompatActivity() {
             view.updatePadding(top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top)
             insets
         }
-        navController = findNavController(R.id.main_fragment)
+        // Same edge-to-edge issue at the bottom. Unlike Toolbar, SmoothBottomBar
+        // never reads its own padding (onDraw/calculateItemBounds work off raw
+        // width/height only), so padding here would be silently ignored - push
+        // the whole view up with a bottom margin instead, which it does respect
+        // via its ConstraintLayout position.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomBar) { view, insets ->
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+            }
+            insets
+        }
+        // FragmentContainerView doesn't attach its nested NavHostFragment
+        // synchronously during setContentView() the way the legacy <fragment>
+        // tag did, so findNavController(viewId) throws here - fetch the
+        // NavHostFragment from the FragmentManager directly instead (the
+        // approach Android's own docs call for with FragmentContainerView).
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.main_fragment) as NavHostFragment
+        navController = navHostFragment.navController
         setupActionBarWithNavController(navController)
         setupSmoothBottomMenu()
     }
@@ -44,15 +64,18 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.another_item_1 -> {
-                showToast("Another Menu Item 1 Selected")
+                showToast(getString(R.string.toast_another_item_1))
+                return true
             }
 
             R.id.another_item_2 -> {
-                showToast("Another Menu Item 2 Selected")
+                showToast(getString(R.string.toast_another_item_2))
+                return true
             }
 
             R.id.another_item_3 -> {
-                showToast("Another Menu Item 3 Selected")
+                showToast(getString(R.string.toast_another_item_3))
+                return true
             }
         }
         return super.onOptionsItemSelected(item)

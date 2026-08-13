@@ -1,6 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-def nav_version = "2.9.5"
-
 buildscript {
     ext.kotlin_version = '2.2.21'
     ext {

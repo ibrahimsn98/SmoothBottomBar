@@ -15,12 +15,16 @@ internal class BottomBarParser(private val context: Context, @XmlRes res: Int) {
         val items: MutableList<BottomBarItem> = mutableListOf()
         var eventType: Int
 
-        do {
-            eventType = parser.next()
-            if (eventType == XmlResourceParser.START_TAG && parser.name == ITEM_TAG) {
-                items.add(getTabConfig(parser))
-            }
-        } while (eventType != XmlResourceParser.END_DOCUMENT)
+        try {
+            do {
+                eventType = parser.next()
+                if (eventType == XmlResourceParser.START_TAG && parser.name == ITEM_TAG) {
+                    items.add(getTabConfig(parser))
+                }
+            } while (eventType != XmlResourceParser.END_DOCUMENT)
+        } finally {
+            parser.close()
+        }
 
         return items
     }
@@ -36,7 +40,7 @@ internal class BottomBarParser(private val context: Context, @XmlRes res: Int) {
                 ICON_ATTRIBUTE -> itemDrawable = ContextCompat.getDrawable(
                     context,
                     parser.getAttributeResourceValue(index, 0)
-                )
+                )?.mutate()
                 TITLE_ATTRIBUTE -> itemText = try {
                     context.getString(parser.getAttributeResourceValue(index, 0))
                 } catch (notFoundException: Resources.NotFoundException) {
@@ -54,9 +58,13 @@ internal class BottomBarParser(private val context: Context, @XmlRes res: Int) {
             throw IllegalStateException("Item icon can not be null!")
         }
 
+        if (itemText == null) {
+            throw IllegalStateException("Item title can not be null!")
+        }
+
         return BottomBarItem(
-            itemText.toString(),
-            contentDescription ?: itemText.toString(),
+            itemText,
+            contentDescription ?: itemText,
             itemDrawable,
             alpha = 0
         )

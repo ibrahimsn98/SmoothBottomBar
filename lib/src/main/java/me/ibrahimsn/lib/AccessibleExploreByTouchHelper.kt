@@ -4,11 +4,13 @@ import android.graphics.Rect
 import android.os.Bundle
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.customview.widget.ExploreByTouchHelper
+import kotlin.math.roundToInt
 
 class AccessibleExploreByTouchHelper(
     private val host : SmoothBottomBar,
     private val bottomBarItems : List<BottomBarItem>,
-    private val onClickAction : (id : Int) -> Unit
+    private val onClickAction : (id : Int) -> Unit,
+    private val hasBadge : (index: Int) -> Boolean
 ) : ExploreByTouchHelper(host) {
 
     override fun getVisibleVirtualViews(virtualViewIds: MutableList<Int>) {
@@ -19,8 +21,12 @@ class AccessibleExploreByTouchHelper(
     }
 
     override fun getVirtualViewAt(x: Float, y: Float): Int {
-        val itemWidth = host.width / bottomBarItems.size
-        return (x / itemWidth).toInt()
+        for (index in bottomBarItems.indices) {
+            if (bottomBarItems[index].rect.contains(x, y)) {
+                return index
+            }
+        }
+        return HOST_ID
     }
 
     /**
@@ -32,7 +38,11 @@ class AccessibleExploreByTouchHelper(
         node: AccessibilityNodeInfoCompat
     ) {
         node.className = BottomBarItem::class.simpleName
-        node.contentDescription = bottomBarItems[virtualViewId].contentDescription
+        node.contentDescription = if (hasBadge(virtualViewId)) {
+            "${bottomBarItems[virtualViewId].contentDescription}, has notification"
+        } else {
+            bottomBarItems[virtualViewId].contentDescription
+        }
         node.isClickable = true
         node.isFocusable = true
         node.isScreenReaderFocusable = true
@@ -58,13 +68,12 @@ class AccessibleExploreByTouchHelper(
     }
 
     private fun updateBoundsForBottomItem(index: Int): Rect {
-        val itemBounds = Rect()
-        val itemWidth = host.width / bottomBarItems.size
-        val left = index * itemWidth
-        itemBounds.left = left
-        itemBounds.top = 0
-        itemBounds.right = (left + itemWidth)
-        itemBounds.bottom = host.height
-        return itemBounds
+        val itemRect = bottomBarItems[index].rect
+        return Rect(
+            itemRect.left.roundToInt(),
+            itemRect.top.roundToInt(),
+            itemRect.right.roundToInt(),
+            itemRect.bottom.roundToInt()
+        )
     }
 }

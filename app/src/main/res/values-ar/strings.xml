@@ -5,4 +5,16 @@
     <string name="menu_profile">حسابي</string>
     <string name="menu_store">المتجر</string>
     <string name="menu_leaderboard">المتصدرين</string>
+    <string name="menu_another_item_1">عنصر آخر 1</string>
+    <string name="menu_another_item_2">عنصر آخر 2</string>
+    <string name="menu_another_item_3">عنصر آخر 3</string>
+
+    <string name="toast_another_item_1">تم اختيار العنصر الآخر 1</string>
+    <string name="toast_another_item_2">تم اختيار العنصر الآخر 2</string>
+    <string name="toast_another_item_3">تم اختيار العنصر الآخر 3</string>
+
+    <string name="fragment_dashboard_placeholder">شاشة الرئيسية</string>
+    <string name="fragment_leaderboard_placeholder">شاشة المتصدرين</string>
+    <string name="fragment_store_placeholder">شاشة المتجر</string>
+    <string name="fragment_profile_placeholder">شاشة حسابي</string>
 </resources>

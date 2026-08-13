@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.ui.NavigationUI
 import java.lang.ref.WeakReference
+import java.util.WeakHashMap
 
 /**
  * Created by Mayokun Adeniyi on 24/04/2020.
@@ -14,6 +15,13 @@ import java.lang.ref.WeakReference
 class NavigationComponentHelper {
 
     companion object {
+
+        // ponytail: WeakHashMap so entries don't keep a SmoothBottomBar alive;
+        // tracks the currently-registered listener per bar so a second
+        // setupWithNavController() call removes the first instead of both
+        // firing forever on every navigation event.
+        private val activeListeners =
+            WeakHashMap<SmoothBottomBar, Pair<NavController, NavController.OnDestinationChangedListener>>()
 
         fun setupWithNavController(
             menu: Menu,
@@ -26,11 +34,13 @@ class NavigationComponentHelper {
                 }
             }
 
+            activeListeners.remove(smoothBottomBar)?.let { (oldController, oldListener) ->
+                oldController.removeOnDestinationChangedListener(oldListener)
+            }
+
             val weakReference = WeakReference(smoothBottomBar)
 
-            navController.addOnDestinationChangedListener(object :
-                NavController.OnDestinationChangedListener {
-
+            val listener = object : NavController.OnDestinationChangedListener {
                 override fun onDestinationChanged(
                     controller: NavController,
                     destination: NavDestination,
@@ -47,11 +57,14 @@ class NavigationComponentHelper {
                         val menuItem = menu.getItem(h)
                         if (matchDestination(destination, menuItem.itemId)) {
                             menuItem.isChecked = true
-                            smoothBottomBar.itemActiveIndex = h
+                            view.itemActiveIndex = h
                         }
                     }
                 }
-            })
+            }
+
+            navController.addOnDestinationChangedListener(listener)
+            activeListeners[smoothBottomBar] = navController to listener
         }
 
         /**
