@@ -96,6 +96,12 @@ internal fun BarItemContent(
                 fontFamily = itemFontFamily,
                 fontWeight = FontWeight.Bold,
             ),
+            // The label doesn't shrink with the item during the tab-switch
+            // transition, only its alpha does - without this, the item's
+            // narrowing width during deselect forces the text to wrap onto
+            // multiple lines instead of staying on one line and clipping.
+            maxLines = 1,
+            softWrap = false,
             modifier = Modifier.offset(x = itemIconSize / 2 + itemIconMargin),
         )
 
