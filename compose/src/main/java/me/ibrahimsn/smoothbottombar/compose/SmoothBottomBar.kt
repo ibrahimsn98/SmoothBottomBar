@@ -164,6 +164,7 @@ fun SmoothBottomBar(
 
         Row(
             modifier = Modifier
+                .align(Alignment.Center)
                 .fillMaxWidth()
                 .padding(horizontal = sideMargins)
                 .selectableGroup(),
