@@ -43,4 +43,12 @@ jobs:
           arch: x86_64
           script: |
             adb install -r app/build/outputs/apk/debug/app-debug.apk
-            $HOME/.maestro/bin/maestro test .maestro/
+            $HOME/.maestro/bin/maestro test --format=junit --output=maestro-report.xml .maestro/
+
+      - name: Upload results to Qualflare
+        if: always()
+        uses: Qualflare/qualflare-action@v1
+        with:
+          token: ${{ secrets.QUALFLARE_TOKEN }}
+          project: smoothbottombar
+          results: maestro-report.xml
