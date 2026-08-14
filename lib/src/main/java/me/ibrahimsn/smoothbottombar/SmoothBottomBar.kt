@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Outline
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -12,6 +13,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.view.accessibility.AccessibilityEvent
 import android.view.animation.DecelerateInterpolator
 import android.widget.PopupMenu
@@ -171,6 +173,7 @@ class SmoothBottomBar @JvmOverloads constructor(
         @Dimension get() = _barCornerRadius
         set(@Dimension value) {
             _barCornerRadius = value
+            invalidateOutline()
             invalidate()
         }
 
@@ -356,6 +359,17 @@ class SmoothBottomBar @JvmOverloads constructor(
         }
 
         ViewCompat.setAccessibilityDelegate(this, exploreByTouchHelper)
+
+        // The bar's background is hand-painted in onDraw (paintBackground),
+        // never a real android:background Drawable - so the default
+        // ViewOutlineProvider (which derives the outline from getBackground())
+        // has nothing to cast a shadow from, and android:elevation silently
+        // does nothing (issue #109). Provide the outline explicitly instead.
+        outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline) {
+                outline.setRoundRect(0, 0, view.width, view.height, barCornerRadius)
+            }
+        }
     }
 
     private fun obtainStyledAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
