@@ -1,0 +1,7 @@
+appId: me.ibrahimsn.app
+---
+- launchApp
+- tapOn: "View Demo"
+- assertVisible:
+    id: "toolbar"
+- assertVisible: "Dashboard Fragment"

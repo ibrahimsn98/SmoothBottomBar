@@ -1,0 +1,6 @@
+appId: me.ibrahimsn.app
+---
+- launchApp
+- assertVisible: "Dashboard Fragment"
+- tapOn: "Dashboard Fragment"
+- assertVisible: "Store Fragment"

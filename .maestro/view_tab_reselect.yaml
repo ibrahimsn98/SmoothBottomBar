@@ -1,0 +1,7 @@
+appId: me.ibrahimsn.app
+---
+- launchApp
+- tapOn: "View Demo"
+- assertVisible: "Dashboard Fragment"
+- tapOn: "^Dashboard(, has notification)?$"
+- assertVisible: "Dashboard Fragment"

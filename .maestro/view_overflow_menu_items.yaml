@@ -1,0 +1,13 @@
+appId: me.ibrahimsn.app
+---
+- launchApp
+- tapOn: "View Demo"
+- tapOn: "More options"
+- tapOn: "Another Item 1"
+- assertVisible: "Another Menu Item 1 Selected"
+- tapOn: "More options"
+- tapOn: "Another Item 2"
+- assertVisible: "Another Menu Item 2 Selected"
+- tapOn: "More options"
+- tapOn: "Another Item 3"
+- assertVisible: "Another Menu Item 3 Selected"

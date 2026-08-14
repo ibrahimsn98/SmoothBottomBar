@@ -1,0 +1,5 @@
+appId: me.ibrahimsn.app
+---
+- launchApp
+- assertVisible: "Dashboard Fragment"
+- assertVisible: "View Demo"
