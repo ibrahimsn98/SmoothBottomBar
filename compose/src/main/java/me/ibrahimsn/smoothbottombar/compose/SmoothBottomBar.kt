@@ -61,7 +61,7 @@ fun SmoothBottomBar(
     backgroundColor: Color = Color.White,
     shape: Shape = RectangleShape,
     indicatorColor: Color = Color(0x2DFFFFFF),
-    indicatorRadius: Dp = 20.dp,
+    indicatorRadius: Dp = 12.dp,
     sideMargins: Dp = 10.dp,
     itemPadding: Dp = 10.dp,
     itemSpacing: Dp = 8.dp,

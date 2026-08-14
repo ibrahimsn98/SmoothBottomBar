@@ -121,7 +121,7 @@ private fun ComposeDemoScreen() {
             onItemSelected = ::navigate,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(70.dp)
+                .height(76.dp)
                 .navigationBarsPadding(),
             backgroundColor = Color(0xFF432FBF),
             indicatorColor = Color(0x2DFFFFFF),
