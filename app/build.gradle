@@ -4,11 +4,11 @@ apply plugin: 'kotlin-android'
 def nav_version = "2.9.8"
 
 android {
-    namespace 'me.ibrahimsn.smoothbottombar'
+    namespace 'me.ibrahimsn.app'
     compileSdk = 37
 
     defaultConfig {
-        applicationId "me.ibrahimsn.smoothbottombar"
+        applicationId "me.ibrahimsn.app"
         minSdkVersion 24
         targetSdkVersion 36
         versionCode 1

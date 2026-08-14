@@ -1,4 +1,4 @@
-package me.ibrahimsn.smoothbottombar
+package me.ibrahimsn.app
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -1,4 +1,4 @@
-package me.ibrahimsn.lib.ext
+package me.ibrahimsn.smoothbottombar.ext
 
 import android.content.Context
 import kotlin.math.roundToInt

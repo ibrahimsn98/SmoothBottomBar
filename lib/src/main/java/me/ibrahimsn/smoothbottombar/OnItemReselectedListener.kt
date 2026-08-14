@@ -1,4 +1,4 @@
-package me.ibrahimsn.lib
+package me.ibrahimsn.smoothbottombar
 
 interface OnItemReselectedListener {
 

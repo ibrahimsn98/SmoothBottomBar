@@ -1,4 +1,4 @@
-package me.ibrahimsn.lib
+package me.ibrahimsn.smoothbottombar
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import me.ibrahimsn.lib.ext.d2p
+import me.ibrahimsn.smoothbottombar.ext.d2p
 import kotlin.math.roundToInt
 
 class SmoothBottomBar @JvmOverloads constructor(

@@ -1,4 +1,4 @@
-package me.ibrahimsn.smoothbottombar
+package me.ibrahimsn.app
 
 import android.os.Bundle
 import android.view.Menu
@@ -14,8 +14,8 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 
-import me.ibrahimsn.smoothbottombar.databinding.ActivityMainBinding
-import me.ibrahimsn.lib.*
+import me.ibrahimsn.app.databinding.ActivityMainBinding
+import me.ibrahimsn.smoothbottombar.*
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var binding: ActivityMainBinding

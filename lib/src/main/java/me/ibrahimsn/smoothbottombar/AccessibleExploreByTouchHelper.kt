@@ -1,4 +1,4 @@
-package me.ibrahimsn.lib
+package me.ibrahimsn.smoothbottombar
 
 import android.graphics.Rect
 import android.os.Bundle

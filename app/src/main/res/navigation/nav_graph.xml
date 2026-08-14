@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/first_fragment"
-        android:name="me.ibrahimsn.smoothbottombar.FirstFragment"
+        android:name="me.ibrahimsn.app.FirstFragment"
         android:label="@string/menu_dashboard"
         tools:layout="@layout/fragment_first" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/second_fragment"
-        android:name="me.ibrahimsn.smoothbottombar.SecondFragment"
+        android:name="me.ibrahimsn.app.SecondFragment"
         android:label="@string/menu_leaderboard"
         tools:layout="@layout/fragment_second" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/third_fragment"
-        android:name="me.ibrahimsn.smoothbottombar.ThirdFragment"
+        android:name="me.ibrahimsn.app.ThirdFragment"
         android:label="@string/menu_store"
         tools:layout="@layout/fragment_third" >
         <action
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/fourth_fragment"
-        android:name="me.ibrahimsn.smoothbottombar.FourthFragment"
+        android:name="me.ibrahimsn.app.FourthFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_fourth" />
 </navigation>

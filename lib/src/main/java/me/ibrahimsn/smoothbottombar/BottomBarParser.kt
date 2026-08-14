@@ -1,4 +1,4 @@
-package me.ibrahimsn.lib
+package me.ibrahimsn.smoothbottombar
 
 import android.content.Context
 import android.content.res.Resources

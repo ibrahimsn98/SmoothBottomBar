@@ -47,7 +47,7 @@ All design and inspiration credits belong to [Alejandro Ausejo](https://dribbble
 
 -   Add view into your layout file
 ```xml
-<me.ibrahimsn.lib.SmoothBottomBar
+<me.ibrahimsn.smoothbottombar.SmoothBottomBar
     android:id="@+id/bottomBar"
     android:layout_width="match_parent"
     android:layout_height="70dp"
@@ -130,7 +130,7 @@ Navigation Graph i.e res/navigation/ folder
 
     <fragment
         android:id="@+id/first_fragment"
-        android:name="me.ibrahimsn.smoothbottombar.FirstFragment"
+        android:name="me.ibrahimsn.app.FirstFragment"
         android:label="Dashboard"
         tools:layout="@layout/fragment_first" >
         <action
@@ -139,7 +139,7 @@ Navigation Graph i.e res/navigation/ folder
     </fragment>
     <fragment
         android:id="@+id/second_fragment"
-        android:name="me.ibrahimsn.smoothbottombar.SecondFragment"
+        android:name="me.ibrahimsn.app.SecondFragment"
         android:label="Leaderboard"
         tools:layout="@layout/fragment_second" >
         <action
@@ -148,7 +148,7 @@ Navigation Graph i.e res/navigation/ folder
     </fragment>
     <fragment
         android:id="@+id/third_fragment"
-        android:name="me.ibrahimsn.smoothbottombar.ThirdFragment"
+        android:name="me.ibrahimsn.app.ThirdFragment"
         android:label="Store"
         tools:layout="@layout/fragment_third" >
         <action
@@ -157,7 +157,7 @@ Navigation Graph i.e res/navigation/ folder
     </fragment>
     <fragment
         android:id="@+id/fourth_fragment"
-        android:name="me.ibrahimsn.smoothbottombar.FourthFragment"
+        android:name="me.ibrahimsn.app.FourthFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_fourth" />
 </navigation>
@@ -340,7 +340,7 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
 ## Customization
 
 ```xml
-<me.ibrahimsn.lib.SmoothBottomBar
+<me.ibrahimsn.smoothbottombar.SmoothBottomBar
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="70dp"

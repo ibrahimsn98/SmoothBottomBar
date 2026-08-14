@@ -5,7 +5,7 @@ def nav_version = "2.9.8"
 
 android {
     compileSdkVersion 37
-    namespace 'me.ibrahimsn.lib'
+    namespace 'me.ibrahimsn.smoothbottombar'
     defaultConfig {
         minSdkVersion 24
         consumerProguardFiles 'consumer-rules.pro'
