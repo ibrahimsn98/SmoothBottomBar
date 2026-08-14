@@ -7,7 +7,7 @@ android {
     compileSdkVersion 37
     namespace 'me.ibrahimsn.smoothbottombar'
     defaultConfig {
-        minSdkVersion 24
+        minSdkVersion 32
         consumerProguardFiles 'consumer-rules.pro'
     }
 
@@ -25,10 +25,10 @@ android {
         jvmTarget = JavaVersion.VERSION_21
     }
     lint {
-        targetSdk 36
+        targetSdk 37
     }
     testOptions {
-        targetSdk 36
+        targetSdk 37
     }
 }
 

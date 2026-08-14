@@ -9,4 +9,7 @@
     <item
         android:id="@+id/another_item_3"
         android:title="@string/menu_another_item_3" />
+    <item
+        android:id="@+id/menu_compose_demo"
+        android:title="@string/menu_compose_demo" />
 </menu>

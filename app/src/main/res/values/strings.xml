@@ -17,4 +17,6 @@
     <string name="fragment_leaderboard_placeholder">Leaderboard Fragment</string>
     <string name="fragment_store_placeholder">Store Fragment</string>
     <string name="fragment_profile_placeholder">Profile Fragment</string>
+
+    <string name="menu_compose_demo">Compose Demo</string>
 </resources>

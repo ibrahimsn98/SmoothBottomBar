@@ -17,4 +17,6 @@
     <string name="fragment_leaderboard_placeholder">شاشة المتصدرين</string>
     <string name="fragment_store_placeholder">شاشة المتجر</string>
     <string name="fragment_profile_placeholder">شاشة حسابي</string>
+
+    <string name="menu_compose_demo">عرض Compose</string>
 </resources>

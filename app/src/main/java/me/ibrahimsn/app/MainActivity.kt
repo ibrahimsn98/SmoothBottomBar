@@ -1,5 +1,6 @@
 package me.ibrahimsn.app
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -75,6 +76,11 @@ class MainActivity : AppCompatActivity() {
 
             R.id.another_item_3 -> {
                 showToast(getString(R.string.toast_another_item_3))
+                return true
+            }
+
+            R.id.menu_compose_demo -> {
+                startActivity(Intent(this, ComposeMainActivity::class.java))
                 return true
             }
         }
