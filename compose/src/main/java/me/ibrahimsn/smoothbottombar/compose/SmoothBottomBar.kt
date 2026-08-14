@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -92,7 +93,11 @@ fun SmoothBottomBar(
         items.map { item ->
             textMeasurer.measure(
                 text = item.label,
-                style = TextStyle(fontSize = itemTextSize, fontFamily = itemFontFamily),
+                style = TextStyle(
+                    fontSize = itemTextSize,
+                    fontFamily = itemFontFamily,
+                    fontWeight = FontWeight.Bold,
+                ),
             ).size.width.toFloat()
         }
     }
