@@ -1,9 +1,10 @@
 # SmoothBottomBar
 
-A lightweight Android material bottom navigation bar library
+A lightweight Android material bottom navigation bar library, available as a classic View and as a fully native Jetpack Compose composable.
 
 [![](https://jitpack.io/v/ibrahimsn98/SmoothBottomBar.svg)](https://jitpack.io/#ibrahimsn98/SmoothBottomBar)
-[![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
+[![Build](https://github.com/ibrahimsn98/SmoothBottomBar/actions/workflows/build.yml/badge.svg)](https://github.com/ibrahimsn98/SmoothBottomBar/actions/workflows/build.yml)
+[![API](https://img.shields.io/badge/API-32%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=32)
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-SmoothBottomBar-green.svg?style=flat )]( https://android-arsenal.com/details/1/7932 )
 [![Android Weekly](https://androidweekly.net/issues/issue-385/badge)](https://androidweekly.net/issues/issue-385)
 
@@ -15,7 +16,63 @@ A lightweight Android material bottom navigation bar library
 
 All design and inspiration credits belong to [Alejandro Ausejo](https://dribbble.com/shots/6251784-Navigation-Menu-Animation).
 
-## Usage
+## Jetpack Compose
+
+A fully Compose-native `SmoothBottomBar` composable, functionally equivalent to the View version below. It's a controlled component — the caller owns `selectedIndex` and reacts to `onItemSelected`/`onItemReselected`.
+
+> **Note:** The `:compose` module isn't published to JitPack yet — include it as a Gradle module from source (`include ':compose'` in `settings.gradle`, then `implementation project(':compose')`) until a release is cut.
+
+```kotlin
+val items = listOf(
+    SmoothBarItem(icon = painterResource(R.drawable.ic_dashboard_white_24dp), label = "Dashboard"),
+    SmoothBarItem(icon = painterResource(R.drawable.ic_multiline_chart_white_24dp), label = "Leaderboard"),
+    SmoothBarItem(icon = painterResource(R.drawable.ic_store_white_24dp), label = "Store", hasBadge = true),
+    SmoothBarItem(icon = painterResource(R.drawable.ic_person_outline_white_24dp), label = "Profile"),
+)
+
+var selectedIndex by remember { mutableStateOf(0) }
+
+SmoothBottomBar(
+    items = items,
+    selectedIndex = selectedIndex,
+    onItemSelected = { selectedIndex = it },
+    modifier = Modifier.fillMaxWidth().height(76.dp),
+    backgroundColor = Color(0xFF432FBF),
+)
+```
+
+See `app/src/main/java/me/ibrahimsn/app/ComposeMainActivity.kt` for a full example wired up to `navigation-compose`.
+
+### Parameters
+
+| Parameter | Default | Description |
+|---|---|---|
+| `items` | — | `List<SmoothBarItem>` (`icon`, `label`, `contentDescription`, `hasBadge`) |
+| `selectedIndex` | — | Index of the currently active item |
+| `onItemSelected` | — | Called when a different item is tapped |
+| `modifier` | `Modifier` | Standard Compose modifier |
+| `onItemReselected` | `{}` | Called when the already-selected item is tapped again |
+| `backgroundColor` | `Color.White` | Bar background color |
+| `shape` | `RectangleShape` | Bar background shape |
+| `indicatorColor` | `Color(0x2DFFFFFF)` | Active-item pill color |
+| `indicatorRadius` | `12.dp` | Active-item pill corner radius |
+| `sideMargins` | `10.dp` | Left/right margin before the first/last item |
+| `itemPadding` | `10.dp` | Padding inside each item |
+| `itemSpacing` | `8.dp` | Minimum spacing between items |
+| `itemTextColor` | `Color.White` | Label text color |
+| `itemTextSize` | `11.sp` | Label text size |
+| `itemFontFamily` | `null` | Label font family |
+| `itemBadgeColor` | `Color.Red` | Badge dot color |
+| `itemBadgeRadius` | `4.dp` | Badge dot radius |
+| `itemIconSize` | `18.dp` | Icon size |
+| `itemIconMargin` | `4.dp` | Space between icon and label when active |
+| `itemIconTint` | `Color(0xC8FFFFFF)` | Icon tint when inactive |
+| `itemIconTintActive` | `Color.White` | Icon tint when active |
+| `itemAnimDurationMillis` | `200` | Selection transition duration |
+| `iconBackgroundColor` | `Color.Transparent` | Icon background circle color, inactive items only |
+| `iconBackgroundPadding` | `6.dp` | Icon background circle padding |
+
+## View
 
 -   Create menu.xml under your res/menu/ folder
 ```xml
@@ -337,7 +394,7 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
 <p align="center"><a><img src="https://user-images.githubusercontent.com/29807085/117545665-a6dde700-b01e-11eb-8ede-bb9263826814.gif" width="300"></a></p>
 
 
-## Customization
+### Customization
 
 ```xml
 <me.ibrahimsn.smoothbottombar.SmoothBottomBar
@@ -355,6 +412,7 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
         app:itemSpacing=""
         app:textColor=""
         app:badgeColor=""
+        app:badgeRadius=""
         app:iconBackgroundColor=""
         app:iconBackgroundPadding=""
         app:itemFontFamily=""
@@ -367,9 +425,11 @@ Prior to the [initial addition of this feature](https://github.com/ibrahimsn98/S
         app:duration="" />
 ```
 
-## Setup
+### Setup
 
 > Follow me on Twitter [@ibrahimsn98](https://twitter.com/ibrahimsn98)
+
+Requires minSdk 32, compileSdk 37, Kotlin 2.2+, Java 21.
 
 ```gradle
 //project label build.gradle
@@ -388,9 +448,15 @@ allprojects {
 }
 //app label build.gradle
 dependencies {
-        implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.8.0'
+        implementation 'com.github.ibrahimsn98:SmoothBottomBar:<version — see JitPack badge above>'
 }
 ```
+
+> **Note:** The latest tagged release predates the `me.ibrahimsn.smoothbottombar` package rename and the Compose module — a new tag needs to be cut before those changes are available via JitPack. Until then, build from source (`git clone` + `include ':lib'`/`include ':compose'`) to use the code documented on this page.
+
+## Demo App
+
+The sample `app` module has two entry points: `ComposeMainActivity` (the Jetpack Compose demo above) is the default launcher activity; the classic View-based `MainActivity` is reachable from its overflow menu.
 
 ## Contributors ✨
 <table>
