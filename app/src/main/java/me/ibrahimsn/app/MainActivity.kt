@@ -53,6 +53,10 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.main_fragment) as NavHostFragment
         navController = navHostFragment.navController
         setupActionBarWithNavController(navController)
+        // Set programmatically rather than via app:menu in the layout - the
+        // common real-world pattern (also issue #102's exact repro) where the
+        // bar's menu is attached after the view is already constructed.
+        binding.bottomBar.itemMenuRes = R.menu.menu_bottom
         setupSmoothBottomMenu()
     }
 

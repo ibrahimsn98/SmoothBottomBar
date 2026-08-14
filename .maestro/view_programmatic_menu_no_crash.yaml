@@ -1,0 +1,14 @@
+appId: me.ibrahimsn.app
+---
+# Regression test for issue #102: SmoothBottomBar's accessibility helper used
+# to hold a stale snapshot of `items`, crashing with IndexOutOfBoundsException
+# on the very first setBadge()/tap once the menu was set programmatically
+# (as MainActivity now does, matching the issue's own repro) rather than only
+# via the XML app:menu attribute.
+- launchApp
+- tapOn: "View Demo"
+- assertVisible:
+    id: "toolbar"
+- assertVisible: "Dashboard Fragment"
+- tapOn: "Leaderboard"
+- assertVisible: "Leaderboard Fragment"

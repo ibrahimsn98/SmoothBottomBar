@@ -8,21 +8,27 @@ import kotlin.math.roundToInt
 
 class AccessibleExploreByTouchHelper(
     private val host : SmoothBottomBar,
-    private val bottomBarItems : List<BottomBarItem>,
+    // Supplier rather than a snapshot list - SmoothBottomBar.items is reassigned
+    // whenever the menu is (re)populated after construction (e.g. itemMenuRes
+    // set programmatically), and a captured List reference would go stale,
+    // crashing with IndexOutOfBoundsException on the next accessibility/touch
+    // callback (see issue #102).
+    private val bottomBarItems : () -> List<BottomBarItem>,
     private val onClickAction : (id : Int) -> Unit,
     private val hasBadge : (index: Int) -> Boolean
 ) : ExploreByTouchHelper(host) {
 
     override fun getVisibleVirtualViews(virtualViewIds: MutableList<Int>) {
         // defining simple ids for each item of the bottom bar
-        for (i in bottomBarItems.indices) {
+        for (i in bottomBarItems().indices) {
             virtualViewIds.add(i)
         }
     }
 
     override fun getVirtualViewAt(x: Float, y: Float): Int {
-        for (index in bottomBarItems.indices) {
-            if (bottomBarItems[index].rect.contains(x, y)) {
+        val items = bottomBarItems()
+        for (index in items.indices) {
+            if (items[index].rect.contains(x, y)) {
                 return index
             }
         }
@@ -37,11 +43,12 @@ class AccessibleExploreByTouchHelper(
         virtualViewId: Int,
         node: AccessibilityNodeInfoCompat
     ) {
+        val items = bottomBarItems()
         node.className = BottomBarItem::class.simpleName
         node.contentDescription = if (hasBadge(virtualViewId)) {
-            "${bottomBarItems[virtualViewId].contentDescription}, has notification"
+            "${items[virtualViewId].contentDescription}, has notification"
         } else {
-            bottomBarItems[virtualViewId].contentDescription
+            items[virtualViewId].contentDescription
         }
         node.isClickable = true
         node.isFocusable = true
@@ -68,7 +75,7 @@ class AccessibleExploreByTouchHelper(
     }
 
     private fun updateBoundsForBottomItem(index: Int): Rect {
-        val itemRect = bottomBarItems[index].rect
+        val itemRect = bottomBarItems()[index].rect
         return Rect(
             itemRect.left.roundToInt(),
             itemRect.top.roundToInt(),

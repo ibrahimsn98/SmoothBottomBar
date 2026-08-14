@@ -280,6 +280,15 @@ class SmoothBottomBar @JvmOverloads constructor(
                 popupMenu.inflate(value)
                 this.menu = popupMenu.menu
                 items = BottomBarParser(context, value).parse()
+                // Force accessibility services to re-query the virtual-view set -
+                // items may have just gone from empty to populated (or changed
+                // size), and TalkBack's cached view count would otherwise be
+                // stale. Guarded: this setter can also fire from
+                // obtainStyledAttributes() during init{}, before
+                // exploreByTouchHelper itself has been constructed.
+                if (::exploreByTouchHelper.isInitialized) {
+                    exploreByTouchHelper.invalidateRoot()
+                }
                 invalidate()
             }
         }
@@ -334,11 +343,15 @@ class SmoothBottomBar @JvmOverloads constructor(
         isFakeBoldText = true
     }
 
-    private var exploreByTouchHelper: AccessibleExploreByTouchHelper
+    // lateinit rather than assigned inline - obtainStyledAttributes() below runs
+    // first and can itself trigger the itemMenuRes setter (XML app:menu
+    // attribute), which now touches exploreByTouchHelper too; isInitialized
+    // lets that setter guard against running before this is constructed.
+    private lateinit var exploreByTouchHelper: AccessibleExploreByTouchHelper
 
     init {
         obtainStyledAttributes(attrs, defStyleAttr)
-        exploreByTouchHelper = AccessibleExploreByTouchHelper(this, items, ::onClickAction) { index ->
+        exploreByTouchHelper = AccessibleExploreByTouchHelper(this, { items }, ::onClickAction) { index ->
             badgeIndices.contains(index)
         }
 
