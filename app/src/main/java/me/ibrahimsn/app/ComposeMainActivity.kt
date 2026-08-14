@@ -1,5 +1,6 @@
 package me.ibrahimsn.app
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,8 +24,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -58,6 +64,7 @@ private val DESTINATIONS = listOf(
 
 @Composable
 private fun ComposeDemoScreen() {
+    val context = LocalContext.current
     val navController = rememberNavController()
 
     // Badge demo parity with FirstFragment: badges on Dashboard (0) and
@@ -87,6 +94,25 @@ private fun ComposeDemoScreen() {
     }
 
     Column(Modifier.fillMaxSize()) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(12.dp),
+        ) {
+            Box(
+                Modifier
+                    .align(Alignment.TopEnd)
+                    // ponytail: view-based demo's own reverse link (MainActivity's
+                    // overflow menu) already exists - this mirrors it so both demos
+                    // are reachable in-app, no Scaffold/TopAppBar needed for one link.
+                    .clickable { context.startActivity(Intent(context, MainActivity::class.java)) }
+                    .semantics { contentDescription = "View Demo" },
+            ) {
+                BasicText(text = "View Demo", style = TextStyle(color = Color.White))
+            }
+        }
+
         NavHost(
             navController = navController,
             startDestination = DESTINATIONS[0].route,

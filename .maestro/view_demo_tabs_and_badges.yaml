@@ -1,0 +1,20 @@
+appId: me.ibrahimsn.app
+---
+- launchApp
+- tapOn: "View Demo"
+- assertVisible:
+    id: "toolbar"
+- assertVisible: "Dashboard Fragment"
+- tapOn: "Leaderboard"
+- assertVisible: "Leaderboard Fragment"
+- tapOn: "Store.*"
+- assertVisible: "Store Fragment"
+- tapOn: "Profile"
+- assertVisible: "Profile Fragment"
+- tapOn: "Profile"
+- assertVisible: "Profile Fragment"
+- tapOn: "Dashboard.*"
+- assertVisible: "Dashboard Fragment"
+- tapOn:
+    id: "textView"
+- assertVisible: "Store Fragment"
