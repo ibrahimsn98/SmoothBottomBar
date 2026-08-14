@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -214,8 +215,14 @@ fun SmoothBottomBar(
                     // pass gives non-weighted children a bounded, not
                     // infinite, max height, so fillMaxHeight() isn't a no-op
                     // there), starving any sibling like a weight(1f) NavHost.
+                    // clipToBounds(): the label doesn't shrink with the item
+                    // (only its alpha does) - without clipping, a
+                    // fading-out label can render wider than its item's
+                    // current animated width and visually bleed into the
+                    // neighboring item mid-transition.
                     modifier = Modifier
                         .width(itemWidth)
+                        .clipToBounds()
                         .onGloballyPositioned { itemCoordinates[index] = it },
                 )
             }
