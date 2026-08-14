@@ -8,43 +8,41 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
 
 // Matches android.view.animation.DecelerateInterpolator() (factor = 1):
 // f(t) = 1 - (1-t)^2 - the same curve the View version's tab-switch
 // animation uses, so both flavors feel identical.
 private val DecelerateEasing = Easing { t -> 1f - (1f - t) * (1f - t) }
+
+private const val PILL_LAYOUT_ID = "pill"
+private fun itemLayoutId(index: Int) = "item_$index"
 
 /**
  * A fully Compose-native equivalent of the View-based `SmoothBottomBar`
@@ -85,6 +83,7 @@ fun SmoothBottomBar(
     }
 
     val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
     val textMeasurer = rememberTextMeasurer()
 
     // Per-item measured label width, cached like the View's calculateItemBounds()
@@ -124,56 +123,21 @@ fun SmoothBottomBar(
     ) { state -> if (state in items.indices) activeWidth(state) else 0.dp }
     val pillHeight = itemIconSize + itemPadding * 2
 
-    // Pill x-position isn't animated on its own - it tracks the active item's
-    // real, already-animating rendered position (same technique Material's
-    // TabRow indicator uses), so indicator/item drift is structurally
-    // impossible rather than something to keep in sync by hand.
-    val itemCoordinates = remember { mutableStateMapOf<Int, LayoutCoordinates>() }
-    var containerCoordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
-
-    val activeCoordinates = itemCoordinates[selectedIndex]
-    val container = containerCoordinates
-    val pillOffsetX = if (validSelectedIndex && activeCoordinates != null && container != null &&
-        container.isAttached && activeCoordinates.isAttached
-    ) {
-        with(density) { container.localPositionOf(activeCoordinates, Offset.Zero).x.toDp() }
-    } else {
-        0.dp
-    }
-
-    Box(
+    Layout(
         modifier = modifier
             .background(backgroundColor, shape)
-            .onGloballyPositioned { containerCoordinates = it },
-    ) {
-        if (validSelectedIndex) {
-            Box(
-                Modifier
-                    .align(Alignment.CenterStart)
-                    .offset(x = pillOffsetX)
-                    // Fixed recentering: the icon+label content isn't
-                    // actually centered on the item's own box (icon shifts
-                    // one way, label extends the other, by itemIconMargin),
-                    // so the indicator is nudged toward the content's true
-                    // center. Dp-offset mirrors automatically in RTL.
-                    .offset(x = itemIconMargin / 2)
-                    .width(pillWidth)
-                    .height(pillHeight)
-                    .background(indicatorColor, RoundedCornerShape(indicatorRadius)),
-            )
-        }
+            .selectableGroup(),
+        content = {
+            if (validSelectedIndex) {
+                Box(
+                    Modifier
+                        .layoutId(PILL_LAYOUT_ID)
+                        .width(pillWidth)
+                        .height(pillHeight)
+                        .background(indicatorColor, RoundedCornerShape(indicatorRadius)),
+                )
+            }
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth()
-                .padding(horizontal = sideMargins)
-                .selectableGroup(),
-            horizontalArrangement = FloorSpacedArrangement(
-                minGapPx = with(density) { itemSpacing.toPx() },
-            ),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
             items.forEachIndexed { index, item ->
                 val itemWidth by transition.animateDp(
                     transitionSpec = { dpSpec },
@@ -207,23 +171,88 @@ fun SmoothBottomBar(
                     badgeRingColor = backgroundColor,
                     iconBackgroundColor = iconBackgroundColor,
                     iconBackgroundPadding = iconBackgroundPadding,
-                    // No fillMaxHeight() here: this composable has no fixed
-                    // height of its own (the caller decides, same as the View
-                    // needing an explicit layout_height) - items participating
-                    // in the Column's non-weighted "natural size" pass would
-                    // otherwise claim the full available screen height (that
-                    // pass gives non-weighted children a bounded, not
-                    // infinite, max height, so fillMaxHeight() isn't a no-op
-                    // there), starving any sibling like a weight(1f) NavHost.
                     // clipToBounds(): the label doesn't shrink with the item
-                    // (only its alpha does) - without clipping, a
-                    // fading-out label can render wider than its item's
-                    // current animated width and visually bleed into the
-                    // neighboring item mid-transition.
+                    // (only its alpha does) - without clipping, a fading-out
+                    // label can render wider than its item's current animated
+                    // width and visually bleed into the neighboring item.
                     modifier = Modifier
+                        .layoutId(itemLayoutId(index))
                         .width(itemWidth)
-                        .clipToBounds()
-                        .onGloballyPositioned { itemCoordinates[index] = it },
+                        .clipToBounds(),
+                )
+            }
+        },
+    ) { measurables, constraints ->
+        // Items and the pill are placed here with plain place() and manual
+        // RTL mirroring, rather than Row + a custom Arrangement +
+        // onGloballyPositioned/localPositionOf tracking (the previous
+        // design). That approach measured correctly but its *queried*
+        // positions (via LayoutCoordinates) didn't agree with where content
+        // actually painted once RTL was active - confirmed with logging
+        // (positionInRoot and localPositionOf both reported items in plain
+        // left-to-right order while the bar visually rendered mirrored),
+        // which pointed at Compose's automatic RTL placement not applying
+        // the way assumed for a custom Arrangement's children, not at a bug
+        // in the tracking math itself. Computing and placing positions
+        // explicitly here removes that ambiguity entirely: this function is
+        // the only source of truth for where anything goes, item and pill
+        // placement share the exact same numbers by construction, and
+        // mirroring is one explicit, verifiable line instead of an implicit
+        // framework behavior.
+        val itemPlaceables = items.indices.map { index ->
+            measurables.first { it.layoutId == itemLayoutId(index) }.measure(Constraints())
+        }
+        val pillPlaceable = if (validSelectedIndex) {
+            measurables.first { it.layoutId == PILL_LAYOUT_ID }.measure(Constraints())
+        } else {
+            null
+        }
+
+        val containerWidthPx = constraints.maxWidth
+        val containerHeightPx = if (constraints.hasBoundedHeight) {
+            constraints.maxHeight
+        } else {
+            pillHeight.roundToPx()
+        }
+
+        val itemWidthsPx = itemPlaceables.map { it.width }
+        val sideMarginsPx = sideMargins.roundToPx()
+        val itemSpacingPx = itemSpacing.roundToPx()
+        val contentWidthPx = itemWidthsPx.sum()
+        val gapCount = (items.size - 1).coerceAtLeast(1)
+        val gapPx = ((containerWidthPx - sideMarginsPx * 2 - contentWidthPx).toFloat() / gapCount)
+            .coerceAtLeast(itemSpacingPx.toFloat())
+
+        // Logical (composition-order) left edges, floor-spaced exactly like
+        // the View's effectiveItemSpacing: itemSpacing is a floor, not a
+        // fixed gap, and leftover space stretches the row edge-to-edge.
+        val logicalX = IntArray(items.size)
+        var cursor = sideMarginsPx
+        for (i in items.indices) {
+            logicalX[i] = cursor
+            cursor += itemWidthsPx[i] + gapPx.roundToInt()
+        }
+
+        val isRtl = layoutDirection == LayoutDirection.Rtl
+        val finalX = IntArray(items.size) { i ->
+            if (isRtl) containerWidthPx - logicalX[i] - itemWidthsPx[i] else logicalX[i]
+        }
+
+        layout(containerWidthPx, containerHeightPx) {
+            for (i in items.indices) {
+                val placeable = itemPlaceables[i]
+                placeable.place(finalX[i], (containerHeightPx - placeable.height) / 2)
+            }
+            if (pillPlaceable != null) {
+                // Fixed recentering: the icon+label content isn't actually
+                // centered on the item's own box (icon shifts one way, label
+                // extends the other, by itemIconMargin), so the indicator is
+                // nudged toward the content's true center - toward the
+                // item's end side, whichever physical direction that is.
+                val recenterPx = (itemIconMargin.roundToPx() / 2f) * (if (isRtl) -1 else 1)
+                pillPlaceable.place(
+                    x = (finalX[selectedIndex] + recenterPx).roundToInt(),
+                    y = (containerHeightPx - pillPlaceable.height) / 2,
                 )
             }
         }
