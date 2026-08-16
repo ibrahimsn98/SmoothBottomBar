@@ -20,8 +20,6 @@ All design and inspiration credits belong to [Alejandro Ausejo](https://dribbble
 
 A fully Compose-native `SmoothBottomBar` composable, functionally equivalent to the View version below. It's a controlled component — the caller owns `selectedIndex` and reacts to `onItemSelected`/`onItemReselected`.
 
-> **Note:** The `:compose` module isn't published to JitPack yet — include it as a Gradle module from source (`include ':compose'` in `settings.gradle`, then `implementation project(':compose')`) until a release is cut.
-
 ```kotlin
 val items = listOf(
     SmoothBarItem(icon = painterResource(R.drawable.ic_dashboard_white_24dp), label = "Dashboard"),
