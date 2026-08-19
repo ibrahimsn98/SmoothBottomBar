@@ -2,8 +2,7 @@
 
 A lightweight Android material bottom navigation bar library, available as a classic View and as a fully native Jetpack Compose composable.
 
-[![Qualflare](https://api.qualflare.com/p/smoothbottombar/banner-light.svg#gh-light-mode-only)](https://reports.qualflare.com/p/smoothbottombar/launches)
-[![Qualflare](https://api.qualflare.com/p/smoothbottombar/banner-dark.svg#gh-dark-mode-only)](https://reports.qualflare.com/p/smoothbottombar/launches)
+[![Qualflare](https://api.qualflare.com/p/smoothbottombar/banner.svg)](https://reports.qualflare.com/p/smoothbottombar/launches)
 
 [![](https://jitpack.io/v/ibrahimsn98/SmoothBottomBar.svg)](https://jitpack.io/#ibrahimsn98/SmoothBottomBar)
 [![Build](https://github.com/ibrahimsn98/SmoothBottomBar/actions/workflows/build.yml/badge.svg)](https://github.com/ibrahimsn98/SmoothBottomBar/actions/workflows/build.yml)
