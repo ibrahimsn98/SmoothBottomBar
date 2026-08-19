@@ -46,7 +46,9 @@ jobs:
             $HOME/.maestro/bin/maestro test --format=junit --output=maestro-report.xml .maestro/
 
       - name: Upload results to Qualflare
-        if: always()
+        # PR runs (especially from forks) don't have access to repository
+        # secrets, so only upload on pushes to the head branch.
+        if: always() && github.event_name == 'push'
         uses: Qualflare/qualflare-action@v1
         with:
           token: ${{ secrets.QUALFLARE_TOKEN }}
